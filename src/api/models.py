@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import String, Boolean,Integer,ForeignKey,
+from sqlalchemy import String, Boolean, Integer, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 db = SQLAlchemy()
@@ -13,7 +13,6 @@ class User(db.Model):
     password: Mapped[str] = mapped_column(nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean(), nullable=False)
 
- 
     def serialize(self):
         return {
             'id': self.id,
@@ -22,15 +21,14 @@ class User(db.Model):
         }
 
 
-
-class Articulos(db.model):
+class Articulos(db.Model):  # corregido db.model a db.Model
     __tablename__ = 'articulos'
 
-    id:Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True)
     nombre_articulo: Mapped[str] = mapped_column(String(25), unique=True, nullable=False)
     caracteristicas: Mapped[str] = mapped_column(String(200), unique=True)
     cantidad: Mapped[int] = mapped_column(nullable=True, default=1)
-    estado: Mapped[str] = mapped_column(String(50), nullable=False)  
+    estado: Mapped[str] = mapped_column(String(50), nullable=False)
     categoria: Mapped[str] = mapped_column(String(50), nullable=False)
 
     usuario_id: Mapped[int] = mapped_column(ForeignKey('usuario.id'))
@@ -44,5 +42,3 @@ class Articulos(db.model):
 
     transaccion_trueke_id: Mapped[int] = mapped_column(ForeignKey('trueke.id'), unique=True)
     transaccion_trueke: Mapped['Trueke'] = relationship('Trueke', back_populates='articulos', uselist=False)
-
-
