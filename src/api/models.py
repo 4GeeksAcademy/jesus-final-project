@@ -35,7 +35,7 @@ class User(db.Model):
         }
 
 
-class Articulos(db.Model):  # corregido db.model a db.Model
+class Articulos(db.Model): 
     __tablename__ = 'articulos'
 
     id: Mapped[int] = mapped_column(primary_key=True)
