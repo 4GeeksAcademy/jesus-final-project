@@ -1,11 +1,11 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Integer, String, ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship  
 
-db = SQLAlchemy()
+db = SQLAlchemy()          
 
-
-
+    
+          
 
 class Comentarios(db.Model):
     __tablename__ = 'comentarios'
@@ -27,8 +27,8 @@ class Rating(db.Model):
     valoraciones: Mapped[int] = mapped_column(Integer, nullable=False)
     comentarios: Mapped[str] = mapped_column(String(100), nullable=True)
 
-    usuario: Mapped["Usuario"] = relationship("Usuario", back_populates="ratings")
-    articulo: Mapped["Articulo"] = relationship("Articulo", back_populates="ratings")
+    usuario: Mapped["Usuario"] = relationship("Usuario", back_populates="ratings")    
+    articulo: Mapped["Articulo"] = relationship("Articulo", back_populates="ratings")             
 
 
 
