@@ -30,6 +30,7 @@ class Articulos(db.Model):  # corregido db.model a db.Model
     cantidad: Mapped[int] = mapped_column(nullable=True, default=1)
     estado: Mapped[str] = mapped_column(String(50), nullable=False)
     categoria: Mapped[str] = mapped_column(String(50), nullable=False)
+    img: Mapped[str] = mapped_column(String(200), nullable=False)
 
     usuario_id: Mapped[int] = mapped_column(ForeignKey('usuario.id'))
     usuario: Mapped['Usuario'] = relationship('Usuario', back_populates='articulos')
