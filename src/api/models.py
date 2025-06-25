@@ -42,7 +42,6 @@ class Articulos(db.Model):
     __tablename__ = 'articulos'
 
     id: Mapped[int] = mapped_column(primary_key=True)
-<<<<<<< HEAD
     titulo: Mapped[str] = mapped_column(String(25), nullable=False)
     caracteristicas: Mapped[str] = mapped_column(Text, nullable=True)
     estado: Mapped[str] = mapped_column(Enum('nuevo', 'como_nuevo', 'bueno', 'regular', 'malo', name='estado_enum'), nullable=False)
@@ -54,16 +53,6 @@ class Articulos(db.Model):
     usuario_id: Mapped[int] = mapped_column(ForeignKey('usuario.id'), nullable=False)
     
     # Relaciones
-=======
-    nombre_articulo: Mapped[str] = mapped_column(String(25), unique=True, nullable=False)
-    caracteristicas: Mapped[str] = mapped_column(String(200))
-    cantidad: Mapped[int] = mapped_column(nullable=True, default=1)
-    estado: Mapped[str] = mapped_column(String(50), nullable=False)
-    categoria: Mapped[str] = mapped_column(String(50), nullable=False)
-    img: Mapped[str] = mapped_column(String(200), nullable=False)
-
-    usuario_id: Mapped[int] = mapped_column(ForeignKey('usuario.id'))
->>>>>>> cad1603986c52be1a9d91994b016b72aaccdb70e
     usuario: Mapped['User'] = relationship('User', back_populates='articulos')
     articulos_favoritos: Mapped[list["Articulo_favorito"]] = relationship("Articulo_favorito", back_populates="articulo", cascade="all, delete-orphan")
     ratings: Mapped[list["Rating"]] = relationship("Rating", back_populates="articulo", cascade="all, delete-orphan")
@@ -116,14 +105,15 @@ class TransaccionTrueke(db.Model):
     comentarios: Mapped[str] = mapped_column(String(100), nullable=True)
     
     # Foreign Keys
-    articulo_id: Mapped[int] = mapped_column(ForeignKey('articulos.id'), nullable=False, unique=True)
-    user1_id: Mapped[int] = mapped_column(ForeignKey('usuario.id'), nullable=False)
-    user2_id: Mapped[int] = mapped_column(ForeignKey('usuario.id'), nullable=False)
+    articulo_id_propietario: Mapped[int] = mapped_column(ForeignKey('articulos.id'), nullable=False, unique=True)
+    articulo_id_receptor: Mapped[int] = mapped_column(ForeignKey('articulos.id'), nullable=False, unique=True)
+    usuario_propietrio_id: Mapped[int] = mapped_column(ForeignKey('usuario.id'), nullable=False)
+    usuario_receptor_id: Mapped[int] = mapped_column(ForeignKey('usuario.id'), nullable=False)
     
     # Relaciones
     articulo: Mapped['Articulos'] = relationship('Articulos', back_populates='transaccion_trueke')
-    user1: Mapped['User'] = relationship('User', foreign_keys=[user1_id], back_populates='transacciones_como_user1')
-    user2: Mapped['User'] = relationship('User', foreign_keys=[user2_id], back_populates='transacciones_como_user2')
+    usuario_propietrio: Mapped['User'] = relationship('User', foreign_keys=[usuario_propietrio_id], back_populates='transacciones_como_usuario_propietrio')
+    usuario_receptor: Mapped['User'] = relationship('User', foreign_keys=[usuario_receptor_id], back_populates='transacciones_como_usuario_receptor')
     comentarios_transaccion: Mapped[list["Comentarios"]] = relationship("Comentarios", back_populates="transaccion", cascade="all, delete-orphan")
 
     def __str__(self):
