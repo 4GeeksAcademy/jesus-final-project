@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import String, Boolean, Integer, ForeignKey
+from sqlalchemy import String, Boolean, Integer, ForeignKey, DateTime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 db = SQLAlchemy()
@@ -56,3 +56,30 @@ class Articulos(db.Model):
 
     transaccion_trueke_id: Mapped[int] = mapped_column(ForeignKey('trueke.id'), unique=True)
     transaccion_trueke: Mapped['Trueke'] = relationship('Trueke', back_populates='articulos', uselist=False)
+
+
+class DatosPersonales(db.Model):
+    __tablename__ = 'datos_personales'
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    nombre_completo: Mapped[str] = mapped_column(String(50), nullable=False)
+    telefono: Mapped[int] = mapped_column(Integer, nullable=True)
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey('transaccion_trueke.id'), nullable=False)
+    direccion: Mapped[str] = mapped_column(String(50), nullable=False)
+    fecha_registro: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    img: Mapped[str] = mapped_column(String(200), nullable=True)
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey('transaccion_trueke.id'), nullable=False)
+    transaccion_trueke: Mapped['Trueke'] = relationship('TransaccionTrueke', back_populates='datos_personales')
+
+    def __repr__(self):
+        return f'<DatosPersonales {self.nombre_completo}>'
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "nombre_completo": self.nombre_completo,
+            "telefono": self.telefono,
+            "user_id": self.user_id,
+            "direccion": self.direccion,
+            "img": self.img
+            }
