@@ -21,14 +21,14 @@ def setup_admin(app):
 
 class UserModelView(ModelView):
     column_auto_selected = True
-    column_list = ['id', 'nombre_de_usuario', 'email', 'password_hash', 'is_active', 'articulos', 'articulos_favoritos',
-                   'ratings', 'datos_personales', 'comentarios', 'transacciones_como_propietario', 'transacciones_como_receptor']
+    column_list = ['id', 'nombre_de_usuario',
+                   'email', 'password_hash', 'is_active']
 
 
 class ArticulosModelView(ModelView):
     column_auto_selected = True
-    column_list = ['id', 'titulo', 'caracteristicas', 'estado', 'modelo', 'cantidad', 'categoria',
-                   'img', 'usuario_id', 'usuario', 'articulos_favoritos', 'ratings']
+    column_list = ['id', 'titulo', 'caracteristicas', 'estado',
+                   'modelo', 'cantidad', 'categoria', 'img', 'usuario_id']
 
 
 class Articulo_favoritoModelView(ModelView):
@@ -38,8 +38,8 @@ class Articulo_favoritoModelView(ModelView):
 
 class TransaccionTruekeModelView(ModelView):
     column_auto_selected = True
-    column_list = ['id', 'comentarios', 'articulo_id_propietario', 'articulo_id_receptor', 'usuario_propietario_id', 'usuario_receptor_id',
-                   'articulo_propietario', 'articulo_receptor', 'propietario', 'receptor', 'comentarios_transaccion']
+    column_list = ['id', 'comentarios', 'articulo_id_propietario',
+                   'articulo_id_receptor', 'usuario_propietario_id', 'usuario_receptor_id']
 
 
 class ComentariosModelView(ModelView):
