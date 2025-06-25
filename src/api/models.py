@@ -42,6 +42,7 @@ class Articulos(db.Model):
     __tablename__ = 'articulos'
 
     id: Mapped[int] = mapped_column(primary_key=True)
+<<<<<<< HEAD
     titulo: Mapped[str] = mapped_column(String(25), nullable=False)
     caracteristicas: Mapped[str] = mapped_column(Text, nullable=True)
     estado: Mapped[str] = mapped_column(Enum('nuevo', 'como_nuevo', 'bueno', 'regular', 'malo', name='estado_enum'), nullable=False)
@@ -53,6 +54,16 @@ class Articulos(db.Model):
     usuario_id: Mapped[int] = mapped_column(ForeignKey('usuario.id'), nullable=False)
     
     # Relaciones
+=======
+    nombre_articulo: Mapped[str] = mapped_column(String(25), unique=True, nullable=False)
+    caracteristicas: Mapped[str] = mapped_column(String(200))
+    cantidad: Mapped[int] = mapped_column(nullable=True, default=1)
+    estado: Mapped[str] = mapped_column(String(50), nullable=False)
+    categoria: Mapped[str] = mapped_column(String(50), nullable=False)
+    img: Mapped[str] = mapped_column(String(200), nullable=False)
+
+    usuario_id: Mapped[int] = mapped_column(ForeignKey('usuario.id'))
+>>>>>>> cad1603986c52be1a9d91994b016b72aaccdb70e
     usuario: Mapped['User'] = relationship('User', back_populates='articulos')
     articulos_favoritos: Mapped[list["Articulo_favorito"]] = relationship("Articulo_favorito", back_populates="articulo", cascade="all, delete-orphan")
     ratings: Mapped[list["Rating"]] = relationship("Rating", back_populates="articulo", cascade="all, delete-orphan")
