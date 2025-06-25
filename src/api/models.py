@@ -32,7 +32,7 @@ class User(db.Model):
 
     # Relaciones para transacciones (como user1 y user2)
     transacciones_como_propietario: Mapped[list['TransaccionTrueke']] = relationship(
-        'TransaccionTrueke', foreign_keys='TransaccionTrueke.propietario.id', back_populates='popietario', cascade='all, delete-orphan')
+        'TransaccionTrueke', foreign_keys='TransaccionTrueke.propietario.id', back_populates='propietario', cascade='all, delete-orphan')
     transacciones_como_receptor: Mapped[list['TransaccionTrueke']] = relationship(
         'TransaccionTrueke', foreign_keys='TransaccionTrueke.receptor.id', back_populates='receptor', cascade='all, delete-orphan')
 
@@ -70,7 +70,6 @@ class Articulos(db.Model):
         'Articulo_favorito', back_populates='articulo', cascade='all, delete-orphan')
     ratings: Mapped[list['Rating']] = relationship(
         'Rating', back_populates='articulo', cascade='all, delete-orphan')
-
 
     def __str__(self):
         return f'{self.titulo} - {self.categoria}'
@@ -110,13 +109,11 @@ class Articulo_favorito(db.Model):
 
     def serialize(self):
         return {
-        'id': self.id,
-        'articulo_id_propietario': self.articulo_id_propietario,
-        'articulo_id_receptor': self.articulo_id_receptor,
-        'usuario_propietario_id': self.usuario_propietario_id,
-        'usuario_receptor_id': self.usuario_receptor_id,
-        'comentarios': self.comentarios
-    } 
+            'id': self.id,
+            'usuario_id': self.usuario_id,
+            'articulo_id': self.articulo_id
+        }
+
 
 class TransaccionTrueke(db.Model):
     __tablename__ = 'transaccion_trueke'
@@ -147,14 +144,15 @@ class TransaccionTrueke(db.Model):
         'Comentarios', back_populates='transaccion', cascade='all, delete-orphan')
 
     def __str__(self):
-        return f'Trueke: {self.articulo.titulo} entre {self.user1.nombre_de_usuario} y {self.user2.nombre_de_usuario}'
+        return f'Trueke: {self.articulo_propietario.titulo} entre {self.propietario.nombre_de_usuario} y {self.receptor.nombre_de_usuario}'
 
     def serialize(self):
         return {
             'id': self.id,
-            'articulo_id': self.articulo_id,
-            'user1_id': self.user1_id,
-            'user2_id': self.user2_id,
+            'articulo_id_propietario': self.articulo_id_propietario,
+            'articulo_id_receptor': self.articulo_id_receptor,
+            'usuario_propietario_id': self.usuario_propietario_id,
+            'usuario_receptor_id': self.usuario_receptor_id,
             'comentarios': self.comentarios
         }
 
