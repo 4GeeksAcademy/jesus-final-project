@@ -15,9 +15,8 @@ class ArticuloFavorito(db.Model):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     usuario_id: Mapped[int] = mapped_column(ForeignKey('usuario.id'))
     articulo_id: Mapped[int] = mapped_column(ForeignKey('articulo.id'))
-
-   # usuario: Mapped['Usuario'] = relationship(back_populates='articulo_favorito')
-   # articulo: Mapped['Articulo'] = relationship(back_populates='a')
+    usuario: Mapped['Usuario'] = relationship(back_populates='articulo_favorito')
+    articulo: Mapped['Articulo'] = relationship(back_populates='a')
 
     def articulos_favoritos(self):
         return [rel.articulo for rel in self.articulos_favoritos_rel]
