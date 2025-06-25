@@ -1,30 +1,27 @@
 from sqlalchemy import ForeignKey, Integer
-from sqlalchemy import String, Boolean
+from sqlalchemy import String, Boolean, Integer, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 db = SQLAlchemy()
 
-class User(db.Model):
+class Usuario(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     email: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
     password: Mapped[str] = mapped_column(nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean(), nullable=False)
 
 class ArticuloFavorito(db.Model):
-    __tablename__ = 'articulo_favorito'
+    __tablename__ = 'articulos_favoritos'
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     usuario_id: Mapped[int] = mapped_column(ForeignKey('usuario.id'))
     articulo_id: Mapped[int] = mapped_column(ForeignKey('articulo.id'))
-    usuario: Mapped['Usuario'] = relationship(back_populates='articulo_favorito')
-    articulo: Mapped['Articulo'] = relationship(back_populates='a')
-
-    def articulos_favoritos(self):
-        return [rel.articulo for rel in self.articulos_favoritos_rel]
-
-
+    usuario: Mapped['Usuario'] = relationship('Usuario', back_populates='articulos')
+    articulo_favorito_id: Mapped[int] = mapped_column(ForeignKey('articulo_favorito.id'))
+    articulo_favorito: Mapped['Articulo_Favorito'] = relationship('Articulo_Favorito', back_populates='articulos')
+    
     def serialize(self):
         return {
             "id": self.id,
-            "email": self.email,
-            # do not serialize the password, its a security breach
-        }
+            "usuario_id": self.usuario_id,
+            "articulo_id": self.articulo_id
+            }
