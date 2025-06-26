@@ -101,3 +101,46 @@ def editar_datos_articulo(articulo_id):
     return jsonify({'msg': 'Artículo editado correctamente'}), 200
 
 
+@api.route('/editar-articulos-favoritos', methods=['POST'])
+@jwt_required()
+def agregar_articulos_favoritos():
+    usuario_token_id = get_jwt_identity()
+    body = request.get_json(silent=True)
+    if not body:
+        return jsonify({'msg': 'necesitas completar el campo'}), 400
+    if "articulo_id" not in body:
+        return jsonify({'msg': 'necesitas enviar el favorito que desees agregar'}), 400
+
+    articulo_id = body['articulo_id']
+    favorito_existente = db.session.query(ArticuloFavorito).filter_by(
+        usuario_id=usuario_token_id, articulo_id=articulo_id).first()
+    if favorito_existente:
+        return jsonify({'msg': 'El artículo ya está en favoritos'}), 400
+
+    nuevo_favorito = ArticuloFavorito(
+        usuario_id=usuario_token_id,
+        articulo_id=articulo_id,
+        es_favorito=True
+    )
+
+    db.session.add(nuevo_favorito)
+    db.session.commit()
+
+    return jsonify({'msg': 'Artículo agregado a favoritos'}), 201
+
+
+@api.route('/editar-articulos-favoritos', methods=['DELETE'])
+@jwt_required()
+def agregar_articulos_favoritos(articulo_id):
+
+    usuario_token_id = get_jwt_identity()
+
+    favorito = db.session.query(ArticuloFavorito).filter_by(
+        usuario_id=usuario_token_id, articulo_id=articulo_id).first()
+    if not favorito:
+        return jsonify({'msg': 'Este artículo no está en tu lista de favoritos'}), 404
+
+    db.session.delete(favorito)
+    db.session.commit()
+
+    return jsonify({'msg': 'Artículo eliminado de favoritos'}), 201
