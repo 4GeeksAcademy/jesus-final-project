@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, Usuario, DatosPersonales, Articulo, ArticuloFavorito
+from api.models import db, Usuario, DatosPersonales, Articulo, ArticuloFavorito, TransaccionTrueke
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_jwt_extended import get_jwt_identity
@@ -226,3 +226,41 @@ def obtener_categorias():
         'categorias': categorias
     }), 200
 
+@api.route('/truekes', methods=['POST'])
+def crear_trueke():
+    try:
+        data = request.get_json(silent=True)
+        if not data:
+            return jsonify({'error': 'No se proporcionaron datos'}), 400
+
+        # Validar campos requeridos
+        required_fields = ['articulo_propietario_id', 'articulo_receptor_id']
+        if not all(field in data for field in required_fields):
+            return jsonify({'error': 'Faltan campos requeridos'}), 400
+
+        nueva_transaccion = TransaccionTrueke(
+            articulo_propietario_id=data['articulo_propietario_id'],
+            articulo_receptor_id=data['articulo_receptor_id'],
+            comentarios=data.get('comentarios')
+        )
+
+        db.session.add(nueva_transaccion)
+        db.session.commit()
+
+        return jsonify(nueva_transaccion.serialize()), 201
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
+@api.route('/truekes/<int:id>', methods=['GET'])
+def obtener_trueke(id):
+    try:
+        transaccion = TransaccionTrueke.query.get(id)
+        if not transaccion:
+            return jsonify({'error': 'Transacción no encontrada'}), 404
+            
+        return jsonify(transaccion.serialize()), 200
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
