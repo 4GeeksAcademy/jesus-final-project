@@ -22,7 +22,7 @@ def handle_hello():
     return jsonify(response_body), 200
 
 
-@api.route('/editar/datos-personales', methods=['PUT'])
+@api.route('/editar/datos_personales', methods=['PUT'])
 def editar_datos_personales():
     body = request.get_json(silent=True)
     if not body:
