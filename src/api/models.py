@@ -32,9 +32,9 @@ class User(db.Model):
 
     # Relaciones para transacciones (como user1 y user2)
     transacciones_como_propietario: Mapped[list['TransaccionTrueke']] = relationship(
-        'TransaccionTrueke', foreign_keys='TransaccionTrueke.propietario.id', back_populates='propietario', cascade='all, delete-orphan')
+        'TransaccionTrueke', foreign_keys='TransaccionTrueke.usuario_propietario_id', back_populates='propietario', cascade='all, delete-orphan')
     transacciones_como_receptor: Mapped[list['TransaccionTrueke']] = relationship(
-        'TransaccionTrueke', foreign_keys='TransaccionTrueke.receptor.id', back_populates='receptor', cascade='all, delete-orphan')
+        'TransaccionTrueke', foreign_keys='TransaccionTrueke.usuario_receptor_id', back_populates='receptor', cascade='all, delete-orphan')
 
     def __str__(self):
         return f'{self.nombre_de_usuario} ({self.email})'
