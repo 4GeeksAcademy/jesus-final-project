@@ -2,9 +2,11 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, Usuario, DatosPersonales
+from api.models import db, Usuario, DatosPersonales, Articulo, ArticuloFavorito
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
+from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import jwt_required
 
 api = Blueprint('api', __name__)
 
@@ -21,13 +23,19 @@ def handle_hello():
 
     return jsonify(response_body), 200
 
+#  EDITS
 
-# falta el jwt auth
+
 @api.route('/editar_datos_personales/<int:usuario_id>', methods=['PUT'])
+@jwt_required()
 def editar_datos_personales(usuario_id):
+    usuario_token_id = get_jwt_identity()
+    if usuario_token_id != usuario_id:
+        return jsonify({'msg': 'No tienes permiso para editar estos datos'}), 403
+
     body = request.get_json(silent=True)
     if not body:
-        return jsonify({'msg': 'necesitas completar los datos'}), 400
+        return jsonify({'msg': 'necesitas completar los campos'}), 400
 
     if 'nombre_completo' not in body:
         return jsonify({'msg': 'necesitas enviar tu nombre'}), 400
@@ -54,3 +62,42 @@ def editar_datos_personales(usuario_id):
     db.session.commit()
 
     return jsonify({'msg': 'Datos personales editados correctamente'}), 200
+
+
+@api.route('/editar_datos_articulo/<int:articulo_id>', methods=['PUT'])
+@jwt_required()
+def editar_datos_articulo(articulo_id):
+    usuario_token_id = get_jwt_identity()
+    body = request.get_json(silent=True)
+    if not body:
+        return jsonify({'msg': 'necesitas completar los campos'}), 400
+
+    if 'titulo' not in body:
+        return jsonify({'msg': 'necesitas enviar el titulo del articulo'}), 400
+    if 'caracteristicas' not in body:
+        return jsonify({'msg': 'necesitas enviar las caracteristicas del articulo'}), 400
+    if 'categoria' not in body:
+        return jsonify({'msg': 'necesitas enviar la categoría del articulo'}), 400
+    if 'img' not in body:
+        return jsonify({'msg': 'necesitas enviar la imagen del articulo'}), 400
+
+    articulo = db.session.query(Articulo).get(articulo_id)
+    if not articulo:
+        return jsonify({'msg': 'Artículo no encontrado'}), 404
+
+    if articulo.usuario_id != usuario_token_id:
+        return jsonify({'msg': 'No tienes permiso para editar este artículo'}), 403
+
+    articulo.titulo = body['titulo']
+    articulo.caracteristicas = body['caracteristicas']
+    articulo.categoria = body['categoria']
+    articulo.img = body['img']
+    articulo.modelo = body.get('modelo')
+    articulo.estado = body.get('estado')
+    articulo.cantidad = body.get('cantidad')
+
+    db.session.commit()
+
+    return jsonify({'msg': 'Artículo editado correctamente'}), 200
+
+

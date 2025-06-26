@@ -94,6 +94,8 @@ class ArticuloFavorito(db.Model):
         ForeignKey('usuario.id'), nullable=False)
     articulo_id: Mapped[int] = mapped_column(
         ForeignKey('articulo.id'), nullable=False)
+    es_favorito: Mapped[bool] = mapped_column(
+        Boolean, nullable=False, default=True)
 
     # Relaciones
     usuario: Mapped['Usuario'] = relationship(
