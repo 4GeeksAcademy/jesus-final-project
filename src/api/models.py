@@ -57,10 +57,12 @@ class Articulo(db.Model):
     img: Mapped[str] = mapped_column(String(200), nullable=False)
 
     # Foreign Keys
-    usuario_id: Mapped[int] = mapped_column(ForeignKey('usuario.id'), nullable=False)
+    usuario_id: Mapped[int] = mapped_column(
+        ForeignKey('usuario.id'), nullable=False)
 
     # Relaciones
-    usuario: Mapped['Usuario'] = relationship('Usuario', back_populates='articulos')
+    usuario: Mapped['Usuario'] = relationship(
+        'Usuario', back_populates='articulos')
     articulos_favoritos: Mapped[list['ArticuloFavorito']] = relationship(
         'ArticuloFavorito', back_populates='articulo', cascade='all, delete-orphan')
     ratings: Mapped[list['Rating']] = relationship(
@@ -99,7 +101,7 @@ class ArticuloFavorito(db.Model):
     articulo: Mapped['Articulo'] = relationship(
         'Articulo', back_populates='articulos_favoritos')
 
-    def str(self):
+    def __str__(self):
         return f'Trueke: {self.articulo_propietario.titulo} entre {self.propietario.nombre_de_usuario} y {self.receptor.nombre_de_usuario}'
 
     def serialize(self):
@@ -212,7 +214,7 @@ class Rating(db.Model):
     __tablename__ = 'rating'
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    puntuacion: Mapped[int] = mapped_column(Integer, CheckConstraint('puntuacion >= 1 AND puntuacion <= 5'), nullable=False)
+    puntuacion: Mapped[int] = mapped_column(Integer, nullable=False)
     comentarios: Mapped[str] = mapped_column(String(100), nullable=True)
 
     # Foreign Keys
@@ -222,8 +224,15 @@ class Rating(db.Model):
         ForeignKey('articulo.id'), nullable=False)
 
     # Relaciones
-    usuario: Mapped['Usuario'] = relationship('Usuario', back_populates='ratings')
-    articulo: Mapped['Articulo'] = relationship('Articulo', back_populates='ratings')
+    usuario: Mapped['Usuario'] = relationship(
+        'Usuario', back_populates='ratings')
+    articulo: Mapped['Articulo'] = relationship(
+        'Articulo', back_populates='ratings')
+
+    __table_args__ = (
+        CheckConstraint('puntuacion >= 1 AND puntuacion <= 5',
+                        name='check_puntuacion_rango'),
+    )
 
     def __str__(self):
         return f'Rating {self.puntuacion}/5 para {self.articulo.titulo}'
