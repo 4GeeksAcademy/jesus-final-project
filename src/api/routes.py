@@ -264,3 +264,23 @@ def obtener_trueke(id):
         
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+@api.route('/truekes/<int:id>', methods=['DELETE'])
+def eliminar_trueke(id):
+    try:
+        transaccion = TransaccionTrueke.query.get(id)
+        
+        if not transaccion:
+            return jsonify({'error': 'Transacción no encontrada'}), 404
+            
+        db.session.delete(transaccion)
+        db.session.commit()
+        
+        return jsonify({
+            'mensaje': 'Transacción eliminada correctamente',
+            'id': id
+        }), 200
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
