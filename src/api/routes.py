@@ -22,24 +22,35 @@ def handle_hello():
     return jsonify(response_body), 200
 
 
-@api.route('/editar/datos_personales', methods=['PUT'])
-def editar_datos_personales():
+# falta el jwt auth
+@api.route('/editar_datos_personales/<int:usuario_id>', methods=['PUT'])
+def editar_datos_personales(usuario_id):
     body = request.get_json(silent=True)
     if not body:
         return jsonify({'msg': 'necesitas completar los datos'}), 400
-    if 'nombre_completo' not in body:
-        return jsonify({'msg': 'necesitas completar enviar tu nombre para poder editar tu perfil'}), 400
-    if 'telefono' not in body:
-        return jsonify({'msg': 'necesitas completar enviar tu teléfono para poder editar tu perfil'}), 400
-    if 'direccion' not in body:
-        return jsonify({'msg': 'necesitas completar enviar tu dirección para poder editar tu perfil'}), 400
 
-    datos_personales = DatosPersonales()
+    if 'nombre_completo' not in body:
+        return jsonify({'msg': 'necesitas enviar tu nombre'}), 400
+    if 'telefono' not in body:
+        return jsonify({'msg': 'necesitas enviar tu teléfono'}), 400
+    if 'direccion' not in body:
+        return jsonify({'msg': 'necesitas enviar tu dirección'}), 400
+
+    usuario = db.session.query(Usuario).get(usuario_id)
+    if not usuario:
+        return jsonify({'msg': 'Usuario no encontrado'}), 404
+
+    datos_personales = db.session.query(
+        DatosPersonales).filter_by(usuario_id=usuario_id).first()
+    if not datos_personales:
+        datos_personales = DatosPersonales(usuario_id=usuario_id)
+
     datos_personales.nombre_completo = body['nombre_completo']
     datos_personales.telefono = body['telefono']
     datos_personales.direccion = body['direccion']
-    datos_personales.img = body['img']
+    datos_personales.img = body.get('img')
 
     db.session.add(datos_personales)
     db.session.commit()
-    return jsonify({'msg': 'datos personales editados correctamente'}), 200
+
+    return jsonify({'msg': 'Datos personales editados correctamente'}), 200

@@ -25,8 +25,8 @@ class Usuario(db.Model):
         'ArticuloFavorito', back_populates='usuario', cascade='all, delete-orphan')
     ratings: Mapped[list['Rating']] = relationship(
         'Rating', back_populates='usuario', cascade='all, delete-orphan')
-    datos_personales: Mapped[list['DatosPersonales']] = relationship(
-        'DatosPersonales', back_populates='usuario', cascade='all, delete-orphan')
+    datos_personales: Mapped['DatosPersonales'] = relationship(
+        'DatosPersonales', back_populates='usuario', cascade='all, delete-orphan', uselist=False)
     comentarios: Mapped[list['Comentario']] = relationship(
         'Comentario', back_populates='usuario', cascade='all, delete-orphan')
 
