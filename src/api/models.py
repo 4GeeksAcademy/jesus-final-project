@@ -64,7 +64,7 @@ class Articulos(db.Model):
 
     # Relaciones
 
-    usuario_id: Mapped[int] = mapped_column(ForeignKey('usuario.id'))
+    usuario_id: Mapped[int] = mapped_column(ForeignKey('usuario.id'), nullable=False)
     usuario: Mapped['User'] = relationship('User', back_populates='articulos')
     articulos_favoritos: Mapped[list['Articulo_favorito']] = relationship(
         'Articulo_favorito', back_populates='articulo', cascade='all, delete-orphan')

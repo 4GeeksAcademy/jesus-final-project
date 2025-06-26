@@ -29,6 +29,8 @@ class ArticulosModelView(ModelView):
     column_auto_selected = True
     column_list = ['id', 'titulo', 'caracteristicas', 'estado',
                    'modelo', 'cantidad', 'categoria', 'img', 'usuario_id']
+    form_columns = ['titulo', 'caracteristicas', 'estado',
+                    'modelo', 'cantidad', 'categoria', 'img', 'usuario_id']
 
 
 class Articulo_favoritoModelView(ModelView):
