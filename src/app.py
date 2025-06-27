@@ -6,7 +6,7 @@ from flask import Flask, request, jsonify, url_for, send_from_directory
 from flask_migrate import Migrate
 from flask_swagger import swagger
 from api.utils import APIException, generate_sitemap
-from api.models import db, Usuario
+from api.models import db, Usuario, RestaurarCodigosPassword
 from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
@@ -119,24 +119,31 @@ def register():
 def enviar_mensaje():
     mail_to = request.args.get('mailTo')
     if not mail_to:
-        return jsonify({'msg': 'Falta el mail'}), 400
-
-    msg = Message(
-        subject="Hello",
-        sender="Trueketeo@gmail.com",
-        recipients=[mail_to],
-        html="<b>HOLA!</b>"
-    )
-    mail.send(msg)
-    return jsonify({'msg': 'Mail enviado correctamente'}), 201
-
-
-@app.route('/recuperar-contraseña/<uuid:id>')
-def mypage(id):
-    return id
+        return jsonify({'msg': 'Email incorrecto'}), 400
+    mail_ok = db.session.query(Usuario).filter_by(email=mail_to).first()
+    if mail_ok:
+        msg = Message(
+            subject="Hello",
+            sender="Trueketeo@gmail.com",
+            recipients=[mail_to],
+            html="<b>HOLA!</b>"
+        )
+        mail.send(msg)
+        return jsonify({'msg': 'Mail enviado correctamente'}), 201
 
 
-# this only runs if `$ python src/main.py` is executed
+@app.route('/recuperar-contraseña/<id:uuid>')
+def mypage(uuid):
+    User= db.session.query(Usuario).filter_by()
+    password = request.args.get('password')
+    uuid_ok = db.session.query(RestaurarCodigosPassword).filter_by(
+        codigo_uuid=uuid).first()
+    if uuid_ok:
+        User.password = password
+
+
+
+        # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3001))
     app.run(host='0.0.0.0', port=PORT, debug=True)

@@ -261,3 +261,5 @@ class RestaurarCodigosPassword(db.Model):
     fecha_expedicion: Mapped[datetime] = mapped_column(
         DateTime, default=fecha_expedicion_default)
     codigo_uuid: Mapped[str] = mapped_column(String(36), nullable=False)
+
+    
