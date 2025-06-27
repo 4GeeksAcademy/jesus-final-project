@@ -117,12 +117,16 @@ def register():
 
 @app.route('/enviar-mensaje')
 def enviar_mensaje():
+    mail_to = request.args.get('mailTo')
+    if not mail_to:
+        return jsonify({'msg': 'Falta el mail'}), 400
+
     msg = Message(
         subject="Hello",
         sender="Trueketeo@gmail.com",
-        recipients=["Trueketeo@gmail.com"],
+        recipients=[mail_to],
+        html="<b>HOLA!</b>"
     )
-    msg.html = "<b>HOLA!</b>"
     mail.send(msg)
     return jsonify({'msg': 'Mail enviado correctamente'}), 201
 
