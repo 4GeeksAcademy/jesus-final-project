@@ -26,7 +26,7 @@ def handle_hello():
 #  EDITS
 
 
-@api.route('/editar_datos_personales/<int:usuario_id>', methods=['PUT'])
+@api.route('/editar-datos-personales/<int:usuario_id>', methods=['PUT'])
 @jwt_required()
 def editar_datos_personales(usuario_id):
     usuario_token_id = get_jwt_identity()
@@ -64,7 +64,7 @@ def editar_datos_personales(usuario_id):
     return jsonify({'msg': 'Datos personales editados correctamente'}), 200
 
 
-@api.route('/editar_datos_articulo/<int:articulo_id>', methods=['PUT'])
+@api.route('/editar-datos-articulo/<int:articulo_id>', methods=['PUT'])
 @jwt_required()
 def editar_datos_articulo(articulo_id):
     usuario_token_id = get_jwt_identity()
@@ -101,7 +101,7 @@ def editar_datos_articulo(articulo_id):
     return jsonify({'msg': 'Artículo editado correctamente'}), 200
 
 
-@api.route('/editar-articulos-favoritos', methods=['POST'])
+@api.route('/agregar-articulos-favoritos', methods=['POST'])
 @jwt_required()
 def agregar_articulos_favoritos():
     usuario_token_id = get_jwt_identity()
@@ -129,9 +129,9 @@ def agregar_articulos_favoritos():
     return jsonify({'msg': 'Artículo agregado a favoritos'}), 201
 
 
-@api.route('/editar-articulos-favoritos', methods=['DELETE'])
+@api.route('/eliminar-articulos-favoritos', methods=['DELETE'])
 @jwt_required()
-def agregar_articulos_favoritos(articulo_id):
+def eliminar_articulos_favoritos(articulo_id):
 
     usuario_token_id = get_jwt_identity()
 
@@ -144,3 +144,5 @@ def agregar_articulos_favoritos(articulo_id):
     db.session.commit()
 
     return jsonify({'msg': 'Artículo eliminado de favoritos'}), 201
+
+
