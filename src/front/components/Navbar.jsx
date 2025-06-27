@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
 import logo from "../assets/img/logo.png";
+import { useNavigate } from "react-router";
 export const Navbar = () => {
-
+	const navigate = useNavigate()
 	return (
 		<nav className="navbar navbar-light bg-light">
 			<div className="container-fluid d-flex align-items-center justify-content-start gap-3">
@@ -47,7 +48,14 @@ export const Navbar = () => {
 					</Link>
 				</div>
 				<div className="ms-auto me-5">
-					<button className="btn btn-primary me-3">
+					<button onClick={() => {
+						navigate("/entrar")
+					}} className="btn me-1">
+						<span className="borde-Navbar ps-2">Entrar</span>
+					</button>
+					<button onClick={() => {
+						navigate("/registrarse")
+					}} className="btn btn-primary ms-1 me-3">
 						Registrarse
 					</button>
 				</div>

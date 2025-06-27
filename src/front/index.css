@@ -12,3 +12,7 @@ body {
 .links {
   margin-left: 10vw;
 }
+
+.borde-Navbar {
+  border-left: 1px solid black;
+}
