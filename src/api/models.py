@@ -1,7 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import String, Boolean, Integer, ForeignKey, Text, Enum, DateTime, CheckConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from datetime import datetime
+from datetime import datetime, timedelta
 
 db = SQLAlchemy()
 
@@ -247,3 +247,17 @@ class Rating(db.Model):
             'usuario_id': self.usuario_id,
             'articulo_id': self.articulo_id
         }
+
+
+def fecha_expedicion_default():
+    return datetime.now() + timedelta(hours=2)
+
+
+class RestaurarCodigosPassword(db.Model):
+    __tablename__ = 'restaurar_codigos_password'
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    email: Mapped[str] = mapped_column(String(25), unique=True, nullable=False)
+    fecha_expedicion: Mapped[datetime] = mapped_column(
+        DateTime, default=fecha_expedicion_default)
+    codigo_uuid: Mapped[str] = mapped_column(String(36), nullable=False)

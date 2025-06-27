@@ -17,6 +17,8 @@ from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import JWTManager
 from flask_bcrypt import Bcrypt
+from flask_uuid import FlaskUUID
+
 
 # from models import Person
 
@@ -38,6 +40,7 @@ app.config.update(dict(
 ))
 mail = Mail(app)
 bcrypt = Bcrypt(app)
+FlaskUUID(app)
 # database condiguration
 db_url = os.getenv("DATABASE_URL")
 if db_url is not None:
@@ -100,19 +103,19 @@ def register():
     if 'password' not in body:
         return jsonify({'msg': 'El campo de la contraseña es obligatorio'}), 400
 
-    new_user = Usuario()
-    new_user.nombre_de_usuario = body['nombre_de_usuario']
-    new_user.email = body['email']
-    new_user.password = bcrypt.generate_password_hash(
+    nuevo_usuario = Usuario()
+    nuevo_usuario.nombre_de_usuario = body['nombre_de_usuario']
+    nuevo_usuario.email = body['email']
+    nuevo_usuario.password = bcrypt.generate_password_hash(
         body['password']).decode("utf-8")
-    new_user.is_active = True
+    nuevo_usuario.is_active = True
 
-    db.session.add(new_user)
+    db.session.add(nuevo_usuario)
     db.session.commit()
-    return jsonify({'msg': f'usuario {new_user.nombre_de_usuario} creado correctamente'}), 201
+    return jsonify({'msg': f'usuario {nuevo_usuario.nombre_de_usuario} creado correctamente'}), 201
 
 
-@app.route('/enviar-mensaje', methods=['GET'])
+@app.route('/enviar-mensaje')
 def enviar_mensaje():
     msg = Message(
         subject="Hello",
@@ -122,6 +125,11 @@ def enviar_mensaje():
     msg.html = "<b>HOLA!</b>"
     mail.send(msg)
     return jsonify({'msg': 'Mail enviado correctamente'}), 201
+
+
+@app.route('/recuperar-contraseña/<uuid:id>')
+def mypage(id):
+    return id
 
 
 # this only runs if `$ python src/main.py` is executed
