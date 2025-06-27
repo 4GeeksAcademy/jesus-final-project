@@ -5,7 +5,7 @@ export const Navbar = () => {
 	return (
 		<nav className="navbar navbar-light bg-light">
 			<div className="container-fluid d-flex align-items-center justify-content-start gap-3">
-				<img src={logo} className="logo-NavBar" alt="Logo de Trueke" />
+				<img src={logo} className="logo-NavBar ms-5" alt="Logo de Trueke" />
 				<h4 className="mb-0 mt-0 d-flex align-items-center" >
 					Trueketeo
 				</h4>
@@ -46,8 +46,8 @@ export const Navbar = () => {
 						Guía de cómo Truekear
 					</Link>
 				</div>
-				<div className="ms-auto">
-					<button className="btn btn-primary">
+				<div className="ms-auto me-5">
+					<button className="btn btn-primary me-3">
 						Registrarse
 					</button>
 				</div>
