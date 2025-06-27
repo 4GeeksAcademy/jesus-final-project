@@ -144,3 +144,5 @@ def eliminar_articulos_favoritos(articulo_id):
     db.session.commit()
 
     return jsonify({'msg': 'Artículo eliminado de favoritos'}), 201
+
+
