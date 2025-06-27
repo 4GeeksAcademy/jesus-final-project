@@ -1,0 +1,14 @@
+body {
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+.logo-NavBar {
+  width: 75px;
+  height: 50px;
+}
+
+.links {
+  margin-left: 10vw;
+}
