@@ -123,6 +123,34 @@ def enviar_mensaje():
 
 
 # this only runs if `$ python src/main.py` is executed
+
+
+
+
+
+
+
+
+@app.route('/login', methods=['POST'])
+def login():
+    body = request.get_json()
+    if body is None:
+        return jsonify({'msg': 'info del body'}), 400
+    if 'email' not in body:
+        return jsonify({'msg': 'email necesario'}), 400
+    if 'password' not in body:
+        return jsonify({'msg': 'password necesario'}), 400
+
+    from api.models import User
+
+    user = User.query.filter_by(email=body['email']).first()
+    if user is None or user.password != body['password']:
+        return jsonify({'msg': 'error de usuario o password'}), 400
+
+    access_token = create_access_token(identity=user.email)
+    return jsonify({'msg': 'correcto', 'token': access_token})
+
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3001))
     app.run(host='0.0.0.0', port=PORT, debug=True)
+    
