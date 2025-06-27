@@ -94,9 +94,11 @@ def register():
     if not body:
         return jsonify({'msg': 'you have to send something'}), 400
     if 'email' not in body:
-        return jsonify({'msg': 'the email the password filed is obligatory'}), 400
+        return jsonify({'msg': 'El campo de nombre de usuario es obligatorio'}), 400
+    if 'email' not in body:
+        return jsonify({'msg': 'El campo del email es obligatorio'}), 400
     if 'password' not in body:
-        return jsonify({'msg': 'the password filed is obligatory'}), 400
+        return jsonify({'msg': 'El campo de la contraseña es obligatorio'}), 400
 
     new_user = Usuario()
     new_user.nombre_de_usuario = body['nombre_de_usuario']
@@ -107,7 +109,7 @@ def register():
 
     db.session.add(new_user)
     db.session.commit()
-    return jsonify({'msg': f'user {new_user.email} created correctly'}), 201
+    return jsonify({'msg': f'usuario {new_user.nombre_de_usuario} creado correctamente'}), 201
 
 
 @app.route('/enviar-mensaje', methods=['GET'])
