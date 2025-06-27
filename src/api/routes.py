@@ -146,3 +146,144 @@ def eliminar_articulos_favoritos(articulo_id):
     return jsonify({'msg': 'Artículo eliminado de favoritos'}), 201
 
 
+@api.route('/publicar-articulo', methods=['POST'])
+@jwt_required()
+def publicar_articulo():
+    usuario_token_id = get_jwt_identity()
+    body = request.get_json(silent=True)
+
+    # Validación básica del body
+    if not body:
+        return jsonify({'msg': 'Debes enviar un JSON con los datos del artículo'}), 400
+
+    # Validación de campos obligatorios
+    required_fields = ['titulo', 'estado', 'categoria', 'img']
+    for field in required_fields:
+        if field not in body:
+            return jsonify({'msg': f'El campo "{field}" es obligatorio'}), 400
+
+    # Validación de enums
+    estados_validos = ['nuevo', 'como_nuevo', 'bueno', 'regular', 'malo']
+    categorias_validas = ['electronica', 'ropa', 'hogar',
+                          'deportes', 'libros', 'juguetes', 'otros']
+
+    if body['estado'] not in estados_validos:
+        return jsonify({'msg': f'Estado inválido. Opciones: {", ".join(estados_validos)}'}), 400
+
+    if body['categoria'] not in categorias_validas:
+        return jsonify({'msg': f'Categoría inválida. Opciones: {", ".join(categorias_validas)}'}), 400
+
+    # Validación de tipos de datos
+    if 'cantidad' in body and not isinstance(body['cantidad'], int):
+        return jsonify({'msg': 'La cantidad debe ser un número entero'}), 400
+
+    nuevo_articulo = Articulo(
+        titulo=body['titulo'],
+        caracteristicas=body.get('caracteristicas'),
+        estado=body['estado'],
+        modelo=body.get('modelo'),
+        cantidad=body.get('cantidad', 1),
+        categoria=body['categoria'],
+        img=body['img'],
+        usuario_id=usuario_token_id,
+        fecha_publicacion=datetime.now(timezone.utc)
+    )
+
+    try:
+        db.session.add(nuevo_articulo)
+        db.session.commit()
+
+        return jsonify({
+            'msg': 'Artículo publicado exitosamente',
+            'articulo': nuevo_articulo.serialize()
+        }), 201
+
+    except Exception as e:
+        db.session.rollback()
+    return jsonify({'msg': f'Error al publicar el artículo: {str(e)}'}), 500
+
+
+# Categorías para los artículos
+class CategoriaEnum(str, Enum):
+    ELECTRONICA = 'electronica'
+    ROPA = 'ropa'
+    HOGAR = 'hogar'
+    DEPORTES = 'deportes'
+    LIBROS = 'libros'
+    JUGUETES = 'juguetes'
+    OTROS = 'otros'
+
+
+@api.route('/categorias', methods=['GET'])
+def obtener_categorias():
+    categorias = [{
+        'nombre': categoria.value,
+        'valor': categoria.value,
+        'icono': f'icon-{categoria.value}'  # Para frontend
+    } for categoria in CategoriaEnum]
+
+    return jsonify({
+        'categorias': categorias
+    }), 200
+
+
+@api.route('/truekes', methods=['POST'])
+def crear_trueke():
+    try:
+        data = request.get_json(silent=True)
+        if not data:
+            return jsonify({'error': 'No se proporcionaron datos'}), 400
+
+        # Validar campos requeridos
+        required_fields = ['articulo_propietario_id', 'articulo_receptor_id']
+        if not all(field in data for field in required_fields):
+            return jsonify({'error': 'Faltan campos requeridos'}), 400
+
+        nueva_transaccion = TransaccionTrueke(
+            articulo_propietario_id=data['articulo_propietario_id'],
+            articulo_receptor_id=data['articulo_receptor_id'],
+            comentarios=data.get('comentarios')
+        )
+
+        db.session.add(nueva_transaccion)
+        db.session.commit()
+
+        return jsonify(nueva_transaccion.serialize()), 201
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
+
+@api.route('/truekes/<int:id>', methods=['GET'])
+def obtener_trueke(id):
+    try:
+        transaccion = TransaccionTrueke.query.get(id)
+        if not transaccion:
+            return jsonify({'error': 'Transacción no encontrada'}), 404
+
+        return jsonify(transaccion.serialize()), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@api.route('/truekes/<int:id>', methods=['DELETE'])
+def eliminar_trueke(id):
+    try:
+        transaccion = TransaccionTrueke.query.get(id)
+
+        if not transaccion:
+            return jsonify({'error': 'Transacción no encontrada'}), 404
+
+        db.session.delete(transaccion)
+        db.session.commit()
+
+        return jsonify({
+            'mensaje': 'Transacción eliminada correctamente',
+            'id': id
+        }), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
