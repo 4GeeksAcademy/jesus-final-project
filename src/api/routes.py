@@ -104,6 +104,24 @@ def editar_datos_articulo(articulo_id):
     return jsonify({'msg': 'Artículo editado correctamente'}), 200
 
 
+@api.route('/eliminar-articulo/<int:articulo_id>', methods=['DELETE'])
+@jwt_required()
+def eliminar_articulo(articulo_id):
+    usuario_token_id = get_jwt_identity()
+
+    articulo = db.session.query(Articulo).get(articulo_id)
+    if not articulo:
+        return jsonify({'msg': 'Artículo no encontrado'}), 404
+
+    if articulo.usuario_id != usuario_token_id:
+        return jsonify({'msg': 'No tienes permiso para editar este artículo'}), 403
+
+    db.session.delete(articulo)
+    db.session.commit()
+
+    return jsonify({'msg': 'Artículo eliminado correctamente'}), 200
+
+
 @api.route('/agregar-articulos-favoritos', methods=['POST'])
 @jwt_required()
 def agregar_articulos_favoritos():

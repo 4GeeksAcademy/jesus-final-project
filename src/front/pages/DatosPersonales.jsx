@@ -6,17 +6,19 @@ export const DatosPersonales = () => {
   const [datosEditados, setDatosEditados] = useState({
     nombre_completo: "",
     telefono: "",
-    direccion:"",
+    direccion: "",
     img: ""
   });
 
-  const editarDatosPersonales = async (id) => {
+  const token = localStorage.getItem("token")
+  const editarDatosPersonales = async (id, token) => {
     try {
       const response = await fetch(`/editar-datos-personales/${id}`, {
-        method: "POST",
+        method: "PUT",
         body: JSON.stringify(datosEditados),
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         }
       });
 
