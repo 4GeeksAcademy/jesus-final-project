@@ -3,25 +3,28 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 
 export const DatosPersonales = () => {
-  const [datosEditados, setDatosEditados] = useState({
+  const [datosPersonalesEditados, setDatosPersonalesEditados] = useState({
     nombre_completo: "",
     telefono: "",
     direccion: "",
     img: ""
   });
 
-  const token = localStorage.getItem("token")
-  const editarDatosPersonales = async (id, token) => {
+
+  const editarDatosPersonales = async (id) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      return { error: { message: 'Token no encontrado. Usuario no autenticado.' } };
+    }
     try {
       const response = await fetch(`/editar-datos-personales/${id}`, {
         method: "PUT",
-        body: JSON.stringify(datosEditados),
+        body: JSON.stringify(datosPersonalesEditados),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         }
       });
-
       if (response.ok) {
         const data = await response.json();
         console.log("Datos actualizados correctamente:", data);

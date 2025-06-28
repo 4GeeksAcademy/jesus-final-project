@@ -67,6 +67,28 @@ def editar_datos_personales(usuario_id):
     return jsonify({'msg': 'Datos personales editados correctamente'}), 200
 
 
+@api.route('/articulo/<int:articulo_id>', methods=['GET'])
+def obtener_datos_articulo(articulo_id):
+
+    articulo = db.session.query(Articulo).get(articulo_id)
+    if not articulo:
+        return jsonify({'msg': 'Artículo no encontrado'}), 404
+
+    articulo_data = {
+        'id': articulo.id,
+        'titulo': articulo.titulo,
+        'caracteristicas': articulo.caracteristicas,
+        'categoria': articulo.categoria,
+        'img': articulo.img,
+        'modelo': articulo.modelo,
+        'estado': articulo.estado,
+        'cantidad': articulo.cantidad,
+
+    }
+
+    return jsonify(articulo_data), 200
+
+
 @api.route('/editar-datos-articulo/<int:articulo_id>', methods=['PUT'])
 @jwt_required()
 def editar_datos_articulo(articulo_id):
