@@ -88,7 +88,59 @@ export const ArticuloPublicado = () => {
 
 
 
+  // AGREGAR ELIMINAR FAVS
 
+  const agregarAFavoritos = async (articuloId) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      return { error: { message: 'Token no encontrado. Usuario no autenticado.' } };
+    }
+    try {
+      const response = await fetch(`/agregar-articulos-favoritos`, {
+        method: "POST",
+        body: JSON.stringify({ articulo_id: articuloId }),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Artículo agregado a favoritos correctamente:", data);
+        return data;
+      } else {
+        return { error: { status: response.status, message: await response.text() } };
+      }
+    } catch (error) {
+      console.log('Error de red u otro: ', error);
+      return { error: { message: 'Error en la solicitud', details: error.message } };
+    }
+  };
+
+  const eliminarDeFavoritos = async (articuloId) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      return { error: { message: 'Token no encontrado. Usuario no autenticado.' } };
+    }
+    try {
+      const response = await fetch(`/eliminar-articulos-favoritos/${articuloId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Artículo eliminado de favoritos correctamente:", data);
+        return data;
+      } else {
+        return { error: { status: response.status, message: await response.text() } };
+      }
+    } catch (error) {
+      console.log('Error de red u otro: ', error);
+      return { error: { message: 'Error en la solicitud', details: error.message } };
+    }
+  };
 
   return (
     <div>

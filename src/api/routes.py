@@ -170,7 +170,7 @@ def agregar_articulos_favoritos():
     return jsonify({'msg': 'Artículo agregado a favoritos'}), 201
 
 
-@api.route('/eliminar-articulos-favoritos', methods=['DELETE'])
+@api.route('/eliminar-articulos-favoritos/<int:articulo_id', methods=['DELETE'])
 @jwt_required()
 def eliminar_articulos_favoritos(articulo_id):
 
