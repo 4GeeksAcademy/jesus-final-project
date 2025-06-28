@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-export const ArticuloPublicado = () => {
+export const Articulo = () => {
   const [error, setError] = useState(null);
   const [datosArticulo, setDatosArticulo] = useState(null);
 

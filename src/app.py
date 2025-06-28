@@ -12,6 +12,7 @@ from api.admin import setup_admin
 from api.commands import setup_commands
 from flask_mail import Mail
 from flask_mail import Message
+from werkzeug.security import check_password_hash
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
@@ -184,20 +185,26 @@ def mypage(codigo_uuid):
 @app.route('/login', methods=['POST'])
 def login():
     body = request.get_json()
-    if body is None:
-        return jsonify({'msg': 'info del body'}), 400
+
+    if not body:
+        return jsonify({'msg': 'Falta el body'}), 400
     if 'email' not in body:
-        return jsonify({'msg': 'email necesario'}), 400
+        return jsonify({'msg': 'Email necesario'}), 400
     if 'password' not in body:
-        return jsonify({'msg': 'password necesario'}), 400
+        return jsonify({'msg': 'Password necesario'}), 400
 
     user = Usuario.query.filter_by(email=body['email']).first()
-    if user is None or user.password_hash != body['password']:
-        return jsonify({'msg': 'error de usuario o password'}), 400
+
+    if user is None or not check_password_hash(user.password_hash, body['password']):
+        return jsonify({'msg': 'Usuario o contraseña incorrectos'}), 400
 
     access_token = create_access_token(identity=user.email)
-    return jsonify({'msg': 'correcto', 'token': access_token})
 
+    return jsonify({
+        'msg': 'Login exitoso',
+        'token': access_token,
+        'mail': user.email
+    }), 200
 
     # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
