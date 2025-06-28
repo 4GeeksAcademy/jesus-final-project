@@ -37,13 +37,13 @@ export const Navbar = () => {
 					</div>
 				</form>
 				<div className="d-flex align-items-center links gap-5">
-					<Link href="/sobre-nosotros" className="text-decoration-none" style={{ color: 'black' }}>
+					<Link to="/sobre-nosotros" className="text-decoration-none" style={{ color: 'black' }}>
 						Sobre nosotros
 					</Link>
-					<Link href="/ayuda" className="text-decoration-none" style={{ color: 'black' }}>
+					<Link to="/ayuda" className="text-decoration-none" style={{ color: 'black' }}>
 						Ayuda & soporte
 					</Link>
-					<Link href="/guia-truekear" className="text-decoration-none" style={{ color: 'black' }}>
+					<Link to="/guia-truekear" className="text-decoration-none" style={{ color: 'black' }}>
 						Guía de cómo Truekear
 					</Link>
 				</div>
