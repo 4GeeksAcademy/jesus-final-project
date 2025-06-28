@@ -29,12 +29,10 @@ def handle_hello():
 #  EDITS
 
 
-@api.route('/editar-datos-personales/<int:usuario_id>', methods=['PUT'])
+@api.route('/editar-datos-personales/', methods=['PUT'])
 @jwt_required()
-def editar_datos_personales(usuario_id):
+def editar_datos_personales():
     usuario_token_id = get_jwt_identity()
-    if usuario_token_id != usuario_id:
-        return jsonify({'msg': 'No tienes permiso para editar estos datos'}), 403
 
     body = request.get_json(silent=True)
     if not body:
@@ -47,14 +45,14 @@ def editar_datos_personales(usuario_id):
     if 'direccion' not in body:
         return jsonify({'msg': 'necesitas enviar tu dirección'}), 400
 
-    usuario = db.session.query(Usuario).get(usuario_id)
+    usuario = db.session.query(Usuario).get(usuario_token_id)
     if not usuario:
         return jsonify({'msg': 'Usuario no encontrado'}), 404
 
     datos_personales = db.session.query(
-        DatosPersonales).filter_by(usuario_id=usuario_id).first()
+        DatosPersonales).filter_by(usuario_id=usuario_token_id).first()
     if not datos_personales:
-        datos_personales = DatosPersonales(usuario_id=usuario_id)
+        datos_personales = DatosPersonales(usuario_id=usuario_token_id)
 
     datos_personales.nombre_completo = body['nombre_completo']
     datos_personales.telefono = body['telefono']

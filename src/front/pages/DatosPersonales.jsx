@@ -11,13 +11,13 @@ export const DatosPersonales = () => {
   });
 
 
-  const editarDatosPersonales = async (id) => {
+  const editarDatosPersonales = async () => {
     const token = localStorage.getItem("token");
     if (!token) {
       return { error: { message: 'Token no encontrado. Usuario no autenticado.' } };
     }
     try {
-      const response = await fetch(`/editar-datos-personales/${id}`, {
+      const response = await fetch(`/editar-datos-personales`, {
         method: "PUT",
         body: JSON.stringify(datosPersonalesEditados),
         headers: {
