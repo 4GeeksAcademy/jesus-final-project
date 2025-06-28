@@ -191,10 +191,8 @@ def login():
     if 'password' not in body:
         return jsonify({'msg': 'password necesario'}), 400
 
-    from api.models import User
-
-    user = User.query.filter_by(email=body['email']).first()
-    if user is None or user.password != body['password']:
+    user = Usuario.query.filter_by(email=body['email']).first()
+    if user is None or user.password_hash != body['password']:
         return jsonify({'msg': 'error de usuario o password'}), 400
 
     access_token = create_access_token(identity=user.email)
