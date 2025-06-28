@@ -1,6 +1,6 @@
 // Import necessary components from react-router-dom and other parts of the application.
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export const DatosPersonales = () => {
   const [datosPersonalesEditados, setDatosPersonalesEditados] = useState({
@@ -9,6 +9,7 @@ export const DatosPersonales = () => {
     direccion: "",
     img: ""
   });
+  const [articulosFavoritos, setArticulosFavoritos] = useState([]);
 
 
   const editarDatosPersonales = async () => {
@@ -39,7 +40,36 @@ export const DatosPersonales = () => {
   };
 
 
+  const obtenerFavoritos = async () => {
 
+    const token = localStorage.getItem("token");
+    if (!token) {
+      return { error: { message: 'Token no encontrado. Usuario no autenticado.' } };
+    }
+    try {
+      const response = await fetch(`/favoritos`, {
+        method: "GET",
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Favoritos actualizados correctamente:", data);
+        setArticulosFavoritos(data)
+        return data;
+      } else {
+        return { error: { status: response.status, message: await response.text() } };
+      }
+    } catch (error) {
+      console.log('Error de red u otro: ', error);
+      return { error: { message: 'Error en la solicitud', details: error.message } };
+    }
+  };
+
+  useEffect(() => {
+    obtenerFavoritos();
+  }, [])
 
   return (
     <div>

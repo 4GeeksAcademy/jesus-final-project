@@ -15,7 +15,7 @@ class Usuario(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     nombre_de_usuario: Mapped[str] = mapped_column(
         String(25), unique=True, nullable=False)
-    email: Mapped[str] = mapped_column(String(25), unique=True, nullable=False)
+    email: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
     password_hash: Mapped[str] = mapped_column(
         String(255), nullable=False)  # Ampliado para hashes seguros
     is_active: Mapped[bool] = mapped_column(
@@ -83,7 +83,7 @@ class Articulo(db.Model):
             'modelo': self.modelo,
             'cantidad': self.cantidad,
             'categoria': self.categoria,
-            'usuario_id': self.usuario.id
+            'usuario_id': self.usuario_id
         }
 
 
@@ -113,7 +113,9 @@ class ArticuloFavorito(db.Model):
         return {
             'id': self.id,
             'usuario_id': self.usuario_id,
-            'articulo_id': self.articulo_id
+            'articulo_id': self.articulo_id,
+            'es_favorito': self.es_favorito,
+            'articulo': self.articulo.serialize() if self.articulo else None
         }
 
 
@@ -187,7 +189,7 @@ class DatosPersonales(db.Model):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     nombre_completo: Mapped[str] = mapped_column(String(50), nullable=False)
-    telefono: Mapped[int] = mapped_column(Integer, nullable=True)
+    telefono: Mapped[str] = mapped_column(String(15), nullable=True)
     direccion: Mapped[str] = mapped_column(String(50), nullable=False)
     fecha_registro: Mapped[datetime] = mapped_column(
         DateTime, nullable=False, default=datetime.utcnow)

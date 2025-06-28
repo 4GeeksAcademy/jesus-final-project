@@ -142,6 +142,20 @@ def eliminar_articulo(articulo_id):
     return jsonify({'msg': 'Artículo eliminado correctamente'}), 200
 
 
+@api.route('/favoritos', methods=['GET'])
+@jwt_required()
+def obtener_favoritos():
+    usuario_token_id = get_jwt_identity()
+
+    favoritos = db.session.query(ArticuloFavorito).filter_by(
+        usuario_id=usuario_token_id
+    ).all()
+
+    favoritos_serializados = [f.serialize() for f in favoritos]
+
+    return jsonify(favoritos_serializados), 200
+
+
 @api.route('/agregar-articulos-favoritos', methods=['POST'])
 @jwt_required()
 def agregar_articulos_favoritos():
