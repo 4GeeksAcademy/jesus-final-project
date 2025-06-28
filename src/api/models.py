@@ -2,6 +2,8 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import String, Boolean, Integer, ForeignKey, Text, Enum, DateTime, CheckConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime, timedelta
+from sqlalchemy.dialects.postgresql import UUID
+import uuid
 
 db = SQLAlchemy()
 
@@ -256,10 +258,6 @@ def fecha_expedicion_default():
 class RestaurarCodigosPassword(db.Model):
     __tablename__ = 'restaurar_codigos_password'
 
-    id: Mapped[int] = mapped_column(primary_key=True)
-    email: Mapped[str] = mapped_column(String(25), unique=True, nullable=False)
-    fecha_expedicion: Mapped[datetime] = mapped_column(
-        DateTime, default=fecha_expedicion_default)
-    codigo_uuid: Mapped[str] = mapped_column(String(36), nullable=False)
-
-    
+    codigo_uuid: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    email: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
+    fecha_expedicion: Mapped[datetime] = mapped_column(DateTime, default=fecha_expedicion_default)

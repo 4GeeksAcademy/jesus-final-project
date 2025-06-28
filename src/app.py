@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 import os
-from flask import Flask, request, jsonify, url_for, send_from_directory
+from flask import Flask, request, jsonify, url_for, send_from_directory, render_template
 from flask_migrate import Migrate
 from flask_swagger import swagger
 from api.utils import APIException, generate_sitemap
@@ -16,8 +16,9 @@ from flask_jwt_extended import create_access_token
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import JWTManager
+from datetime import datetime, timedelta, timezone
 from flask_bcrypt import Bcrypt
-from flask_uuid import FlaskUUID
+import uuid
 
 
 # from models import Person
@@ -115,32 +116,50 @@ def register():
     return jsonify({'msg': f'usuario {nuevo_usuario.nombre_de_usuario} creado correctamente'}), 201
 
 
-@app.route('/enviar-mensaje')
+@app.route('/enviar-mensaje', methods=['POST'])
 def enviar_mensaje():
-    mail_to = request.args.get('mailTo')
+    body = request.get_json()
+    mail_to = body.get('mailTo') if body else None
+
     if not mail_to:
         return jsonify({'msg': 'Email incorrecto'}), 400
+
     mail_ok = db.session.query(Usuario).filter_by(email=mail_to).first()
-    if mail_ok:
-        msg = Message(
-            subject="Hello",
-            sender="Trueketeo@gmail.com",
-            recipients=[mail_to],
-            html="<b>HOLA!</b>"
+    if not mail_ok:
+        return jsonify({'msg': 'Usuario no encontrado'}), 404
+
+    registro = db.session.query(
+        RestaurarCodigosPassword).filter_by(email=mail_to).first()
+
+    if registro is None:
+        nuevo_codigo = uuid.uuid4()
+        registro = RestaurarCodigosPassword(
+            uuid=nuevo_codigo,
+            email=mail_to,
+            fecha_expedicion=datetime.now(timezone.utc) + timedelta(hours=2)
         )
-        mail.send(msg)
-        return jsonify({'msg': 'Mail enviado correctamente'}), 201
+        db.session.add(registro)
+        db.session.commit()
+    else:
+        nuevo_codigo = registro.uuid
+
+    msg = Message(
+        subject="Hello",
+        sender="Trueketeo@gmail.com",
+        recipients=[mail_to],
+        html=render_template('mensajeMail.html', codigo=str(nuevo_codigo)
+                             ))
+    mail.send(msg)
+    return jsonify({'msg': 'Mail enviado correctamente'}), 201
 
 
-@app.route('/recuperar-contraseña/<id:uuid>')
-def mypage(uuid):
-    User = db.session.query(Usuario).filter_by()
-    password = request.args.get('password')
-    uuid_ok = db.session.query(RestaurarCodigosPassword).filter_by(
-        codigo_uuid=uuid).first()
-    if uuid_ok:
-        User.password = password
+@app.route('/recuperar-contraseña/<uuid:codigo_uuid>')
+def mypage(codigo_uuid):
+    body = request.get_json()
+    nueva_password = body['password'] if body else None
 
+    if not nueva_password:
+        return jsonify({'msg': 'No se recibió la nueva contraseña'})
 
 @app.route('/login', methods=['POST'])
 def login():
