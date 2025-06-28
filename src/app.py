@@ -153,7 +153,7 @@ def enviar_mensaje():
     return jsonify({'msg': 'Mail enviado correctamente'}), 201
 
 
-@app.route('/recuperar-contraseña/<uuid:codigo_uuid>')
+@app.route('/recuperar-contraseña/<uuid:codigo_uuid>', methods=['POST'])
 def mypage(codigo_uuid):
     body = request.get_json()
     nueva_password = body['password'] if body else None
