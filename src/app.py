@@ -161,6 +161,25 @@ def mypage(codigo_uuid):
     if not nueva_password:
         return jsonify({'msg': 'No se recibió la nueva contraseña'})
 
+    registro = db.session.query(RestaurarCodigosPassword).filter_by(
+        uuid=codigo_uuid).first()
+    if not registro:
+        return jsonify({'msg': 'Código inválido'}), 404
+
+    if registro.fecha_expedicion < datetime.now(timezone.utc):
+        return jsonify({'msg': 'El código ha expirado'}), 400
+
+    usuario = db.session.query(Usuario).filter_by(email=registro.email).first()
+    if not usuario:
+        return jsonify({'msg': 'Usuario no encontrado'}), 404
+
+    usuario.password = bcrypt.generate_password_hash(
+        nueva_password).decode("utf-8")
+    db.session.commit()
+
+    return jsonify({'msg': 'Contraseña actualizada correctamente'}), 200
+
+
 @app.route('/login', methods=['POST'])
 def login():
     body = request.get_json()
