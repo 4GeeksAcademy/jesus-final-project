@@ -12,7 +12,6 @@ from api.admin import setup_admin
 from api.commands import setup_commands
 from flask_mail import Mail
 from flask_mail import Message
-from werkzeug.security import check_password_hash
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
@@ -21,6 +20,7 @@ from datetime import datetime, timedelta, timezone
 from flask_bcrypt import Bcrypt
 from flask_uuid import FlaskUUID
 import uuid
+from flask_cors import CORS
 
 
 # from models import Person
@@ -44,6 +44,7 @@ app.config.update(dict(
 mail = Mail(app)
 bcrypt = Bcrypt(app)
 FlaskUUID(app)
+CORS(app)
 # database condiguration
 db_url = os.getenv("DATABASE_URL")
 if db_url is not None:
@@ -99,7 +100,7 @@ def register():
 
     if not body:
         return jsonify({'msg': 'you have to send something'}), 400
-    if 'email' not in body:
+    if 'nombre_de_usuario' not in body:
         return jsonify({'msg': 'El campo de nombre de usuario es obligatorio'}), 400
     if 'email' not in body:
         return jsonify({'msg': 'El campo del email es obligatorio'}), 400
@@ -184,27 +185,32 @@ def mypage(codigo_uuid):
 
 @app.route('/login', methods=['POST'])
 def login():
-    body = request.get_json()
+    try:
+        body = request.get_json()
 
-    if not body:
-        return jsonify({'msg': 'Falta el body'}), 400
-    if 'email' not in body:
-        return jsonify({'msg': 'Email necesario'}), 400
-    if 'password' not in body:
-        return jsonify({'msg': 'Password necesario'}), 400
+        if not body:
+            return jsonify({'msg': 'Falta el body'}), 400
+        if 'email' not in body:
+            return jsonify({'msg': 'Email necesario'}), 400
+        if 'password' not in body:
+            return jsonify({'msg': 'Password necesario'}), 400
 
-    user = Usuario.query.filter_by(email=body['email']).first()
+        user = Usuario.query.filter_by(email=body['email']).first()
 
-    if user is None or not check_password_hash(user.password_hash, body['password']):
-        return jsonify({'msg': 'Usuario o contraseña incorrectos'}), 400
+        if user is None or not bcrypt.check_password_hash(user.password, body['password']):
+            return jsonify({'msg': 'Usuario o contraseña incorrectos'}), 400
 
-    access_token = create_access_token(identity=user.email)
+        access_token = create_access_token(identity=user.email)
 
-    return jsonify({
-        'msg': 'Login exitoso',
-        'token': access_token,
-        'mail': user.email
-    }), 200
+        return jsonify({
+            'msg': 'Login exitoso',
+            'token': access_token,
+            'mail': user.email
+        }), 200
+
+    except Exception as e:
+        return jsonify({'msg': f'Error interno: {str(e)}'}), 500
+
 
     # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':

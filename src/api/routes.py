@@ -7,14 +7,12 @@ from api.utils import generate_sitemap, APIException
 from datetime import datetime, timezone
 import time
 from enum import Enum
-from flask_cors import CORS
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 
 api = Blueprint('api', __name__)
 
 # Allow CORS requests to this API
-CORS(api)
 
 
 @api.route('/hello', methods=['POST', 'GET'])
