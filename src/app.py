@@ -12,7 +12,7 @@ from api.admin import setup_admin
 from api.commands import setup_commands
 from flask_mail import Mail
 from flask_mail import Message
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, create_refresh_token
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import JWTManager
@@ -201,6 +201,7 @@ def login():
             return jsonify({'msg': 'Usuario o contraseña incorrectos'}), 400
 
         access_token = create_access_token(identity=user.email)
+        refresh_token = create_refresh_token(identity=body['email'])
 
         return jsonify({
             'msg': 'Login exitoso',
@@ -210,7 +211,6 @@ def login():
 
     except Exception as e:
         return jsonify({'msg': f'Error interno: {str(e)}'}), 500
-
 
     # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':

@@ -1,12 +1,17 @@
 import { useState } from "react";
 import Swal from "sweetalert2";
 import { useAuthMode } from "../hooks/AuthModeContext";
+import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 export const LoginRegistro = () => {
+  const { dispatch } = useGlobalReducer();
   const { mode, setMode } = useAuthMode();
+  const navigate = useNavigate();
+
   const [datosUsuario, setDatosUsuario] = useState({
     nombre_de_usuario: "",
     email: "",
@@ -30,11 +35,23 @@ export const LoginRegistro = () => {
       });
       const data = await response.json();
       if (response.ok) {
-        Swal.fire({
+        await Swal.fire({
           title: `Bienvenido ${data.email}`,
           icon: "success",
           confirmButtonText: "Continuar",
-        }).then(() => navigate("/asd"));
+        });
+
+        localStorage.setItem("token", data.token);
+
+        dispatch({
+          type: "login_success",
+          payload: {
+            token: data.token,
+            refreshToken: data.refresh_token,
+          },
+        });
+
+        navigate("/home");
       } else {
         Swal.fire({
           title: "Error de login",
@@ -110,8 +127,8 @@ export const LoginRegistro = () => {
       className="container-fluid login-bg"
       variants={backgroundVariants}
       animate={mode}
-      initial={false} 
-      style={{ minHeight: "100vh" }} 
+      initial={false}
+      style={{ minHeight: "100vh" }}
     >
       <div className="row vh-100 position-relative overflow-hidden">
         <AnimatePresence mode="wait">
