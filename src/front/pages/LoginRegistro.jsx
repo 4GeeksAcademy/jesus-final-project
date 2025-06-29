@@ -94,7 +94,6 @@ export const LoginRegistro = () => {
     }
   };
 
-  // Variantes para el background animado con framer-motion
   const backgroundVariants = {
     login: {
       background: "linear-gradient(135deg, #f8d8d8 50%, #ffffff 50%)",
@@ -111,8 +110,8 @@ export const LoginRegistro = () => {
       className="container-fluid login-bg"
       variants={backgroundVariants}
       animate={mode}
-      initial={false} // Para que no anime al montar
-      style={{ minHeight: "100vh" }} // para que ocupe toda la pantalla
+      initial={false} 
+      style={{ minHeight: "100vh" }} 
     >
       <div className="row vh-100 position-relative overflow-hidden">
         <AnimatePresence mode="wait">

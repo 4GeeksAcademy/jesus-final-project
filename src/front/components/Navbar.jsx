@@ -51,14 +51,14 @@ export const Navbar = () => {
 				</div>
 				<div className="ms-auto me-5">
 					<button onClick={() => {
-						setMode("entrar")
 						navigate("/identificate")
+						setMode("login")
 					}} className="btn me-1">
 						<span className="borde-Navbar ps-2">Entrar</span>
 					</button>
 					<button onClick={() => {
-						setMode("registrarse")
 						navigate("/identificate")
+						setMode("registro")
 					}} className="btn btn-primary ms-1 me-3">
 						Registrarse
 					</button>

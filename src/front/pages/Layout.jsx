@@ -11,8 +11,8 @@ export const Layout = () => {
             <AuthModeProvider>
                 <Navbar />
                 <Outlet />
+                <Footer />
             </AuthModeProvider>
-            <Footer />
         </ScrollToTop>
     )
 }
