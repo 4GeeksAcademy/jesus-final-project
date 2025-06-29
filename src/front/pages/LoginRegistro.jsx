@@ -1,86 +1,12 @@
-import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
 import { useAuthMode } from "../hooks/AuthModeContext";
+import { motion, AnimatePresence } from "framer-motion";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
-const LoginForm = ({ onSubmit, datosUsuario, handleChange }) => (
-  <form className="w-50" onSubmit={onSubmit}>
-    <div className="form-group py-3">
-      <label htmlFor="email">Email *</label>
-      <input
-        type="email"
-        className="form-control"
-        id="email"
-        name="email"
-        value={datosUsuario.email}
-        onChange={handleChange}
-        required
-      />
-    </div>
-    <div className="form-group pb-3">
-      <label htmlFor="password">Password *</label>
-      <input
-        type="password"
-        className="form-control"
-        id="password"
-        name="password"
-        value={datosUsuario.password}
-        onChange={handleChange}
-        required
-      />
-    </div>
-    <button type="submit" className="btn btn-primary w-100">Iniciar Sesión</button>
-  </form>
-);
-
-const RegisterForm = ({ onSubmit, datosUsuario, handleChange }) => (
-  <form className="w-50" onSubmit={onSubmit}>
-    <div className="form-group py-3">
-      <label htmlFor="nombre_de_usuario">Nombre de usuario *</label>
-      <input
-        type="text"
-        className="form-control"
-        id="nombre_de_usuario"
-        name="nombre_de_usuario"
-        value={datosUsuario.nombre_de_usuario || ""}
-        onChange={handleChange}
-        required
-      />
-    </div>
-    <div className="form-group py-3">
-      <label htmlFor="email">Email *</label>
-      <input
-        type="email"
-        className="form-control"
-        id="email"
-        name="email"
-        value={datosUsuario.email}
-        onChange={handleChange}
-        required
-      />
-    </div>
-    <div className="form-group pb-3">
-      <label htmlFor="password">Password *</label>
-      <input
-        type="password"
-        className="form-control"
-        id="password"
-        name="password"
-        value={datosUsuario.password}
-        onChange={handleChange}
-        required
-      />
-    </div>
-    <button type="submit" className="btn btn-primary w-100">Registrarse</button>
-  </form>
-);
-
 export const LoginRegistro = () => {
-  const { mode } = useAuthMode();
-  const navigate = useNavigate();
-
+  const { mode, setMode } = useAuthMode();
   const [datosUsuario, setDatosUsuario] = useState({
     nombre_de_usuario: "",
     email: "",
@@ -89,10 +15,7 @@ export const LoginRegistro = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setDatosUsuario(prev => ({
-      ...prev,
-      [name]: value,
-    }));
+    setDatosUsuario((prev) => ({ ...prev, [name]: value }));
   };
 
   const loginCall = async (datos) => {
@@ -145,7 +68,7 @@ export const LoginRegistro = () => {
           title: `Usuario creado: ${datos.nombre_de_usuario}`,
           icon: "success",
           confirmButtonText: "Continuar",
-        }).then(() => navigate("/login")); // o donde quieras
+        }).then(() => setMode("login"));
       } else {
         Swal.fire({
           title: "Error en registro",
@@ -170,91 +93,156 @@ export const LoginRegistro = () => {
       registerCall(datosUsuario);
     }
   };
+
+  // Variantes para el background animado con framer-motion
+  const backgroundVariants = {
+    login: {
+      background: "linear-gradient(135deg, #f8d8d8 50%, #ffffff 50%)",
+      transition: { duration: 1.5, ease: "easeInOut" },
+    },
+    registro: {
+      background: "linear-gradient(225deg, #f8d8d8 50%, #ffffff 50%)",
+      transition: { duration: 1.5, ease: "easeInOut" },
+    },
+  };
+
   return (
-    <>
-      {mode ? (
-        <div className="d-flex justify-content-center align-items-start vh-100">
-          <form className="w-50" onSubmit={handleSubmit}>
-            <div className="form-group py-3">
-              <label htmlFor="email">Email *</label>
-              <input
-                type="email"
-                className="form-control"
-                id="email"
-                name="email"
-                value={datosUsuario.email}
-                onChange={handleChange}
-                required
-              />
-            </div>
+    <motion.div
+      className="container-fluid login-bg"
+      variants={backgroundVariants}
+      animate={mode}
+      initial={false} // Para que no anime al montar
+      style={{ minHeight: "100vh" }} // para que ocupe toda la pantalla
+    >
+      <div className="row vh-100 position-relative overflow-hidden">
+        <AnimatePresence mode="wait">
+          {mode === "registro" && (
+            <motion.div
+              key="registro"
+              className="d-flex position-absolute top-0 start-0 w-100 h-100"
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 50 }}
+              transition={{ duration: 0.4 }}
+            >
+              <div className="col-6 d-flex align-items-center justify-content-center p-5">
+                <form className="w-75" onSubmit={handleSubmit}>
+                  <h2 className="mb-4">Registro</h2>
+                  <div className="form-group mb-3">
+                    <label>Nombre de usuario</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="nombre_de_usuario"
+                      value={datosUsuario.nombre_de_usuario}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                  <div className="form-group mb-3">
+                    <label>Email</label>
+                    <input
+                      type="email"
+                      className="form-control"
+                      name="email"
+                      value={datosUsuario.email}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                  <div className="form-group mb-4">
+                    <label>Password</label>
+                    <input
+                      type="password"
+                      className="form-control"
+                      name="password"
+                      value={datosUsuario.password}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                  <button type="submit" className="btn btn-success w-100">
+                    Registrarme
+                  </button>
+                  <p
+                    className="mt-3 text-info"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => setMode("login")}
+                  >
+                    ¿Ya tienes cuenta? Inicia sesión
+                  </p>
+                </form>
+              </div>
+              <div className="col-6 fondo-lateral"></div>
+            </motion.div>
+          )}
 
-            <div className="form-group pb-3">
-              <label htmlFor="password">Password *</label>
-              <input
-                type="password"
-                className="form-control"
-                id="password"
-                name="password"
-                value={datosUsuario.password}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="d-flex justify-content-end pb-3">
-              <span className="text-primary" style={{ cursor: "pointer" }}>
-                ¿Olvidaste tu contraseña?
-              </span>
-            </div>
-
-            <button type="submit" className="btn btn-primary w-100">
-              Iniciar Sesión
-            </button>
-          </form>
-        </div>
-      ) : (
-        <div className="d-flex justify-content-center align-items-center vh-100">
-          <form className="w-50" onSubmit={handleSubmit}>
-            <div className="form-group py-3">
-              <label htmlFor="email">Email *</label>
-              <input
-                type="email"
-                className="form-control"
-                id="email"
-                name="email"
-                value={datosUsuario.email}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="form-group pb-3">
-              <label htmlFor="password">Password *</label>
-              <input
-                type="password"
-                className="form-control"
-                id="password"
-                name="password"
-                value={datosUsuario.password}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="d-flex justify-content-end pb-3">
-              <span className="text-primary" style={{ cursor: "pointer" }}>
-                ¿Olvidaste tu contraseña?
-              </span>
-            </div>
-
-            <button type="submit" className="btn btn-primary w-100">
-              Iniciar Sesión
-            </button>
-          </form>
-        </div>
-      )}
-    </>
-
-
+          {mode === "login" && (
+            <motion.div
+              key="login"
+              className="d-flex position-absolute top-0 start-0 w-100 h-100"
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -50 }}
+              transition={{ duration: 0.4 }}
+            >
+              <div className="col-6 fondo-lateral"></div>
+              <div className="col-6 d-flex align-items-center justify-content-center p-5">
+                <form className="w-75" onSubmit={handleSubmit}>
+                  <h2 className="mb-4">Iniciar sesión</h2>
+                  <div className="form-group mb-3">
+                    <label>Email</label>
+                    <input
+                      type="email"
+                      className="form-control"
+                      name="email"
+                      value={datosUsuario.email}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                  <div className="form-group mb-4">
+                    <label>Password</label>
+                    <input
+                      type="password"
+                      className="form-control"
+                      name="password"
+                      value={datosUsuario.password}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                  <button type="submit" className="btn btn-primary w-100">
+                    Iniciar sesión
+                  </button>
+                  <div className="mt-3 d-flex justify-content-between">
+                    <span
+                      className="text-info"
+                      style={{ cursor: "pointer" }}
+                      onClick={() => setMode("registro")}
+                    >
+                      ¿No tienes cuenta? Registrate
+                    </span>
+                    <span
+                      className="text-warning"
+                      style={{ cursor: "pointer" }}
+                      onClick={() =>
+                        Swal.fire(
+                          "Función no implementada",
+                          "Aquí iría el flujo para recuperar la contraseña",
+                          "info"
+                        )
+                      }
+                    >
+                      ¿Olvidaste tu contraseña?
+                    </span>
+                  </div>
+                </form>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </motion.div>
   );
 };
