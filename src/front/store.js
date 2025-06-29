@@ -3,6 +3,7 @@ export const initialStore = () => {
     message: null,
     user: [],
     isAuthenticated: localStorage.getItem("token") ? true : false,
+    userId: null,
   };
 };
 
@@ -12,8 +13,9 @@ export default function storeReducer(store, action = {}) {
       return {
         ...store,
         isAuthenticated: true,
-        token: action.payload,
-        refresh_token: action.payload,
+        token: action.payload.token,
+        refresh_token: action.payload.refreshToken,
+        userId: action.payload.userId,
       };
 
     case "logout":
@@ -22,6 +24,7 @@ export default function storeReducer(store, action = {}) {
         isAuthenticated: false,
         token: null,
         refresh_token: null,
+        userId: null,
       };
 
     default:

@@ -207,11 +207,13 @@ def login():
             'msg': 'Login exitoso',
             'token': access_token,
             'refresh_token': refresh_token,
-            'mail': user.email
+            'mail': user.email,
+            'userId': user.id
         }), 200
 
     except Exception as e:
         return jsonify({'msg': f'Error interno: {str(e)}'}), 500
+
 
     # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':

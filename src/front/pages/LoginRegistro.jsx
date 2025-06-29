@@ -34,25 +34,28 @@ export const LoginRegistro = () => {
         }),
       });
       const data = await response.json();
+
       if (response.ok) {
         await Swal.fire({
-          title: `Bienvenido ${data.email}`,
+          title: `Bienvenido ${data.mail}`,
           icon: "success",
           confirmButtonText: "Continuar",
         });
 
         localStorage.setItem("token", data.token);
         localStorage.setItem("refresh_token", data.refresh_token);
+        localStorage.setItem("userId", data.userId);
 
         dispatch({
           type: "login_success",
           payload: {
             token: data.token,
             refreshToken: data.refresh_token,
+            userId: data.userId,
           },
         });
 
-        navigate("/home");
+        navigate("/");
       } else {
         Swal.fire({
           title: "Error de login",
@@ -81,6 +84,7 @@ export const LoginRegistro = () => {
         }),
       });
       const data = await response.json();
+
       if (response.ok) {
         Swal.fire({
           title: `Usuario creado: ${datos.nombre_de_usuario}`,
