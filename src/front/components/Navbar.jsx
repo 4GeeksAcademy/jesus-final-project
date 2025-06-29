@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
 import logo from "../assets/img/logo.png";
 import { useNavigate } from "react-router";
+import { useAuthMode } from "../hooks/AuthModeContext";
 export const Navbar = () => {
+	const { mode, setMode } = useAuthMode();
 	const navigate = useNavigate()
 	return (
 		<nav className="navbar navbar-light bg-light">
@@ -49,12 +51,14 @@ export const Navbar = () => {
 				</div>
 				<div className="ms-auto me-5">
 					<button onClick={() => {
-						navigate("/entrar")
+						setMode("entrar")
+						navigate("/identificate")
 					}} className="btn me-1">
 						<span className="borde-Navbar ps-2">Entrar</span>
 					</button>
 					<button onClick={() => {
-						navigate("/registrarse")
+						setMode("registrarse")
+						navigate("/identificate")
 					}} className="btn btn-primary ms-1 me-3">
 						Registrarse
 					</button>
