@@ -42,6 +42,7 @@ export const LoginRegistro = () => {
         });
 
         localStorage.setItem("token", data.token);
+        localStorage.setItem("refresh_token", data.refresh_token);
 
         dispatch({
           type: "login_success",

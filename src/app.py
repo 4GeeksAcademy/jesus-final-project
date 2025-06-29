@@ -206,6 +206,7 @@ def login():
         return jsonify({
             'msg': 'Login exitoso',
             'token': access_token,
+            'refresh_token': refresh_token,
             'mail': user.email
         }), 200
 
