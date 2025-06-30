@@ -12,6 +12,7 @@ import { DatosPersonales } from "./pages/DatosPersonales";
 import { Articulo } from "./pages/Articulo";
 import { LoginRegistro } from "./pages/LoginRegistro";
 import { CambiarContraseña } from "./pages/CambiarContraseña";
+import { PublicarArticulo } from "./pages/PublicarArticulo";
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -31,9 +32,10 @@ export const router = createBrowserRouter(
       <Route path="/articulo/:articuloId" element={<Articulo />} />
       <Route path="/identificate" element={<LoginRegistro />} />
       <Route path="/cambiar-contraseña:codigoUUID" element={<CambiarContraseña />} />
-    </Route>
-  )
-);
+      <Route path="/publicar-articulo" element={<PublicarArticulo />} />
+      </Route>
+      )
+      );
 
 
 
