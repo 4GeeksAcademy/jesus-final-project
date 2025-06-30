@@ -15,7 +15,7 @@ class Usuario(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     nombre_de_usuario: Mapped[str] = mapped_column(
         String(25), unique=True, nullable=False)
-    email: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
+    email: Mapped[str] = mapped_column(String(25), unique=True, nullable=False)
     password: Mapped[str] = mapped_column(
         String(255), nullable=False)  # Ampliado para hashes seguros
     is_active: Mapped[bool] = mapped_column(
