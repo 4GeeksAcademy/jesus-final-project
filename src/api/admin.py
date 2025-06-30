@@ -21,7 +21,7 @@ def setup_admin(app):
 
 class UsuarioModelView(ModelView):
     column_auto_selected = True
-    column_list = ['id', 'nombre_de_usuario', 'email', 'password_hash', 'is_active',
+    column_list = ['id', 'nombre_de_usuario', 'email', 'password', 'is_active',
                    'articulos', 'articulos_favoritos', 'ratings', 'datos_personales', 'comentarios']
 
 
