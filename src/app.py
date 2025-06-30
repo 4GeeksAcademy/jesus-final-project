@@ -130,7 +130,6 @@ def enviar_mensaje():
     mail_ok = db.session.query(Usuario).filter_by(email=mail_to).first()
     if not mail_ok:
         return jsonify({'msg': 'Usuario no encontrado'}), 404
-
     registro = db.session.query(
         RestaurarCodigosPassword).filter_by(email=mail_to).first()
 
