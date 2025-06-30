@@ -215,6 +215,30 @@ def login():
 
 
     # this only runs if `$ python src/main.py` is executed
+
+@app.route('/post/<int:id>', methods=['DELETE'])
+def delete_post(id):
+    from api.models import Post
+    post = Post.query.get(id)
+    if post is None:
+        return jsonify({'msg': 'post no encontrado'}), 404
+
+    from api.models import db
+    db.session.delete(post)
+    db.session.commit()
+
+    return jsonify({'msg': 'post eliminado correctamente'}), 200
+
+
+
+
+
+
+
+
+
+
+
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3001))
     app.run(host='0.0.0.0', port=PORT, debug=True)
