@@ -18,6 +18,7 @@ from flask_jwt_extended import jwt_required
 from flask_jwt_extended import JWTManager
 from datetime import datetime, timedelta, timezone
 from flask_bcrypt import Bcrypt
+from flask_uuid import FlaskUUID
 import uuid
 
 
