@@ -44,7 +44,6 @@ export const CambiarContraseña = () => {
       });
       return;
     }
-
     await changePassword();
   };
 
@@ -110,7 +109,7 @@ export const CambiarContraseña = () => {
           left: 0,
           width: "100%",
           height: "100%",
-          background: "linear-gradient(135deg, #f9d8d9 0%, #f9d8d9 100%)",
+          background: "linear-gradient(135deg, #77a6e9 0%,rgb(48, 81, 128) 100%)",
           backgroundSize: "200% 200%",
           zIndex: 0,
           clipPath: "polygon(0 0, 100% 0, 100% 40%, 0 70%)",
@@ -181,7 +180,7 @@ export const CambiarContraseña = () => {
                   fontSize: "1.5rem",
                   lineHeight: 1,
                 }}
-                onClick={() => setMostrarPassword(!mostrarPassword)} // Igual aquí para confirmPassword
+                onClick={() => setMostrarPassword(!mostrarPassword)}
               ></i>
             </div>
           </div>

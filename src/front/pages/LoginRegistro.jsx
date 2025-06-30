@@ -120,11 +120,11 @@ export const LoginRegistro = () => {
 
   const backgroundVariants = {
     login: {
-      background: "linear-gradient(135deg, #f8d8d8 50%, #ffffff 50%)",
+      background: "linear-gradient(135deg, #77a6e9 50%, #ffffff 50%)",
       transition: { duration: 1.5, ease: "easeInOut" },
     },
     registro: {
-      background: "linear-gradient(225deg, #f8d8d8 50%, #ffffff 50%)",
+      background: "linear-gradient(225deg, #77a6e9 50%, #ffffff 50%)",
       transition: { duration: 1.5, ease: "easeInOut" },
     },
   };
@@ -287,7 +287,7 @@ export const LoginRegistro = () => {
                       </span>
 
                       <span
-                        className="text-warning"
+                        className="olvidaste-pass"
                         style={{ cursor: "pointer" }}
                         onClick={() =>
                           Swal.fire({
