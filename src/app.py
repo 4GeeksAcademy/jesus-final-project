@@ -148,11 +148,12 @@ def enviar_mensaje():
     db.session.commit()
 
     link = f'{frontendUrl}cambiar-contraseña/{nuevo_codigo}'
+    logo = f'{frontendUrl}front/assets/img/logo.png'
     msg = Message(
         subject="Hello",
         sender="Trueketeo@gmail.com",
         recipients=[mail_to],
-        html=render_template('mensajeMail.html', link=link
+        html=render_template('mensajeMail.html', link=link, logo=logo
                              ))
     mail.send(msg)
     return jsonify({'msg': 'Mail enviado correctamente'}), 201

@@ -12,6 +12,9 @@ export const Navbar = () => {
 	const navigate = useNavigate();
 	const userId = store.userId;
 
+
+	
+
 	return (
 		<nav className="navbar navbar-light bg-light">
 			<div className="container-fluid d-flex align-items-center justify-content-start gap-3">

@@ -40,41 +40,77 @@
     >
       <div class="header text-center p-4 border-bottom">
         <h1 class="m-0">
-          <img
-            src="https://via.placeholder.com/150x60?text=Trueketeo"
-            alt="Trueketeo Logo"
-            class="logo"
-          />
-          <!-- falta logo -->
+          <img src="{{logo}}" alt="Trueketeo Logo" class="logo" />
         </h1>
       </div>
 
       <div class="content p-4">
-        <h2 class="mb-4">Recuperación de contraseña</h2>
-        <p class="mb-4">
+        <h2 style="font-size: 24px; color: #333333; margin-bottom: 20px">
+          Recuperación de contraseña
+        </h2>
+
+        <p
+          style="
+            font-size: 16px;
+            color: #555555;
+            line-height: 1.5;
+            margin-bottom: 20px;
+          "
+        >
           Hemos recibido una solicitud para restablecer tu contraseña. Utiliza
           el siguiente enlace para continuar:
         </p>
 
-        <p class="mb-4">
-          Este enlace expirará en <strong>2 horas</strong>. Si no solicitaste
+        <p
+          style="
+            font-size: 16px;
+            color: #555555;
+            line-height: 1.5;
+            margin-bottom: 20px;
+          "
+        >
+          Este enlace expirará en
+          <strong style="color: #333333">2 horas</strong>. Si no solicitaste
           este cambio, puedes ignorar este mensaje.
         </p>
-
-        <div class="d-grid gap-3">
-          <a href="{{link}}" class="btn btn-primary py-2"
-            >Continuar con el restablecimiento</a
+        <div style="text-align: center; margin: 20px 0">
+          <a
+            href="{{link}}"
+            style="
+              display: inline-block;
+              background-color: #007bff;
+              color: #ffffff !important;
+              padding: 12px 8px;
+              font-size: 14px;
+              font-weight: bold;
+              text-decoration: none;
+              border-radius: 6px;
+              box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
+              transition: background-color 0.3s ease;
+            "
+            onmouseover="this.style.backgroundColor='#0056b3'"
+            onmouseout="this.style.backgroundColor='#007bff'"
           >
-          <p class="text-center mb-0">
-            ¿No funciona el enlace?
-            <a href="#" class="text-decoration-none">Solicitar uno nuevo</a>
-          </p>
+            Continuar con el restablecimiento
+          </a>
         </div>
       </div>
 
-      <div class="footer text-center p-3 bg-light text-muted small border-top">
-        <p class="mb-1">Trueketeo. Todos los derechos reservados.</p>
-        <p class="mb-0">
+      <div
+        style="
+          text-align: center;
+          padding: 15px 10px;
+          background-color: #f8f9fa;
+          color: #6c757d;
+          font-size: 12px;
+          border-top: 1px solid #dee2e6;
+          line-height: 1.4;
+        "
+      >
+        <p style="margin: 0 0 5px 0">
+          Trueketeo. Todos los derechos reservados.
+        </p>
+        <p style="margin: 0">
           Este es un mensaje automático, por favor no respondas a este correo.
         </p>
       </div>
