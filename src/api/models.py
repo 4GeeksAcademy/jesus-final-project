@@ -1,7 +1,10 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import String, Boolean, Integer, ForeignKey, Text, Enum, DateTime, CheckConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from datetime import datetime
+from datetime import datetime, timedelta
+from sqlalchemy.dialects.postgresql import UUID
+import uuid
+from flask_uuid import FlaskUUID
 
 db = SQLAlchemy()
 
@@ -13,7 +16,7 @@ class Usuario(db.Model):
     nombre_de_usuario: Mapped[str] = mapped_column(
         String(25), unique=True, nullable=False)
     email: Mapped[str] = mapped_column(String(25), unique=True, nullable=False)
-    password_hash: Mapped[str] = mapped_column(
+    password: Mapped[str] = mapped_column(
         String(255), nullable=False)  # Ampliado para hashes seguros
     is_active: Mapped[bool] = mapped_column(
         Boolean(), nullable=False, default=True)
@@ -80,7 +83,7 @@ class Articulo(db.Model):
             'modelo': self.modelo,
             'cantidad': self.cantidad,
             'categoria': self.categoria,
-            'usuario_id': self.usuario.id
+            'usuario_id': self.usuario_id
         }
 
 
@@ -110,7 +113,9 @@ class ArticuloFavorito(db.Model):
         return {
             'id': self.id,
             'usuario_id': self.usuario_id,
-            'articulo_id': self.articulo_id
+            'articulo_id': self.articulo_id,
+            'es_favorito': self.es_favorito,
+            'articulo': self.articulo.serialize() if self.articulo else None
         }
 
 
@@ -184,7 +189,7 @@ class DatosPersonales(db.Model):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     nombre_completo: Mapped[str] = mapped_column(String(50), nullable=False)
-    telefono: Mapped[int] = mapped_column(Integer, nullable=True)
+    telefono: Mapped[str] = mapped_column(String(15), nullable=True)
     direccion: Mapped[str] = mapped_column(String(50), nullable=False)
     fecha_registro: Mapped[datetime] = mapped_column(
         DateTime, nullable=False, default=datetime.utcnow)
@@ -247,3 +252,18 @@ class Rating(db.Model):
             'usuario_id': self.usuario_id,
             'articulo_id': self.articulo_id
         }
+
+
+def fecha_expedicion_default():
+    return datetime.utcnow() + timedelta(hours=2)
+
+
+class RestaurarCodigosPassword(db.Model):
+    __tablename__ = 'restaurar_codigos_password'
+
+    codigo_uuid: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    email: Mapped[str] = mapped_column(
+        String(120), unique=True, nullable=False)
+    fecha_expedicion: Mapped[datetime] = mapped_column(
+        DateTime, default=fecha_expedicion_default)
