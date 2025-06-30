@@ -2,7 +2,7 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
-export const Trueke = () => {
+export const Truekes = () => {
     const { id } = useParams();
     const [trueke, setTrueke] = useState(null);
     const [loading, setLoading] = usestate(true);
@@ -70,7 +70,7 @@ export const Trueke = () => {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify(formData)
+                body: JSON.stringify(FormData)
             });
 
             if (response.status === 401) {

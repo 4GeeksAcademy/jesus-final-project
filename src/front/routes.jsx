@@ -37,7 +37,7 @@ export const router = createBrowserRouter(
       <Route path="/cambiar-contraseña" element={<CambiarContraseña />} />
       <Route path="/trueke" element={<Truekes />} />
       <Route path="/trueke/:id" element={<Truekes />} />
-      <Route path="/trueke/nuevo" element={<NewTruekeForm />} />
+      <Route path="/trueke/nuevo" element={<Truekes />} />
     </Route>
   )
 );
