@@ -9,9 +9,9 @@ import time
 from enum import Enum
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
-
+from flask_cors import CORS
 api = Blueprint('api', __name__)
-
+CORS(api)
 # Allow CORS requests to this API
 
 

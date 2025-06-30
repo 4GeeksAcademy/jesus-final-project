@@ -32,9 +32,8 @@ export const router = createBrowserRouter(
       <Route path="/datospersonales/:usuarioId" element={<DatosPersonales />} />
       <Route path="/articulo/:articuloId" element={<Articulo />} />
       <Route path="/identificate" element={<LoginRegistro />} />
-      <Route path="/cambiar-contraseña:codigoUUID" element={<CambiarContraseña />} />
+      <Route path="/cambiar-contraseña/:codigoUUID" element={<CambiarContraseña />} />
       <Route path="/publicar-articulo" element={<PublicarArticulo />} />
-      <Route path="/cambiar-contraseña" element={<CambiarContraseña />} />
       <Route path="/trueke" element={<Truekes />} />
       <Route path="/trueke/:id" element={<Truekes />} />
       <Route path="/trueke/nuevo" element={<Truekes />} />

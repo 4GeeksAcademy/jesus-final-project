@@ -14,7 +14,7 @@ export const CambiarContraseña = () => {
     confirmPassword: ""
   });
   const navigate = useNavigate();
-  const { codigo_uuid } = useParams();
+  const { codigoUUID } = useParams();
   const { setMode } = useAuthMode();
 
   const handleChange = (e) => {
@@ -51,7 +51,7 @@ export const CambiarContraseña = () => {
   const changePassword = async () => {
     try {
 
-      const response = await fetch(`${backendUrl}recuperar-contraseña/${codigo_uuid}`, {
+      const response = await fetch(`${backendUrl}recuperar-contrasena/${codigoUUID}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ password: newPassword.password }),

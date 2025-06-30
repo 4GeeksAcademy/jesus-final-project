@@ -255,7 +255,7 @@ class Rating(db.Model):
 
 
 def fecha_expedicion_default():
-    return datetime.now() + timedelta(hours=2)
+    return datetime.utcnow() + timedelta(hours=2)
 
 
 class RestaurarCodigosPassword(db.Model):

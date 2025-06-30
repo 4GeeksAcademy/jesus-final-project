@@ -16,11 +16,12 @@ from flask_jwt_extended import create_access_token, create_refresh_token
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import JWTManager
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone, timedelta
 from flask_bcrypt import Bcrypt
 from flask_uuid import FlaskUUID
 import uuid
 from flask_cors import CORS
+frontendUrl = os.getenv('VITE_FRONTEND_URL')
 
 
 # from models import Person
@@ -136,26 +137,28 @@ def enviar_mensaje():
     if registro is None:
         nuevo_codigo = uuid.uuid4()
         registro = RestaurarCodigosPassword(
-            uuid=nuevo_codigo,
-            email=mail_to,
-            fecha_expedicion=datetime.now(timezone.utc) + timedelta(hours=2)
+            codigo_uuid=nuevo_codigo,
+            email=mail_to
         )
         db.session.add(registro)
-        db.session.commit()
     else:
-        nuevo_codigo = registro.uuid
+        registro.fecha_expedicion = datetime.utcnow() + timedelta(hours=2)
+        nuevo_codigo = registro.codigo_uuid
 
+    db.session.commit()
+
+    link = f'{frontendUrl}cambiar-contraseña/{nuevo_codigo}'
     msg = Message(
         subject="Hello",
         sender="Trueketeo@gmail.com",
         recipients=[mail_to],
-        html=render_template('mensajeMail.html', codigo=str(nuevo_codigo)
+        html=render_template('mensajeMail.html', link=link
                              ))
     mail.send(msg)
     return jsonify({'msg': 'Mail enviado correctamente'}), 201
 
 
-@app.route('/recuperar-contraseña/<uuid:codigo_uuid>', methods=['POST'])
+@app.route('/recuperar-contrasena/<uuid:codigo_uuid>', methods=['POST'])
 def mypage(codigo_uuid):
     body = request.get_json()
     nueva_password = body['password'] if body else None
@@ -164,11 +167,11 @@ def mypage(codigo_uuid):
         return jsonify({'msg': 'No se recibió la nueva contraseña'})
 
     registro = db.session.query(RestaurarCodigosPassword).filter_by(
-        uuid=codigo_uuid).first()
+        codigo_uuid=codigo_uuid).first()
     if not registro:
         return jsonify({'msg': 'Código inválido'}), 404
 
-    if registro.fecha_expedicion < datetime.now(timezone.utc):
+    if registro.fecha_expedicion < datetime.utcnow():
         return jsonify({'msg': 'El código ha expirado'}), 400
 
     usuario = db.session.query(Usuario).filter_by(email=registro.email).first()
@@ -213,8 +216,8 @@ def login():
     except Exception as e:
         return jsonify({'msg': f'Error interno: {str(e)}'}), 500
 
-
     # this only runs if `$ python src/main.py` is executed
+
 
 @app.route('/post/<int:id>', methods=['DELETE'])
 def delete_post(id):
@@ -228,15 +231,6 @@ def delete_post(id):
     db.session.commit()
 
     return jsonify({'msg': 'post eliminado correctamente'}), 200
-
-
-
-
-
-
-
-
-
 
 
 if __name__ == '__main__':
