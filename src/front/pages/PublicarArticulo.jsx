@@ -21,7 +21,7 @@ export const PublicarArticulo = () => {
         const token = localStorage.getItem('token');
 
         try {
-            const response = await fetch('${backendUrl}publicar-articulo', {
+            const response = await fetch('${backendUrl}api/publicar-articulo', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'aplication/json',

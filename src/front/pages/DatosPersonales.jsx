@@ -19,7 +19,7 @@ export const DatosPersonales = () => {
       return { error: { message: 'Token no encontrado. Usuario no autenticado.' } };
     }
     try {
-      const response = await fetch(`${backendUrl}editar-datos-personales`, {
+      const response = await fetch(`${backendUrl}api/editar-datos-personales`, {
         method: "PUT",
         body: JSON.stringify(datosPersonalesEditados),
         headers: {
@@ -48,7 +48,7 @@ export const DatosPersonales = () => {
       return { error: { message: 'Token no encontrado. Usuario no autenticado.' } };
     }
     try {
-      const response = await fetch(`${backendUrl}favoritos`, {
+      const response = await fetch(`${backendUrl}api/favoritos`, {
         method: "GET",
         headers: {
           'Authorization': `Bearer ${token}`

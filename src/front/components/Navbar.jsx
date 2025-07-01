@@ -16,9 +16,9 @@ export const Navbar = () => {
 
 	const callBusqueda = async () => {
 		try {
-			const response = await fetch(`${backendUrl}busqueda-articulos?query=${encodeURIComponent(busqueda)}`); // EncodeURIComponent --> le saca los espcios o simbolos
+			const response = await fetch(`${backendUrl}api/busqueda-articulos?query=${encodeURIComponent(busqueda)}`); // EncodeURIComponent --> le saca los espcios o simbolos
 
-			if (response.ok) {	
+			if (response.ok) {
 				const data = await response.json();
 				if (data.length > 0) {
 					navigate(`articulo/${data[0].id}`);
@@ -37,7 +37,7 @@ export const Navbar = () => {
 				});
 			}
 		} catch (err) {
-			Swal.fire({	
+			Swal.fire({
 				title: "Error de red",
 				text: err.message,
 				icon: "error",
@@ -61,17 +61,22 @@ export const Navbar = () => {
 						<input type="text" placeholder="Buscar..." onChange={(e) => {
 							setBusqueda(e.target.value)
 						}} className="border-0 px-3 py-2" />
-						<select className="border-0 px-3 py-2 bg-light rounded-start">
+						<select
+							className="border-0 px-3 py-2 bg-light rounded-start"
+							onChange={(e) => {
+								const categoria = e.target.value;
+								if (categoria) {
+									navigate(`/articulos/${categoria}`);
+								}
+							}}
+						>
 							<option value="">Categorías</option>
-							<option onClick={() => {
-								navigate("/electronica")
-							}} value="electronica">Electronica</option>
+							<option value="electronica">Electrónica</option>
 							<option value="ropa">Ropa</option>
 							<option value="hogar">Hogar</option>
 							<option value="deportes">Deportes</option>
 							<option value="libros">Libros</option>
 							<option value="juguetes">Juguetes</option>
-							<option value="otros">Otros</option>
 						</select>
 						<button onClick={callBusqueda} type="submit" className="border-0 text-white px-4 py-2 rounded ms-2">
 

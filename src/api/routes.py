@@ -71,7 +71,7 @@ def buscar_articulos():
         return jsonify([]), 200
 
     articulos = Articulo.query.filter(
-        Articulo.titulo.ilike(f'%{query}%')).all()   #busqueda parcial
+        Articulo.titulo.ilike(f'%{query}%')).all()  # busqueda parcial
 
     resultados = []
     for articulo in articulos:
@@ -79,6 +79,23 @@ def buscar_articulos():
             'id': articulo.id,
             'titulo': articulo.titulo,
             'categoria': articulo.categoria,
+        })
+
+    return jsonify(resultados), 200
+
+
+@api.route('/articulos/categoria/<string:categoria>', methods=['GET'])
+def obtener_articulos_por_categoria(categoria):
+    articulos = Articulo.query.filter_by(categoria=categoria).all()
+
+    resultados = []
+    for articulo in articulos:
+        resultados.append({
+            'id': articulo.id,
+            'titulo': articulo.titulo,
+            'categoria': articulo.categoria,
+            'img': articulo.img,
+          
         })
 
     return jsonify(resultados), 200
