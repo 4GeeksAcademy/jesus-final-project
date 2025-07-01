@@ -28,8 +28,8 @@ export const ArticulosXCategoria = () => {
 
   const [likes, setLikes] = useState({});
 
-
   const token = localStorage.getItem("token");
+
 
   const toggleLike = (id) => {
     setLikes((prev) => {
