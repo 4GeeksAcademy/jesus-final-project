@@ -6,15 +6,6 @@ import { useParams } from "react-router-dom";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
-const cardVariants = {
-  hidden: { opacity: 0, scale: 0.8 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    transition: { duration: 0.3 }
-  }
-};
-
 
 export const ArticulosXCategoria = () => {
   const { categorias } = useParams();
@@ -36,7 +27,16 @@ export const ArticulosXCategoria = () => {
     fetchArticulos();
   }, [categorias]);
 
+  const [likes, setLikes] = useState({});
 
+  const toggleLike = (id) => {
+    setLikes((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const cardVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0 },
+  };
   return (
     <div style={styles.container}>
       {Array.isArray(articulos) && articulos.length > 0 ? (
@@ -47,7 +47,7 @@ export const ArticulosXCategoria = () => {
             variants={cardVariants}
             initial="hidden"
             animate="visible"
-            whileHover={{ scale: 1.05 }}
+            whileHover={{ scale: 1.03 }}
             style={styles.card}
           >
             <img
@@ -55,12 +55,29 @@ export const ArticulosXCategoria = () => {
               alt={articulo.titulo}
               style={styles.image}
             />
-            <h3 style={styles.title}>{articulo.titulo}</h3>
-            <p><strong>Modelo:</strong> {articulo.modelo}</p>
-            <p><strong>Estado:</strong> {articulo.estado}</p>
-            <p><strong>Categoría:</strong> {articulo.categoria}</p>
-            <p><strong>Cantidad:</strong> {articulo.cantidad}</p>
-            <p><strong>Características:</strong> {articulo.caracteristicas}</p>
+
+            <div style={styles.content}>
+              <div style={styles.titleContainer}>
+                <h3 style={styles.title}>{articulo.titulo}</h3>
+                <span
+                  style={styles.heart}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleLike(articulo.id);
+                  }}
+                >
+                  {likes[articulo.id] ? (<i class="bi bi-heart-fill"></i>) : (<i class="bi bi-heart"></i>)}
+                </span>
+              </div>
+
+              <p style={styles.subtitle}><strong>Modelo:</strong> {articulo.modelo}</p>
+              <p style={styles.subtitle}><strong>Estado:</strong> {articulo.estado}</p>
+              <p style={styles.subtitle}><strong>Categoría:</strong> {articulo.categoria}</p>
+              <p style={styles.subtitle}><strong>Cantidad:</strong> {articulo.cantidad}</p>
+              <div style={styles.caracteristicas}>
+                <p><strong>Características:</strong> {articulo.caracteristicas}</p>
+              </div>
+            </div>
           </motion.div>
         ))
       ) : (
@@ -71,35 +88,70 @@ export const ArticulosXCategoria = () => {
       )}
     </div>
   );
-};
+}
+
 const styles = {
   container: {
-    display: "flex",
-    flexWrap: "wrap",
-    justifyContent: "center",
-    gap: "20px",
-    padding: "20px",
+    display: "grid",
+    gridTemplateColumns: "repeat(3, 1fr)",
+    gap: "24px",
+    padding: "40px 20px",
+    maxWidth: "1200px",
+    margin: "0 auto",
   },
   card: {
     backgroundColor: "#fff",
-    border: "1px solid #ddd",
-    borderRadius: "10px",
-    boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-    padding: "20px",
-    width: "20%",
-    minWidth: "280px",
-    boxSizing: "border-box",
+    border: "1px solid #e0e0e0",
+    borderRadius: "12px",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+    overflow: "hidden",
     cursor: "pointer",
+    display: "flex",
+    flexDirection: "column",
+    transition: "transform 0.2s ease, box-shadow 0.2s ease",
   },
   image: {
     width: "100%",
-    height: "160px",
+    height: "280px",
     objectFit: "cover",
-    borderRadius: "8px",
-    marginBottom: "12px",
+  },
+  content: {
+    padding: "16px",
+    display: "flex",
+    flexDirection: "column",
+    gap: "6px",
+  },
+  titleContainer: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   title: {
-    margin: "0 0 8px 0",
+    margin: "0",
+    fontSize: "1.1rem",
+    fontWeight: "600",
+  },
+  heart: {
+    marginLeft: "8px",
+    color: "red",
+    fontSize: "1.2rem",
+    cursor: "pointer",
+    userSelect: "none",
+  },
+  subtitle: {
+    margin: "0",
+    fontSize: "0.9rem",
+    color: "#444",
+  },
+  caracteristicas: {
+    maxHeight: "60px",
+    overflowY: "auto",
+    fontSize: "0.85rem",
+    color: "#333",
+    backgroundColor: "#f9f9f9",
+    padding: "8px",
+    borderRadius: "6px",
+    marginTop: "8px",
+    border: "1px solid #eee",
   },
 };
-
