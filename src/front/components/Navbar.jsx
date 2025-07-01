@@ -4,16 +4,47 @@ import logo from "../assets/img/logo.png";
 import { useNavigate } from "react-router";
 import { useAuthMode } from "../hooks/AuthModeContext";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
+import { useState } from "react";
 
-
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 export const Navbar = () => {
 	const { store, dispatch } = useGlobalReducer();
 	const { mode, setMode } = useAuthMode();
 	const navigate = useNavigate();
 	const userId = store.userId;
+	const [busqueda, setBusqueda] = useState("")
 
+	const callBusqueda = async () => {
+		try {
+			const response = await fetch(`${backendUrl}busqueda-articulos?query=${encodeURIComponent(busqueda)}`); // EncodeURIComponent --> le saca los espcios o simbolos
 
-	
+			if (response.ok) {	
+				const data = await response.json();
+				if (data.length > 0) {
+					navigate(`articulo/${data[0].id}`);
+				} else {
+					Swal.fire({
+						title: "Sin resultados",
+						text: "No se encontraron artículos con ese nombre.",
+						icon: "info",
+					});
+				}
+			} else {
+				Swal.fire({
+					title: "Error de búsqueda",
+					text: "Ocurrió un problema al buscar el artículo.",
+					icon: "error",
+				});
+			}
+		} catch (err) {
+			Swal.fire({	
+				title: "Error de red",
+				text: err.message,
+				icon: "error",
+			});
+		}
+	};
+
 
 	return (
 		<nav className="navbar navbar-light bg-light">
@@ -27,10 +58,14 @@ export const Navbar = () => {
 
 				<form onSubmit={(e) => e.preventDefault()} className="d-flex align-items-center">
 					<div className="d-flex border rounded overflow-hidden">
-						<input type="text" placeholder="Buscar..." className="border-0 px-3 py-2" />
+						<input type="text" placeholder="Buscar..." onChange={(e) => {
+							setBusqueda(e.target.value)
+						}} className="border-0 px-3 py-2" />
 						<select className="border-0 px-3 py-2 bg-light rounded-start">
 							<option value="">Categorías</option>
-							<option value="electronica">Electronica</option>
+							<option onClick={() => {
+								navigate("/electronica")
+							}} value="electronica">Electronica</option>
 							<option value="ropa">Ropa</option>
 							<option value="hogar">Hogar</option>
 							<option value="deportes">Deportes</option>
@@ -38,7 +73,7 @@ export const Navbar = () => {
 							<option value="juguetes">Juguetes</option>
 							<option value="otros">Otros</option>
 						</select>
-						<button type="submit" className="border-0 text-white px-4 py-2 rounded ms-2">
+						<button onClick={callBusqueda} type="submit" className="border-0 text-white px-4 py-2 rounded ms-2">
 
 							<svg
 								xmlns="http://www.w3.org/2000/svg"

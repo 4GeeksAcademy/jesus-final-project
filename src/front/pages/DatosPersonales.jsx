@@ -1,6 +1,7 @@
 // Import necessary components from react-router-dom and other parts of the application.
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 export const DatosPersonales = () => {
   const [datosPersonalesEditados, setDatosPersonalesEditados] = useState({
@@ -18,7 +19,7 @@ export const DatosPersonales = () => {
       return { error: { message: 'Token no encontrado. Usuario no autenticado.' } };
     }
     try {
-      const response = await fetch(`/editar-datos-personales`, {
+      const response = await fetch(`${backendUrl}editar-datos-personales`, {
         method: "PUT",
         body: JSON.stringify(datosPersonalesEditados),
         headers: {
@@ -47,7 +48,7 @@ export const DatosPersonales = () => {
       return { error: { message: 'Token no encontrado. Usuario no autenticado.' } };
     }
     try {
-      const response = await fetch(`/favoritos`, {
+      const response = await fetch(`${backendUrl}favoritos`, {
         method: "GET",
         headers: {
           'Authorization': `Bearer ${token}`

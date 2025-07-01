@@ -63,6 +63,27 @@ def editar_datos_personales():
     return jsonify({'msg': 'Datos personales editados correctamente'}), 200
 
 
+@api.route('/busqueda-articulos', methods=['GET'])
+def buscar_articulos():
+    query = request.args.get('query', '').lower()
+
+    if not query:
+        return jsonify([]), 200
+
+    articulos = Articulo.query.filter(
+        Articulo.titulo.ilike(f'%{query}%')).all()   #busqueda parcial
+
+    resultados = []
+    for articulo in articulos:
+        resultados.append({
+            'id': articulo.id,
+            'titulo': articulo.titulo,
+            'categoria': articulo.categoria,
+        })
+
+    return jsonify(resultados), 200
+
+
 @api.route('/articulo/<int:articulo_id>', methods=['GET'])
 def obtener_datos_articulo(articulo_id):
 
