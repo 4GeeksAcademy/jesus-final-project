@@ -134,12 +134,12 @@ export const Footer = () => {
 						<li style={styles.footerLinkItem}>
 							<span style={{
 								...styles.footerLink,
-								...Footer(hoverStates.contactanos && styles.hoverEffect)
+								...Footer(hoverStates.Contacto && styles.hoverEffect)
 							}}
-								onClick={() => handleNavigation("/contactanos")}
-								onMouseEnter={() => handleMouseEnter('contactanos')}
-								onMouseLeave={() => handleMouseLeave('contactanos')}>
-								Contáctanos
+								onClick={() => handleNavigation("/contacto")}
+								onMouseEnter={() => handleMouseEnter('contacto')}
+								onMouseLeave={() => handleMouseLeave('contacto')}>
+								Contacto
 							</span>
 						</li>
 					</ul>
