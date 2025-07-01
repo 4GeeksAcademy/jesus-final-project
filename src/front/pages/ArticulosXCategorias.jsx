@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import { motion } from "framer-motion";
@@ -8,8 +8,10 @@ const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 
 export const ArticulosXCategoria = () => {
+  const userId = localStorage.getItem()
   const { categorias } = useParams();
   const [articulos, setArticulos] = useState([]);
+  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchArticulos = async () => {
@@ -30,7 +32,31 @@ export const ArticulosXCategoria = () => {
   const [likes, setLikes] = useState({});
 
   const toggleLike = (id) => {
-    setLikes((prev) => ({ ...prev, [id]: !prev[id] }));
+    setLikes((prev) => {
+      const isLiked = !prev[id];
+
+      if (userId) {
+        fetch(`/api/favoritos/${id}`, {
+          method: isLiked ? "POST" : "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ userId: 123 }),
+        })
+          .then((res) => {
+            if (!res.ok) throw new Error("Error en la solicitud");
+            return res.json();
+          })
+          .then((data) => {
+            console.log("Respuesta del backend:", data);
+          })
+          .catch((err) => {
+            console.error("Error al actualizar favoritos:", err);
+          });
+
+        return { ...prev, [id]: isLiked };
+      }
+    });
   };
 
   const cardVariants = {
@@ -49,6 +75,7 @@ export const ArticulosXCategoria = () => {
             animate="visible"
             whileHover={{ scale: 1.03 }}
             style={styles.card}
+
           >
             <img
               src={articulo.img}
@@ -73,9 +100,16 @@ export const ArticulosXCategoria = () => {
               <p style={styles.subtitle}><strong>Modelo:</strong> {articulo.modelo}</p>
               <p style={styles.subtitle}><strong>Estado:</strong> {articulo.estado}</p>
               <p style={styles.subtitle}><strong>Categoría:</strong> {articulo.categoria}</p>
-              <p style={styles.subtitle}><strong>Cantidad:</strong> {articulo.cantidad}</p>
+              <div className="d-flex">
+                <p style={styles.subtitle}><strong>Cantidad:</strong> {articulo.cantidad}</p>
+                <span style={styles.box} onClick={() => {
+                  navigate(`/articulo/${articulo.id}`)
+                }} className="ms-auto ">  <i class=" bi bi-box2-heart"></i></span>
+
+              </div>
               <div style={styles.caracteristicas}>
                 <p><strong>Características:</strong> {articulo.caracteristicas}</p>
+
               </div>
             </div>
           </motion.div>
@@ -132,8 +166,13 @@ const styles = {
     fontWeight: "600",
   },
   heart: {
-    marginLeft: "8px",
     color: "red",
+    fontSize: "1.2rem",
+    cursor: "pointer",
+    userSelect: "none",
+  },
+  box: {
+    color: "black",
     fontSize: "1.2rem",
     cursor: "pointer",
     userSelect: "none",
