@@ -93,9 +93,13 @@ def obtener_articulos_por_categoria(categoria):
         resultados.append({
             'id': articulo.id,
             'titulo': articulo.titulo,
+            'caracteristicas': articulo.caracteristicas,
             'categoria': articulo.categoria,
             'img': articulo.img,
-          
+            'modelo': articulo.modelo,
+            'estado': articulo.estado,
+            'cantidad': articulo.cantidad,
+
         })
 
     return jsonify(resultados), 200
