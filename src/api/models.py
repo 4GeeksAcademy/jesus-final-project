@@ -50,10 +50,10 @@ class Articulo(db.Model):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     titulo: Mapped[str] = mapped_column(String(25), nullable=False)
-    caracteristicas: Mapped[str] = mapped_column(Text, nullable=True)
+    caracteristicas: Mapped[str] = mapped_column(Text, nullable=False)
     estado: Mapped[str] = mapped_column(Enum(
         'nuevo', 'como_nuevo', 'bueno', 'regular', 'malo', name='estado_enum'), nullable=False)
-    modelo: Mapped[str] = mapped_column(String(50), nullable=True)
+    modelo: Mapped[str] = mapped_column(String(50), nullable=False)
     cantidad: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
     categoria: Mapped[str] = mapped_column(Enum(
         'electronica', 'ropa', 'hogar', 'deportes', 'libros', 'juguetes', 'otros', name='categoria_enum'), nullable=False)

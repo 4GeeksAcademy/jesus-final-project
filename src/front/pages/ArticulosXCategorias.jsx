@@ -86,8 +86,8 @@ const styles = {
     borderRadius: "10px",
     boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
     padding: "20px",
-    width: "30%", // 3 cards per row approx
-    minWidth: "280px", // min width so it shrinks nicely
+    width: "20%",
+    minWidth: "280px",
     boxSizing: "border-box",
     cursor: "pointer",
   },
