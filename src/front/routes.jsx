@@ -15,6 +15,8 @@ import { CambiarContraseña } from "./pages/CambiarContraseña";
 import { PublicarArticulo } from "./pages/PublicarArticulo";
 import { Truekes } from "./pages/Truekes";
 import { ArticulosXCategoria } from "./pages/ArticulosXCategorias";
+import { SobreNosotros } from "./pages/sobreNosotros";
+
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -39,6 +41,7 @@ export const router = createBrowserRouter(
       <Route path="/trueke" element={<Truekes />} />
       <Route path="/trueke/:id" element={<Truekes />} />
       <Route path="/trueke/nuevo" element={<Truekes />} />
+      <Route path="/sobre-nosotros" element={<SobreNosotros />} />
     </Route>
   )
 );
