@@ -191,9 +191,9 @@ def obtener_favoritos():
         usuario_id=usuario_token_id
     ).all()
 
-    favoritos_serializados = [f.serialize() for f in favoritos]
+    favoritos_ids = [f.articulo_id for f in favoritos]
 
-    return jsonify(favoritos_serializados), 200
+    return jsonify(favoritos_ids), 200
 
 
 @api.route('/agregar-articulos-favoritos', methods=['POST'])

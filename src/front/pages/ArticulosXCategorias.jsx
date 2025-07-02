@@ -1,15 +1,17 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
-import Swal from "sweetalert2";
 import { motion } from "framer-motion";
-import { useParams } from "react-router-dom";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
-
 
 export const ArticulosXCategoria = () => {
   const { categorias } = useParams();
   const [articulos, setArticulos] = useState([]);
+  const [likes, setLikes] = useState({});
+  const navigate = useNavigate();
+
+  const token = localStorage.getItem("token");
+  const refresh_token = localStorage.getItem("refresh_token");
 
   useEffect(() => {
     const fetchArticulos = async () => {
@@ -24,19 +26,86 @@ export const ArticulosXCategoria = () => {
       }
     };
 
-    fetchArticulos();
-  }, [categorias]);
+    const fetchFavoritos = async () => {
+      if (!token || !refresh_token) return;
 
-  const [likes, setLikes] = useState({});
+      try {
+        const response = await fetch(`${backendUrl}api/favoritos`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (response.ok) {
+          const favoritosIds = await response.json();
+
+          const likesState = {};
+          favoritosIds.forEach(id => {
+            likesState[id] = true;
+          });
+          setLikes(likesState);
+        }
+      } catch (err) {
+        console.error("Error al cargar favoritos", err);
+      }
+    };
+
+    fetchArticulos();
+    fetchFavoritos();
+  }, [categorias, token]);
 
   const toggleLike = (id) => {
-    setLikes((prev) => ({ ...prev, [id]: !prev[id] }));
+    setLikes((prev) => {
+      const isLiked = !prev[id];
+
+      if (!token && !refresh_token) return prev;
+
+      if (isLiked) {
+        fetch(`${backendUrl}api/agregar-articulos-favoritos`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
+          body: JSON.stringify({ articulo_id: id }),
+        })
+          .then((res) => {
+            if (!res.ok) throw new Error("Error al agregar favorito");
+            return res.json();
+          })
+          .then((data) => {
+            console.log(data.msg);
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      } else {
+        fetch(`${backendUrl}api/eliminar-articulos-favoritos/${id}`, {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+          .then((res) => {
+            if (!res.ok) throw new Error("Error al eliminar favorito");
+            return res.json();
+          })
+          .then((data) => {
+            console.log(data.msg);
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      }
+
+      return { ...prev, [id]: isLiked };
+    });
   };
 
   const cardVariants = {
     hidden: { opacity: 0, y: 30 },
     visible: { opacity: 1, y: 0 },
   };
+
   return (
     <div style={styles.container}>
       {Array.isArray(articulos) && articulos.length > 0 ? (
@@ -50,32 +119,54 @@ export const ArticulosXCategoria = () => {
             whileHover={{ scale: 1.03 }}
             style={styles.card}
           >
-            <img
-              src={articulo.img}
-              alt={articulo.titulo}
-              style={styles.image}
-            />
-
+            <img src={articulo.img} alt={articulo.titulo} style={styles.image} />
             <div style={styles.content}>
               <div style={styles.titleContainer}>
                 <h3 style={styles.title}>{articulo.titulo}</h3>
-                <span
-                  style={styles.heart}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleLike(articulo.id);
-                  }}
-                >
-                  {likes[articulo.id] ? (<i class="bi bi-heart-fill"></i>) : (<i class="bi bi-heart"></i>)}
-                </span>
+                {refresh_token && (
+                  <span
+                    style={styles.heart}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleLike(articulo.id);
+                    }}
+                  >
+                    {likes[articulo.id] ? (
+                      <i className="bi bi-heart-fill"></i>
+                    ) : (
+                      <i className="bi bi-heart"></i>
+                    )}
+                  </span>
+                )}
               </div>
 
-              <p style={styles.subtitle}><strong>Modelo:</strong> {articulo.modelo}</p>
-              <p style={styles.subtitle}><strong>Estado:</strong> {articulo.estado}</p>
-              <p style={styles.subtitle}><strong>Categoría:</strong> {articulo.categoria}</p>
-              <p style={styles.subtitle}><strong>Cantidad:</strong> {articulo.cantidad}</p>
+              <p style={styles.subtitle}>
+                <strong>Modelo:</strong> {articulo.modelo}
+              </p>
+              <p style={styles.subtitle}>
+                <strong>Estado:</strong> {articulo.estado}
+              </p>
+              <p style={styles.subtitle}>
+                <strong>Categoría:</strong> {articulo.categoria}
+              </p>
+              <div className="d-flex">
+                <p style={styles.subtitle}>
+                  <strong>Cantidad:</strong> {articulo.cantidad}
+                </p>
+                <span
+                  style={styles.box}
+                  onClick={() => {
+                    navigate(`/articulo/${articulo.id}`);
+                  }}
+                  className="ms-auto"
+                >
+                  <i className="bi bi-box2-heart"></i>
+                </span>
+              </div>
               <div style={styles.caracteristicas}>
-                <p><strong>Características:</strong> {articulo.caracteristicas}</p>
+                <p>
+                  <strong>Características:</strong> {articulo.caracteristicas}
+                </p>
               </div>
             </div>
           </motion.div>
@@ -88,7 +179,7 @@ export const ArticulosXCategoria = () => {
       )}
     </div>
   );
-}
+};
 
 const styles = {
   container: {
@@ -132,8 +223,13 @@ const styles = {
     fontWeight: "600",
   },
   heart: {
-    marginLeft: "8px",
     color: "red",
+    fontSize: "1.2rem",
+    cursor: "pointer",
+    userSelect: "none",
+  },
+  box: {
+    color: "black",
     fontSize: "1.2rem",
     cursor: "pointer",
     userSelect: "none",
