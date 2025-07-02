@@ -1,5 +1,5 @@
 import React from "react";
-import equipo from ".src/front/assets/img/equipo.png";
+import equipo from "../assets/img/equipo.png";
 import { useNavigate } from "react-router-dom";
 
 const SobreNosotros = () => {
@@ -42,7 +42,7 @@ const SobreNosotros = () => {
             <img
               className="max-w-full h-auto object-contain rounded-lg shadow-md"
               alt="Equipo de TRUEKETEO"
-              src={equipo}/>
+              src={equipo} />
           </div>
         </div>
 
