@@ -100,7 +100,7 @@ export const Navbar = () => {
 					<Link to="/sobre-nosotros" className="text-decoration-none" style={{ color: "black" }}>
 						Sobre nosotros
 					</Link>
-					<Link to="/ayuda" className="text-decoration-none" style={{ color: "black" }}>
+					<Link to="/ayuda-&-soporte" className="text-decoration-none" style={{ color: "black" }}>
 						Ayuda & soporte
 					</Link>
 					<Link to="/guia-truekear" className="text-decoration-none" style={{ color: "black" }}>
