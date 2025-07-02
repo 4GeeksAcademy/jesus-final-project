@@ -149,6 +149,7 @@ export const Navbar = () => {
 										dispatch({ type: "logout" });
 										localStorage.removeItem("token");
 										localStorage.removeItem("refresh_token");
+										localStorage.removeItem("userId");
 										navigate("/");
 									}
 								});
