@@ -18,6 +18,7 @@ import { ArticulosXCategoria } from "./pages/ArticulosXCategorias";
 import SobreNosotros from "./pages/sobreNosotros";
 import Contacto from "./pages/Contacto"
 import {AyudaYSoporte} from "./pages/Ayuda&Soporte"
+import PoliticaPrivacidad from "./pages/PoliticaPrivacidad";
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -45,6 +46,7 @@ export const router = createBrowserRouter(
       <Route path="/trueke/nuevo" element={<Truekes />} />
       <Route path="/sobre-nosotros" element={<SobreNosotros />} />
       <Route path="/Contacto" element={<Contacto />} />
+      <Route path="/politica-privacidad" element={<PoliticaPrivacidad />} />
     </Route>
   )
 );
