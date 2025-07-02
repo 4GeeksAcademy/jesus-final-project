@@ -99,22 +99,20 @@ export const AyudaYSoporte = () => {
 
 
             <div className="col-12 col-md-6 mb-4">
-              <h4 className="fw-bold mb-3">Cómo ser precavido</h4>
+              <h4 className="fw-bold mb-3">Buenas Prácticas</h4>
               <p className="mb-3">
-                Consultá y aclará siempre el tiempo de préstamo o intercambio antes de acordar.
+                1. Consultá y aclará siempre el tiempo de préstamo o intercambio antes de acordar.
               </p>
               <p className="mb-3">
-                Acordá las condiciones de devolución: fecha, estado del objeto y forma de entrega.
+                2. Acordá las condiciones de devolución: fecha, estado del objeto y forma de entrega.
               </p>
               <p className="mb-3">
-                Comunicalo con anticipación si surge algún inconveniente para evitar malentendidos.
+                3. Comunicalo con anticipación si surge algún inconveniente para evitar malentendidos.
               </p>
               <p className="mb-3">
-                Sé amable, puntual y respetuoso. Una comunicación clara genera confianza y mejora la experiencia para todos.
+                4 .Sé amable, puntual y respetuoso. Una comunicación clara genera confianza y mejora la experiencia para todos.
               </p>
-              <p className="mb-3">
-                Recordá que el trueke es temporal; el objeto debe ser devuelto en las condiciones acordadas para fortalecer la comunidad.
-              </p>
+
             </div>
           </div>
         </section>
