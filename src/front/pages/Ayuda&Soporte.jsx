@@ -185,7 +185,9 @@ export const AyudaYSoporte = () => {
             </div>
           </div>
         </section>
+        <div className="d-flex justify-content-center">  <h2 className="fw-bold mb-5 text-center">Truekeando en 4 pasos</h2></div>
         <section className="my-5 d-flex justify-content-center">
+
           <div className="row g-4">
             {cardsData.map(({ img, title, subtitle, text }, i) => (
               <div key={i} className="col-12 col-md-6 col-xxl-3">
