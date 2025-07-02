@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
 export const Articulo = () => {
   const [error, setError] = useState(null);
   const [datosArticulo, setDatosArticulo] = useState(null);
@@ -10,7 +12,7 @@ export const Articulo = () => {
   const { id } = useParams();
   const obtenerArticulo = async (id) => {
     try {
-      const response = await fetch(`/articulo/${id}`, { method: "GET" });
+      const response = await fetch(`${backendUrl}api/articulo/${id}`, { method: "GET" });
       if (response.ok) {
         const data = await response.json();
         setDatosArticulo(data);
@@ -34,7 +36,7 @@ export const Articulo = () => {
       return { error: { message: 'Token no encontrado. Usuario no autenticado.' } };
     }
     try {
-      const response = await fetch(`/eliminar-datos-articulo/${id}`, {
+      const response = await fetch(`${backendUrl}api/eliminar-datos-articulo/${id}`, {
         method: "DELETE",
         headers: {
           'Authorization': `Bearer ${token}`
@@ -64,7 +66,7 @@ export const Articulo = () => {
       return { error: { message: 'Token no encontrado. Usuario no autenticado.' } };
     }
     try {
-      const response = await fetch(`/editar-datos-articulo/${id}`, {
+      const response = await fetch(`${backendUrl}api/editar-datos-articulo/${id}`, {
         method: "PUT",
         body: JSON.stringify(datosArticulo),
         headers: {
@@ -96,7 +98,7 @@ export const Articulo = () => {
       return { error: { message: 'Token no encontrado. Usuario no autenticado.' } };
     }
     try {
-      const response = await fetch(`/agregar-articulos-favoritos`, {
+      const response = await fetch(`${backendUrl}api/agregar-articulos-favoritos`, {
         method: "POST",
         body: JSON.stringify({ articulo_id: articuloId }),
         headers: {
@@ -123,7 +125,7 @@ export const Articulo = () => {
       return { error: { message: 'Token no encontrado. Usuario no autenticado.' } };
     }
     try {
-      const response = await fetch(`/eliminar-articulos-favoritos/${articuloId}`, {
+      const response = await fetch(`${backendUrl}api/eliminar-articulos-favoritos/${articuloId}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,

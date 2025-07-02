@@ -14,6 +14,12 @@ import { LoginRegistro } from "./pages/LoginRegistro";
 import { CambiarContraseña } from "./pages/CambiarContraseña";
 import { PublicarArticulo } from "./pages/PublicarArticulo";
 import { Truekes } from "./pages/Truekes";
+import { ArticulosXCategoria } from "./pages/ArticulosXCategorias";
+import SobreNosotros from "./pages/sobreNosotros";
+import Contacto from "./pages/Contacto"
+import { AyudaYSoporte } from "./pages/AyudaYSoporte"
+import PoliticaPrivacidad from "./pages/PoliticaPrivacidad";
+import { ComoTruekear } from "./pages/ComoTruekear";
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -34,9 +40,15 @@ export const router = createBrowserRouter(
       <Route path="/identificate" element={<LoginRegistro />} />
       <Route path="/cambiar-contraseña/:codigoUUID" element={<CambiarContraseña />} />
       <Route path="/publicar-articulo" element={<PublicarArticulo />} />
+      <Route path="/articulos/:categorias" element={<ArticulosXCategoria />} />
       <Route path="/trueke" element={<Truekes />} />
+      <Route path="/como-truekear" element={<ComoTruekear />} />
+      <Route path="/ayuda-&-soporte" element={<AyudaYSoporte />} />
       <Route path="/trueke/:id" element={<Truekes />} />
       <Route path="/trueke/nuevo" element={<Truekes />} />
+      <Route path="/sobre-nosotros" element={<SobreNosotros />} />
+      <Route path="/Contacto" element={<Contacto />} />
+      <Route path="/politica-privacidad" element={<PoliticaPrivacidad />} />
     </Route>
   )
 );

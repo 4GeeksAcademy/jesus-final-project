@@ -212,8 +212,8 @@ def login():
         if user is None or not bcrypt.check_password_hash(user.password, body['password']):
             return jsonify({'msg': 'Usuario o contraseña incorrectos'}), 400
 
-        access_token = create_access_token(identity=user.email)
-        refresh_token = create_refresh_token(identity=body['email'])
+        access_token = create_access_token(identity=str(user.id))
+        refresh_token = create_refresh_token(identity=str(user.id))
 
         return jsonify({
             'msg': 'Login exitoso',

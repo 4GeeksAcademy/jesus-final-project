@@ -63,6 +63,48 @@ def editar_datos_personales():
     return jsonify({'msg': 'Datos personales editados correctamente'}), 200
 
 
+@api.route('/busqueda-articulos', methods=['GET'])
+def buscar_articulos():
+    query = request.args.get('query', '').lower()
+
+    if not query:
+        return jsonify([]), 200
+
+    articulos = Articulo.query.filter(
+        Articulo.titulo.ilike(f'%{query}%')).all()  # busqueda parcial
+
+    resultados = []
+    for articulo in articulos:
+        resultados.append({
+            'id': articulo.id,
+            'titulo': articulo.titulo,
+            'categoria': articulo.categoria,
+        })
+
+    return jsonify(resultados), 200
+
+
+@api.route('/articulos/categoria/<string:categoria>', methods=['GET'])
+def obtener_articulos_por_categoria(categoria):
+    articulos = Articulo.query.filter_by(categoria=categoria).all()
+
+    resultados = []
+    for articulo in articulos:
+        resultados.append({
+            'id': articulo.id,
+            'titulo': articulo.titulo,
+            'caracteristicas': articulo.caracteristicas,
+            'categoria': articulo.categoria,
+            'img': articulo.img,
+            'modelo': articulo.modelo,
+            'estado': articulo.estado,
+            'cantidad': articulo.cantidad,
+
+        })
+
+    return jsonify(resultados), 200
+
+
 @api.route('/articulo/<int:articulo_id>', methods=['GET'])
 def obtener_datos_articulo(articulo_id):
 
@@ -149,9 +191,9 @@ def obtener_favoritos():
         usuario_id=usuario_token_id
     ).all()
 
-    favoritos_serializados = [f.serialize() for f in favoritos]
+    favoritos_ids = [f.articulo_id for f in favoritos]
 
-    return jsonify(favoritos_serializados), 200
+    return jsonify(favoritos_ids), 200
 
 
 @api.route('/agregar-articulos-favoritos', methods=['POST'])

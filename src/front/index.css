@@ -2,6 +2,7 @@ body {
   font-family: "Montserrat", sans-serif;
   font-optical-sizing: auto;
   font-style: normal;
+  padding-top: 70px;
 }
 
 .logo-NavBar {
@@ -19,4 +20,76 @@ body {
 
 .olvidaste-pass {
   color: #c18802;
+}
+
+/* Ayuda & Soporte */
+
+.contenedor-soporte {
+  position: relative;
+  background-color: #e9f0ff;
+  border-radius: 16px;
+  text-align: center;
+  padding: 4rem 2rem 2rem;
+  max-width: 400px;
+  width: 100%;
+  margin: 100px auto;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  font-family: sans-serif;
+}
+.icono-comilla {
+  width: 70px;
+  height: 70px;
+  background-color: #f0f4ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  position: absolute;
+  top: -35px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 3.5rem;
+  color: #3b5bdb;
+  line-height: 1;
+  user-select: none;
+}
+.texto-cita {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #333;
+  line-height: 1.5;
+}
+
+.bg-comotruekear {
+  background-image: url("./assets/img/ayudaysoporte.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  height: 100%;
+  min-height: 400px;
+}
+.bg-ayudaysoporte {
+  background-image: url("./assets/img/soporte.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  height: 100%;
+  min-height: 400px;
+}
+.bg-ayuda-fondo {
+  background-color: #e0eefd;
+}
+.bg-truekear-fondo {
+  background-color: #e1eaf6;
+}
+
+@media (min-width: 768px) {
+  .contenedor-soporte {
+    max-width: 500px;
+    padding: 5rem 3rem 2.5rem;
+  }
+
+  .texto-cita {
+    font-size: 1.25rem;
+  }
 }

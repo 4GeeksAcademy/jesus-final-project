@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 export const PublicarArticulo = () => {
 
@@ -15,12 +16,12 @@ export const PublicarArticulo = () => {
     const [error, setError] = useState(null);
     const [publicado, setPublicado] = useState(false);
 
-    const manejarMensaje = async (e) =>{
+    const manejarMensaje = async (e) => {
         e.preventDefault();
-        const token =localStorage.getItem('token');
+        const token = localStorage.getItem('token');
 
-        try{
-            const response = await fetch ('/publicar-articulo', {
+        try {
+            const response = await fetch('${backendUrl}api/publicar-articulo', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'aplication/json',
@@ -37,7 +38,7 @@ export const PublicarArticulo = () => {
 
             setPublicado(true);
             setError(null);
-            
+
             //Reinicia el formulario
             setInformacionArticulo({
                 titulo: '',
@@ -53,7 +54,7 @@ export const PublicarArticulo = () => {
             setError(err.message);
             setPublicado(false);
         }
-    }; 
+    };
 
     const manejarCambiar = (e) => {
         const { name, value } = e.target;
@@ -64,9 +65,9 @@ export const PublicarArticulo = () => {
     };
 
     return (
-         <div className="publicar-form">
-            
-         </div>
+        <div className="publicar-form">
+
+        </div>
     )
 };
 

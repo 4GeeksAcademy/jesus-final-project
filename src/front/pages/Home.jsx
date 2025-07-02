@@ -1,8 +1,9 @@
 import React, { useEffect } from "react"
 
+
 export const Home = () => {
 
-
+const cloud_name = import.meta.env.CLOUD_NAME
 
 
 	return (

@@ -99,7 +99,7 @@ export const Truekes = () => {
                 return;
             }
 
-            const response = await fetch(`/api/truekes/${truekeId}`, {   //cambiar
+            const response = await fetch(`${backendUrl}api/truekes/${truekeId}`, {   //cambiar
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application.json',
