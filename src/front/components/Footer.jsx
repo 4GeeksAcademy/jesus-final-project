@@ -16,16 +16,16 @@ export const Footer = () => {
 		footerContent: {
 			display: "flex",
 			justifyContent: "center",
-			alignItems: "flex-start",
+			alignItems: "center",
 			maxWidth: "1200px",
 			margin: "0 auto",
 			padding: "0 20px",
 			flexWrap: "wrap",
-			gap: "2rem",
+			gap: "4rem",
 		},
 		footerSection: {
 			margin: "1rem",
-    		flex: 1,
+    		flex: "0 0 300px",
     		minWidth: "200px",
 		},
 		logoSection: {
@@ -143,46 +143,6 @@ export const Footer = () => {
 								onMouseEnter={() => handleMouseEnter('contacto')}
 								onMouseLeave={() => handleMouseLeave('contacto')}>
 								Contacto
-							</span>
-						</li>
-					</ul>
-				</div>
-
-				{/* columna 2*/}
-				<div style={styles.footerSection}>
-					<h3 style={styles.footerTitle}>Trueketeo</h3>
-					<ul style={styles.footerLinks}>
-						<li style={styles.footerLinkItem}>
-							<span style={{
-								...styles.footerLink,
-								...(hoverStates.intercambiar && styles.hoverEffect)
-							}}
-								onClick={() => handleNavigation("/intercambiar-articulos")}
-								onMouseEnter={() => handleMouseEnter('intercambiar')}
-								onMouseLeave={() => handleMouseLeave('intercambiar')}>
-								Intercambiar artículos
-							</span>
-						</li>
-						<li style={styles.footerLinkItem}>
-							<span style={{
-								...styles.footerLink,
-								...(hoverStates.acordar && styles.hoverEffect)
-							}}
-								onClick={() => handleNavigation("/acordar-responsable")}
-								onMouseEnter={() => handleMouseEnter('acordar')}
-								onMouseLeave={() => handleMouseLeave('acordar')}>
-								Acordar con el responsable del trueke
-							</span>
-						</li>
-						<li style={styles.footerLinkItem}>
-							<span style={{
-								...styles.footerLink,
-								...(hoverStates.condiciones && styles.hoverEffect)
-							}}
-								onClick={() => handleNavigation("/condiciones-devolucion")}
-								onMouseEnter={() => handleMouseEnter('condiciones')}
-								onMouseLeave={() => handleMouseLeave('condiciones')}>
-								Condiciones de devolución
 							</span>
 						</li>
 					</ul>
