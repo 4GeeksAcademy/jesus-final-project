@@ -17,8 +17,9 @@ import { Truekes } from "./pages/Truekes";
 import { ArticulosXCategoria } from "./pages/ArticulosXCategorias";
 import SobreNosotros from "./pages/sobreNosotros";
 import Contacto from "./pages/Contacto"
-import {AyudaYSoporte} from "./pages/Ayuda&Soporte"
+import { AyudaYSoporte } from "./pages/AyudaYSoporte"
 import PoliticaPrivacidad from "./pages/PoliticaPrivacidad";
+import { ComoTruekear } from "./pages/ComoTruekear";
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -41,6 +42,7 @@ export const router = createBrowserRouter(
       <Route path="/publicar-articulo" element={<PublicarArticulo />} />
       <Route path="/articulos/:categorias" element={<ArticulosXCategoria />} />
       <Route path="/trueke" element={<Truekes />} />
+      <Route path="/como-truekear" element={<ComoTruekear />} />
       <Route path="/ayuda-&-soporte" element={<AyudaYSoporte />} />
       <Route path="/trueke/:id" element={<Truekes />} />
       <Route path="/trueke/nuevo" element={<Truekes />} />
