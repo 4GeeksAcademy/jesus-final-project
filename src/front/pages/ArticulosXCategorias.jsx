@@ -7,7 +7,11 @@ const backendUrl = import.meta.env.VITE_BACKEND_URL;
 export const ArticulosXCategoria = () => {
   const { categorias } = useParams();
   const [articulos, setArticulos] = useState([]);
+  const [likes, setLikes] = useState({});
   const navigate = useNavigate();
+
+  const token = localStorage.getItem("token");
+  const refresh_token = localStorage.getItem("refresh_token");
 
   useEffect(() => {
     const fetchArticulos = async () => {
@@ -22,28 +26,45 @@ export const ArticulosXCategoria = () => {
       }
     };
 
+    const fetchFavoritos = async () => {
+      if (!token || !refresh_token) return;
+
+      try {
+        const response = await fetch(`${backendUrl}api/favoritos`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (response.ok) {
+          const favoritosIds = await response.json();
+
+          const likesState = {};
+          favoritosIds.forEach(id => {
+            likesState[id] = true;
+          });
+          setLikes(likesState);
+        }
+      } catch (err) {
+        console.error("Error al cargar favoritos", err);
+      }
+    };
+
     fetchArticulos();
-  }, [categorias]);
-
-
-  const [likes, setLikes] = useState({});
-
-  const token = localStorage.getItem("token");
-
+    fetchFavoritos();
+  }, [categorias, token]);
 
   const toggleLike = (id) => {
     setLikes((prev) => {
       const isLiked = !prev[id];
 
-      if (!token) return prev;
+      if (!token && !refresh_token) return prev;
 
       if (isLiked) {
-
         fetch(`${backendUrl}api/agregar-articulos-favoritos`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            "Authorization": `Bearer ${token}`,
           },
           body: JSON.stringify({ articulo_id: id }),
         })
@@ -58,8 +79,7 @@ export const ArticulosXCategoria = () => {
             console.error(err);
           });
       } else {
-
-        fetch(`${backendUrl}api/eliminar-articulo-favorito/${id}`, {
+        fetch(`${backendUrl}api/eliminar-articulos-favoritos/${id}`, {
           method: "DELETE",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -103,7 +123,7 @@ export const ArticulosXCategoria = () => {
             <div style={styles.content}>
               <div style={styles.titleContainer}>
                 <h3 style={styles.title}>{articulo.titulo}</h3>
-                {token && (
+                {refresh_token && (
                   <span
                     style={styles.heart}
                     onClick={(e) => {

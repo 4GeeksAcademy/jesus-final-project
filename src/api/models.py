@@ -107,7 +107,7 @@ class ArticuloFavorito(db.Model):
         'Articulo', back_populates='articulos_favoritos')
 
     def __str__(self):
-        return f'Trueke: {self.articulo_propietario.titulo} entre {self.propietario.nombre_de_usuario} y {self.receptor.nombre_de_usuario}'
+        return f'Favorito: {self.articulo.titulo} para usuario {self.usuario.nombre_de_usuario}'
 
     def serialize(self):
         return {
