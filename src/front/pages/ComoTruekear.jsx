@@ -10,7 +10,7 @@ export const ComoTruekear = () => {
   const navigate = useNavigate();
 
   const [oks, setOks] = useState([false, false, false, false]);
-
+  const [VamosAEllo, setVamosAEllo] = useState(false)
 
   const toggleOk = (index) => {
     setOks(prev => {
@@ -102,30 +102,28 @@ export const ComoTruekear = () => {
         </div>
       </div>
 
-      <div className="row gx-0 mx-0 align-items-stretch bg-ayuda-fondo">
+      <div className="row gx-0 mx-0 align-items-stretch bg-truekear-fondo">
         <div className="col-12 col-lg-8 d-flex flex-column  px-5 justify-content-center">
-          <p className="lead fw-bold">Ayuda & Soporte</p>
+          <p className="lead fw-bold">Como Truekear</p>
           <h1 className="display-5 lh-1 mb-3" style={{ fontSize: "3rem" }}>
-            Soporte rápido y confiable para que disfrutes Truekes al máximo
+            Tu guía para truekear sin complicaciones
           </h1>
           <p className="lead">
-            ¿Tenés dudas o necesitás ayuda? Nuestro equipo está listo para
-            asistirte con soluciones rápidas, guías claras y soporte personalizado.
+            ¿Querés saber cómo hacer un trueke?
+            Te guiamos paso a paso para que intercambiar objetos sea fácil, seguro y confiable. Desde elegir el artículo hasta coordinar con la otra persona, estamos para ayudarte a disfrutar la mejor experiencia truekeando
           </p>
           <div className="d-grid gap-2 d-md-flex justify-content-md-start">
             <button
-              onClick={() => {
-                navigate("/Contacto");
-              }}
+              onClick={() => setVamosAEllo(prev => !prev)}
               type="button"
-              className="btn btn-primary btn-lg px-4 me-md-2"
+              className={VamosAEllo ? "btn btn-success btn-lg px-4 me-md-2" : "btn btn-primary btn-lg px-4 me-md-2"}
             >
-              Vamos a ello
+              {VamosAEllo ? "¡Sí!" : "Vamos a ello"}
             </button>
           </div>
         </div>
 
-        <div className="col-12 col-lg-4 p-0 bg-ayudaysoporte"></div>
+        <div className="col-12 col-lg-4 p-0 bg-comotruekear"></div>
       </div>
 
       <div className="container-fluid px-5">
