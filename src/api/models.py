@@ -1,7 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import String, Boolean, Integer, ForeignKey, Text, Enum, DateTime, CheckConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from datetime import datetime, timedelta
+from datetime import datetime, timezone, timedelta
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
 from flask_uuid import FlaskUUID
@@ -58,6 +58,10 @@ class Articulo(db.Model):
     categoria: Mapped[str] = mapped_column(Enum(
         'electronica', 'ropa', 'hogar', 'deportes', 'libros', 'juguetes', 'otros', name='categoria_enum'), nullable=False)
     img: Mapped[str] = mapped_column(String(200), nullable=False)
+
+    fecha_publicacion: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, default=lambda: datetime.now(timezone.utc)
+    )
 
     # Foreign Keys
     usuario_id: Mapped[int] = mapped_column(
@@ -255,7 +259,7 @@ class Rating(db.Model):
 
 
 def fecha_expedicion_default():
-    return datetime.utcnow() + timedelta(hours=2)
+    return datetime.now(timezone.utc) + timedelta(hours=2)
 
 
 class RestaurarCodigosPassword(db.Model):
