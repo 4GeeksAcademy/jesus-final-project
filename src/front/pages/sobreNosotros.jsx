@@ -1,5 +1,5 @@
 import React from "react";
-import equipo from "src/assets/img/equipo.png";
+//import equipo from "src/assets/img/equipo.png";
 
 const SobreNosotros= () => {
   const paragraphs = [

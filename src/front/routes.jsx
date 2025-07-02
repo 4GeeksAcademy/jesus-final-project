@@ -15,8 +15,8 @@ import { CambiarContraseña } from "./pages/CambiarContraseña";
 import { PublicarArticulo } from "./pages/PublicarArticulo";
 import { Truekes } from "./pages/Truekes";
 import { ArticulosXCategoria } from "./pages/ArticulosXCategorias";
-import { SobreNosotros } from "./pages/sobreNosotros";
-import { Contacto } from "./pages/Contacto"
+import  SobreNosotros  from "./pages/sobreNosotros";
+import  Contacto  from "./pages/Contacto"
 
 export const router = createBrowserRouter(
   createRoutesFromElements(

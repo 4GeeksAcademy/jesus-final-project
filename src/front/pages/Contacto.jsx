@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 
 
-export default function Contacto() {
+const Contacto = () => {
   const navigate = useNavigate();
 
   const redirectHome = () => {
@@ -41,7 +41,7 @@ export default function Contacto() {
               <img
                 className="object-contain"
                 alt="Customer support representative at desk with computer"
-                src="/desktop-3.png"
+                src="/desktop.png"
               />
             </div>
           </CardContent>
@@ -50,3 +50,5 @@ export default function Contacto() {
     </div>
   );
 }
+
+export default Contacto;

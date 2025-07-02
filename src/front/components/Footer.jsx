@@ -10,11 +10,11 @@ export const Footer = () => {
 			backgroundColor: "#d1e2eb",
 			padding: "2rem 0",
 			fontFamily: "Arial, sans-serif",
-			width: "1000%",
+			width: "100%",
 		},
 		footerContent: {
 			display: "flex",
-			justifyContent: "space-arround",
+			justifyContent: "space-around",
 			alignItems: "flex-start",
 			maxWidth: "1200px",
 			margin: "0 auto",
@@ -97,7 +97,7 @@ export const Footer = () => {
 				{/* logo sección*/}
 				<div style={{ ...styles.footerSection, ...styles.logoSection }}>
 					<img
-						src="assets/logo.png"
+						src="assets/img/logo.png"
 						alt="Logo de la empresa"
 						style={styles.footerLogo}
 						onClick={() => handleNavigation("/")}
@@ -112,7 +112,7 @@ export const Footer = () => {
 						<li style={styles.footerLinkItem}>
 							<span style={{
 								...styles.footerLink,
-								...Footer(hoverStates.sobreNosotros && styles.hoverEffect)
+								...(hoverStates.sobreNosotros && styles.hoverEffect)
 							}}
 								onClick={() => handleNavigation("/sobre-nosotros")}
 								onMouseEnter={() => handleMouseEnter('sobreNosotros')}
@@ -123,7 +123,7 @@ export const Footer = () => {
 						<li style={styles.footerLinkItem}>
 							<span style={{
 								...styles.footerLink,
-								...Footer(hoverStates.trueketeo && styles.hoverEffect)
+								...(hoverStates.trueketeo && styles.hoverEffect)
 							}}
 								onClick={() => handleNavigation("/trueketeo")}
 								onMouseEnter={() => handleMouseEnter('trueketeo')}
@@ -134,7 +134,7 @@ export const Footer = () => {
 						<li style={styles.footerLinkItem}>
 							<span style={{
 								...styles.footerLink,
-								...Footer(hoverStates.Contacto && styles.hoverEffect)
+								...(hoverStates.contacto && styles.hoverEffect)
 							}}
 								onClick={() => handleNavigation("/contacto")}
 								onMouseEnter={() => handleMouseEnter('contacto')}
@@ -152,7 +152,7 @@ export const Footer = () => {
 						<li style={styles.footerLinkItem}>
 							<span style={{
 								...styles.footerLink,
-								...Footer(hoverStates.intercambiar && styles.hoverEffect)
+								...(hoverStates.intercambiar && styles.hoverEffect)
 							}}
 								onClick={() => handleNavigation("/intercambiar-articulos")}
 								onMouseEnter={() => handleMouseEnter('intercambiar')}
@@ -163,7 +163,7 @@ export const Footer = () => {
 						<li style={styles.footerLinkItem}>
 							<span style={{
 								...styles.footerLink,
-								...Footer(hoverStates.acordar && styles.hoverEffect)
+								...(hoverStates.acordar && styles.hoverEffect)
 							}}
 								onClick={() => handleNavigation("/acordar-responsable")}
 								onMouseEnter={() => handleMouseEnter('acordar')}
@@ -174,7 +174,7 @@ export const Footer = () => {
 						<li style={styles.footerLinkItem}>
 							<span style={{
 								...styles.footerLink,
-								...Footer(hoverStates.condiciones && styles.hoverEffect)
+								...(hoverStates.condiciones && styles.hoverEffect)
 							}}
 								onClick={() => handleNavigation("/condiciones-devolucion")}
 								onMouseEnter={() => handleMouseEnter('condiciones')}
