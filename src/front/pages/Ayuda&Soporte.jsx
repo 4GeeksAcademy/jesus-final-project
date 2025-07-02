@@ -6,11 +6,11 @@ export const AyudaYSoporte = () => {
 
   return (
     <div>
-      <div className="container-fluid px-5">
+      <div className="container-fluid">
         <div className="row">
           <div className="col-12 col-lg-8">
             <div className="d-flex align-items-center p-5 ">
-              <div className="w-100 px-4">
+              <div className="w-100 ">
                 <div className="mb-4 fs-3 fw-bold ">
                   Llega a conocer Trueketeo
                 </div>
