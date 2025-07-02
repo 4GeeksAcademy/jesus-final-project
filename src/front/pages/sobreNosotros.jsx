@@ -1,7 +1,7 @@
 import React from "react";
-import equipo from "./equipo.png";
+import equipo from "src/assets/img/equipo.png";
 
-const sobreNosotros = () => {
+const Home= () => {
   const paragraphs = [
     "¡Cambiando el juego, un intercambio a la vez!",
     "Somos TRUEKETEO, un proyecto nacido como trabajo final de un Bootcamp de Full Stack Development. Pero somos mucho más que código: somos una idea que surgió del deseo de hacer algo diferente, donde el valor no lo define el dinero, sino la conexión entre personas.",
@@ -50,4 +50,4 @@ const sobreNosotros = () => {
   );
 };
 
-export default sobreNosotros;
+export default Home;
