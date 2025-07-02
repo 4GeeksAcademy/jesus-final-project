@@ -47,7 +47,7 @@ export const Navbar = () => {
 
 
 	return (
-		<nav className="navbar navbar-light bg-light">
+		<nav className="navbar navbar-light bg-light fixed-top">
 			<div className="container-fluid d-flex align-items-center justify-content-start gap-3">
 				<div className="d-flex" style={{ cursor: "pointer" }} onClick={() => {
 					navigate("/")
