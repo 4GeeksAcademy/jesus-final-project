@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import logo from "../assets/img/logo.png";
 
 
 export const Footer = () => {
@@ -97,8 +98,8 @@ export const Footer = () => {
 				{/* logo sección*/}
 				<div style={{ ...styles.footerSection, ...styles.logoSection }}>
 					<img
-						src="assets/img/logo.png"
-						alt="Logo de la empresa"
+						src={logo}
+						alt="Logo de Trueke"
 						style={styles.footerLogo}
 						onClick={() => handleNavigation("/")}
 						onMouseEnter={() => handleMouseEnter('logo')}

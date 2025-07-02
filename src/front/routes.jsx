@@ -41,7 +41,7 @@ export const router = createBrowserRouter(
       <Route path="/trueke" element={<Truekes />} />
       <Route path="/trueke/:id" element={<Truekes />} />
       <Route path="/trueke/nuevo" element={<Truekes />} />
-      <Route path="/sobre-sonostros" element={<SobreNosotros />} />
+      <Route path="/sobre-nosotros" element={<SobreNosotros />} />
       <Route path="/Contacto" element={<Contacto />} />
     </Route>
   )
