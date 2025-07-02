@@ -15,28 +15,30 @@ export const Footer = () => {
 		},
 		footerContent: {
 			display: "flex",
-			justifyContent: "space-around",
+			justifyContent: "center",
 			alignItems: "flex-start",
 			maxWidth: "1200px",
 			margin: "0 auto",
 			padding: "0 20px",
 			flexWrap: "wrap",
+			gap: "2rem",
 		},
 		footerSection: {
 			margin: "1rem",
-			flex: 1,
-			minWidth: "200px",
+    		flex: 1,
+    		minWidth: "200px",
 		},
 		logoSection: {
 			display: "flex",
 			justifyContent: "center",
 			alignItems: "center",
+			flex: "0 0 150px",
 		},
 		footerLogo: {
 			maxWidth: "120px",
-			height: "auto",
-			cursor: "pointer",
-			transition: "transform 0.3s",
+    		height: "auto",
+    		cursor: "pointer",
+    		transition: "transform 0.3s",
 		},
 		footerTitle: {
 			color: "#333",
@@ -124,12 +126,12 @@ export const Footer = () => {
 						<li style={styles.footerLinkItem}>
 							<span style={{
 								...styles.footerLink,
-								...(hoverStates.trueketeo && styles.hoverEffect)
+								...(hoverStates.politica && styles.hoverEffect)
 							}}
-								onClick={() => handleNavigation("/trueketeo")}
-								onMouseEnter={() => handleMouseEnter('trueketeo')}
-								onMouseLeave={() => handleMouseLeave('trueketeo')}>
-								Trueketeo
+								onClick={() => handleNavigation("/politica-privacidad")}
+								onMouseEnter={() => handleMouseEnter('politica')}
+								onMouseLeave={() => handleMouseLeave('politica')}>
+								Política y privacidad
 							</span>
 						</li>
 						<li style={styles.footerLinkItem}>
