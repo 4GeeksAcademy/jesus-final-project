@@ -1,8 +1,53 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import pasouno from "../assets/img/pasouno.png"
+import pasodos from "../assets/img/pasodos.png"
+import pasotres from "../assets/img/pasotres.png"
+import pasocuatro from "../assets/img/pasocuatro.png"
+import { useState } from "react";
 
 export const AyudaYSoporte = () => {
   const navigate = useNavigate();
+
+  const [oks, setOks] = useState([false, false, false, false]);
+
+
+  const toggleOk = (index) => {
+    setOks(prev => {
+      const newOks = [...prev];
+      newOks[index] = !newOks[index];
+      return newOks;
+    });
+  };
+
+  const allTrue = oks.every(Boolean);
+
+  const cardsData = [
+    {
+      img: pasouno,
+      title: "Paso 1",
+      subtitle: "Elegí el artículo",
+      text: "Revisá las ofertas disponibles o publicá lo que querés dar a cambio. Así podés ver qué quieren ofrecerte y decidir qué trueke te interesa.",
+    },
+    {
+      img: pasodos,
+      title: "Paso 2",
+      subtitle: "Confirmá el trueke",
+      text: "Coordiná una fecha para el intercambio y confirmá con la otra persona. Esto asegura que ambos estén listos para hacer el trueke.",
+    },
+    {
+      img: pasotres,
+      title: "Paso 3",
+      subtitle: "Acordá detalles y lugar",
+      text: "Acordá por mensajería el lugar (recomendamos uno público y seguro, como una plaza) y la hora del intercambio para garantizar la seguridad de ambos.",
+    },
+    {
+      img: pasocuatro,
+      title: "Paso 4",
+      subtitle: "Dejá tu reseña",
+      text: "Dejando un comentario y una reseña ayudás a mejorar la comunidad y el sistema de puntos, fomentando la confianza para futuros truekes.",
+    },
+  ];
 
   return (
     <motion.div
@@ -140,7 +185,46 @@ export const AyudaYSoporte = () => {
             </div>
           </div>
         </section>
-      </div>
-    </motion.div>
+        <section className="my-5 d-flex justify-content-center">
+          <div className="row g-4">
+            {cardsData.map(({ img, title, subtitle, text }, i) => (
+              <div key={i} className="col-12 col-md-6 col-xxl-3">
+                <div className="card shadow-sm" style={{ width: "20rem", height: "21rem" }}>
+                  <div className="d-flex justify-content-center pt-3">
+                    <img src={img} alt={`Icono ${title}`} style={{ width: "55px", height: "55px" }} />
+                  </div>
+                  <div className="card-body d-flex flex-column">
+                    <h5 className="card-title text-center">{title}</h5>
+                    <h6 className="card-subtitle mb-2 text-muted text-center">{subtitle}</h6>
+                    <p className="card-text">{text}</p>
+                    {oks[i] ? (
+                      <button
+                        className="btn btn-success w-100 mt-auto"
+                        onClick={() => toggleOk(i)}
+                      >
+                        ✓
+                      </button>
+                    ) : (
+                      <button
+                        className="btn btn-primary w-100 mt-auto"
+                        onClick={() => toggleOk(i)}
+                      >
+                        OK
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+        {allTrue && (
+          <div className="alert alert-success text-center mt-4" role="alert">
+            ¡Felicitaciones! Y ahora... a truekear. 🚀
+          </div>
+        )}
+
+      </div >
+    </motion.div >
   );
 };
