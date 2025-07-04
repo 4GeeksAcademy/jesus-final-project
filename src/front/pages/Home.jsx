@@ -1,15 +1,22 @@
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import electronica from "../assets/img/electronica.png"
+import ropa from "../assets/img/ropa.png"
+import deportes from "../assets/img/deportes.png"
+import casa from "../assets/img/casa.png"
+import libros from "../assets/img/libros.png"
+import juguetes from "../assets/img/juguetes.png"
 
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
+const cloud_name = import.meta.env.CLOUD_NAME
 
 export const Home = () => {
 	const navigate = useNavigate()
 	const [articulos, setArticulos] = useState([]);
+	const [rating, setRating] = useState([]);
 
-	const cloud_name = import.meta.env.CLOUD_NAME
 
 	useEffect(() => {
 		const fetchArticulos = async () => {
@@ -26,14 +33,36 @@ export const Home = () => {
 				console.error("Error al cargar artículos por categoría", err);
 			}
 		};
+		const fetchRating = async () => {
+			try {
+				const response = await fetch(`${backendUrl}api/rating`);
+				if (response.ok) {
+					const data = await response.json();
+					const ordenados = data
+						.slice(0, 3);
+					setRating(ordenados);
+				}
 
+			} catch (err) {
+				console.error("Error al cargar los usuarios con mejor rating", err);
+			}
+		}
 		fetchArticulos();
+		fetchRating();
 	}, []);
+
+	const renderStars = (rating) => {
+		const starsCount = Math.min(5, Math.round(rating));
+		return '⭐'.repeat(starsCount);
+	};
 
 	const cardVariants = {
 		hidden: { opacity: 0, y: 20 },
 		visible: { opacity: 1, y: 0 },
 	};
+
+
+
 
 	return (
 		<motion.div
@@ -55,7 +84,11 @@ export const Home = () => {
 				</div>
 			</div>
 
-			<div style={styles.container}>
+			<div className="containerHome pb-0">
+				<h4>Últimos Artículos</h4>
+			</div>
+			<div className="containerHome">
+
 				{(
 					articulos.map((articulo) => (
 						<motion.div
@@ -99,74 +132,187 @@ export const Home = () => {
 				)}
 			</div>
 
-			<div style={styles.container}>
-				{(
-					articulos.map((articulo) => (
-						<motion.div
-							key={articulo.id}
-							className="card"
-							variants={cardVariants}
-							initial="hidden"
-							animate="visible"
-							whileHover={{ scale: 1.03 }}
-							style={styles.card}
-						>
-							<img src={articulo.img} alt={articulo.titulo} style={styles.image} />
-							<div style={styles.content}>
-								<div style={styles.titleContainer} className="d-flex justify-content-center">
-									<h3 style={styles.title}>{articulo.titulo}</h3>
-
-								</div>
-
-								<div className="d-flex justify-content-center">
-									<p style={styles.subtitle}>
-										<strong>Estado:</strong> {articulo.estado}
-									</p>
-								</div>
-								<span
-									style={styles.box}
-									onClick={() => {
-										navigate(`/articulo/${articulo.id}`);
-									}}
-									className="ms-auto"
-								>
-									<i className="bi bi-box2-heart"></i>
-								</span>
-
-
-
-
-							</div>
-						</motion.div>
-					))
-
-				)}
+			<div className="pb-0" >
+				<h4 className="textoRating"> Usuarios mejores puntuados</h4>
 			</div>
+			<div className="containerHome2">
+				{rating.map((usuario) => (
+					<motion.div
+						key={usuario.usuario_id}
+						className="card2"
+						variants={cardVariants}
+						initial="hidden"
+						animate="visible"
+						whileHover={{ scale: 1.03 }}
+						style={styles.card2}
+					>
 
+						<div style={styles.content}>
+							<div style={styles.titleContainer} className="d-flex justify-content-center">
+								<h3 style={styles.title}>{usuario.nombre_de_usuario}</h3>
+							</div>
+							<div className="d-flex justify-content-center">
+								<p style={styles.subtitle2}>
+									<strong>Rating promedio:</strong> {usuario.promedio_puntuacion} {renderStars(usuario.promedio_puntuacion)}
+								</p>
+							</div>
+						</div>
+
+					</motion.div>
+				))}
+			</div>
+			<div className="bg-carousel ">
+				<div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel" style={{ maxWidth: '200px', margin: 'auto' }}>
+					<div class="carousel-indicators">
+						<button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+						<button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
+						<button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
+						<button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="3" aria-label="Slide 4"></button>
+						<button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="4" aria-label="Slide 5"></button>
+						<button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="5" aria-label="Slide 6"></button>
+					</div>
+
+					<div class="carousel-inner ">
+						<div class="carousel-item active">
+							<img
+								src={electronica}
+								class="d-block w-100"
+								alt="Icono electrónica"
+								style={{ maxHeight: '200px', objectFit: 'cover' }}
+							/>
+							<div class="text-center mt-2">
+								<h5>Electrónica</h5>
+								<p onClick={() => {
+									navigate(`/articulos/electronica`);
+								}} className="mb-5 categoriasHomeCarusel">Explora la sección de electrónica</p>
+							</div>
+						</div>
+
+						<div class="carousel-item">
+							<img
+								src={ropa}
+								class="d-block w-100"
+								alt="Ropa"
+								style={{ maxHeight: '200px', objectFit: 'cover' }}
+							/>
+							<div class="text-center mt-2">
+								<h5>Ropa</h5>
+								<p onClick={() => {
+									navigate(`/articulos/ropa`);
+								}} className="mb-5 categoriasHomeCarusel">Explora la sección de ropa</p>
+							</div>
+						</div>
+
+						<div class="carousel-item">
+							<img
+								src={casa}
+								class="d-block w-100"
+								alt="Icono casa"
+								style={{ maxHeight: '200px', objectFit: 'cover' }}
+							/>
+							<div class="text-center mt-2">
+								<h5>Casa</h5>
+								<p onClick={() => {
+									navigate(`/articulos/casa`);
+								}} className="mb-5 categoriasHomeCarusel">Explora la sección de casa</p>
+							</div>
+						</div>
+
+						<div class="carousel-item">
+							<img
+								src={deportes}
+								class="d-block w-100"
+								alt="Icono deportes"
+								style={{ maxHeight: '200px', objectFit: 'cover' }}
+							/>
+							<div class="text-center mt-2">
+								<h5>Deportes</h5>
+								<p onClick={() => {
+									navigate(`/articulos/deportes`);
+								}} className="mb-5 categoriasHomeCarusel">Explora la sección de deportes</p>
+							</div>
+						</div>
+
+						<div class="carousel-item">
+							<img
+								src={libros}
+								class="d-block w-100"
+								alt="Iconolibro"
+								style={{ maxHeight: '200px', objectFit: 'cover' }}
+							/>
+							<div class="text-center mt-2">
+								<h5>Libros</h5>
+								<p onClick={() => {
+									navigate(`/articulos/libros`);
+								}} className="mb-5 categoriasHomeCarusel">Explora la sección de libros</p>
+							</div>
+						</div>
+						<div class="carousel-item">
+							<img
+								src={juguetes}
+								class="d-block w-100 juguete"
+								alt="Icono juguete"
+								style={{ maxHeight: '200px', objectFit: 'cover' }}
+							/>
+							<div class="text-center mt-2">
+								<h5>Juguetes</h5>
+								<p onClick={() => {
+									navigate(`/articulos/juguetes`);
+								}}
+									className="mb-5 categoriasHomeCarusel">Explora la sección de juguetes</p>
+							</div>
+						</div>
+					</div>
+
+
+					<button
+						className="carousel-control-prev"
+						type="button"
+						data-bs-target="#carouselExampleCaptions"
+						data-bs-slide="prev"
+						style={{ left: '-40px' }}
+					>
+						<span className="carousel-control-prev-icon" aria-hidden="true"></span>
+						<span className="visually-hidden">Anterior</span>
+					</button>
+					<button
+						className="carousel-control-next"
+						type="button"
+						data-bs-target="#carouselExampleCaptions"
+						data-bs-slide="next"
+						style={{ right: '-40px' }}
+					>
+						<span className="carousel-control-next-icon" aria-hidden="true"></span>
+						<span className="visually-hidden">Siguiente</span>
+					</button>
+				</div>
+			</div>
 		</motion.div>
 	);
 };
 
 
+const baseCardStyle = {
+	border: "1px solid #e0e0e0",
+	borderRadius: "12px",
+	boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+	overflow: "hidden",
+	cursor: "pointer",
+	display: "flex",
+	flexDirection: "column",
+	transition: "transform 0.2s ease, box-shadow 0.2s ease",
+};
+
 const styles = {
-	container: {
-		display: "grid",
-		gridTemplateColumns: "repeat(4, 1fr)",
-		gap: "24px",
-		padding: "40px 20px",
-		maxWidth: "1500px",
-		margin: "0 auto",
-	},
 	card: {
+		...baseCardStyle,
 		backgroundColor: "#fff",
-		border: "1px solid #e0e0e0",
-		borderRadius: "12px",
-		boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-		overflow: "hidden",
-		cursor: "pointer",
-		display: "flex",
-		flexDirection: "column",
-		transition: "transform 0.2s ease, box-shadow 0.2s ease",
+		color: "#000",
+	},
+	card2: {
+		...baseCardStyle,
+		backgroundColor: "#262626",
+		color: "#fff",
 	},
 	image: {
 		width: "100%",
@@ -206,6 +352,11 @@ const styles = {
 		fontSize: "0.9rem",
 		color: "#444",
 	},
+	subtitle2: {
+		margin: "0",
+		fontSize: "0.9rem",
+		color: "#fff",
+	},
 	caracteristicas: {
 		maxHeight: "60px",
 		overflowY: "auto",
@@ -217,4 +368,5 @@ const styles = {
 		marginTop: "8px",
 		border: "1px solid #eee",
 	},
+
 };
