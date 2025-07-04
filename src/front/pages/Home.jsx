@@ -84,7 +84,7 @@ export const Home = () => {
 				</div>
 			</div>
 
-			<div className="containerHome pb-0">
+			<div className="containerHome mt-5 pb-0">
 				<h4>Últimos Artículos</h4>
 			</div>
 			<div className="containerHome">
@@ -132,10 +132,10 @@ export const Home = () => {
 				)}
 			</div>
 
-			<div className="pb-0" >
+			<div className="pb-0 mt-5" >
 				<h4 className="textoRating"> Usuarios mejores puntuados</h4>
 			</div>
-			<div className="containerHome2">
+			<div className="containerHome2 mb-5">
 				{rating.map((usuario) => (
 					<motion.div
 						key={usuario.usuario_id}
@@ -161,7 +161,7 @@ export const Home = () => {
 					</motion.div>
 				))}
 			</div>
-			<div className="bg-carousel my-5 ">
+			<div className="bg-carousel">
 				<div id="carouselExampleCaptions" className="carousel slide" data-bs-ride="carousel" style={{ maxWidth: '200px', margin: 'auto' }}>
 					<div class="carousel-indicators">
 						<button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" className="active" aria-current="true" aria-label="Slide 1"></button>
@@ -287,6 +287,7 @@ export const Home = () => {
 					</button>
 				</div>
 			</div>
+
 		</motion.div>
 	);
 };
