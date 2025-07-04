@@ -11,7 +11,7 @@ export const DatosPersonales = () => {
     nombre_completo: "",
     telefono: "",
     direccion: "",
-    pais: "",
+    pais: "España",
     region: "",
     codigo_postal: "",
     imagen: "",
@@ -55,6 +55,8 @@ export const DatosPersonales = () => {
 
     fetchUserData();
   }, []);
+
+    
 
   // Cambios en los inputs
   const handleInputChange = (e) => {
@@ -102,7 +104,7 @@ export const DatosPersonales = () => {
   // Guardar cambios en el perfil
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Validar campos requeridos
     if (!userData.nombre_completo || !userData.telefono || !userData.direccion) {
       alert("Por favor complete todos los campos obligatorios (Nombre, Teléfono y Dirección)");
@@ -134,7 +136,7 @@ export const DatosPersonales = () => {
         const data = await response.json();
         alert("Perfil actualizado correctamente");
         setEditing(false);
-        
+
         // Volver a cargar los datos para asegurar consistencia
         const fetchResponse = await fetch(`${backendUrl}api/datos-personales`, {
           method: "GET",
@@ -142,7 +144,7 @@ export const DatosPersonales = () => {
             'Authorization': `Bearer ${token}`
           }
         });
-        
+
         if (fetchResponse.ok) {
           const updatedData = await fetchResponse.json();
           setUserData({
@@ -155,8 +157,8 @@ export const DatosPersonales = () => {
       }
     } catch (error) {
       console.error("Error updating profile:", error);
-      const errorMsg = error.message.includes("necesitas enviar") ? 
-        "Faltan campos obligatorios: " + error.message : 
+      const errorMsg = error.message.includes("necesitas enviar") ?
+        "Faltan campos obligatorios: " + error.message :
         "Error al actualizar el perfil";
       alert(errorMsg);
     }
@@ -273,9 +275,9 @@ export const DatosPersonales = () => {
                 className="form-control"
                 id="pais"
                 name="pais"
-                value={userData.pais}
-                onChange={handleInputChange}
-                disabled={!editing}
+                value={"España"}
+                readOnly
+                disabled
               />
 
               <label htmlFor="region" className="form-label">Región</label>

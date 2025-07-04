@@ -22,7 +22,7 @@ def setup_admin(app):
 class UsuarioModelView(ModelView):
     column_auto_selected = True
     column_list = ['id', 'nombre_de_usuario', 'email', 'password', 'is_active',
-                   'articulos', 'articulos_favoritos', 'ratings', 'datos_personales', 'comentarios']
+                   'articulos', 'articulos_favoritos', 'ratings', 'datos_personales', 'comentarios', 'fecha_registro']
 
 
 class ArticuloModelView(ModelView):
@@ -62,7 +62,7 @@ class ComentarioModelView(ModelView):
 
 class DatosPersonalesModelView(ModelView):
     column_auto_selected = True
-    column_list = ['id', 'nombre_completo', 'telefono', 'direccion', 'fecha_registro', 'img',
+    column_list = ['id', 'nombre_completo', 'telefono', 'direccion', 'img',
                    'usuario_id',
                    'usuario']
 

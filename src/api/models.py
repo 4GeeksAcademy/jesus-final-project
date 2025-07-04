@@ -20,9 +20,8 @@ class Usuario(db.Model):
         String(255), nullable=False)  # Ampliado para hashes seguros
     is_active: Mapped[bool] = mapped_column(
         Boolean(), nullable=False, default=True)
-    fecha_publicacion: Mapped[datetime] = mapped_column(
+    fecha_registro: Mapped[datetime] = mapped_column(
         DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
-    
 
     # Relaciones
     articulos: Mapped[list['Articulo']] = relationship(
@@ -201,8 +200,6 @@ class DatosPersonales(db.Model):
     pais: Mapped[str] = mapped_column(String(50), nullable=False)
     region: Mapped[str] = mapped_column(String(50), nullable=False)
     codigo_postal: Mapped[str] = mapped_column(String(50), nullable=False)
-    fecha_registro: Mapped[datetime] = mapped_column(
-        DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
     img: Mapped[str] = mapped_column(String(200), nullable=False)
 
     # Foreign Key

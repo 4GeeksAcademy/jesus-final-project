@@ -34,16 +34,27 @@ def handle_hello():
 def editar_datos_personales():
     usuario_token_id = int(get_jwt_identity())
     usuario = db.session.query(Usuario).get(usuario_token_id)
-    
+
     if not usuario:
         return jsonify({'msg': 'Usuario no encontrado'}), 404
 
     if request.method == 'GET':
-        datos_personales = db.session.query(DatosPersonales).filter_by(usuario_id=usuario_token_id).first()
-        
+        datos_personales = db.session.query(DatosPersonales).filter_by(
+            usuario_id=usuario_token_id).first()
+
         if not datos_personales:
-            return jsonify({'msg': 'Datos personales no encontrados'}), 404
-            
+
+            return jsonify({
+                'email': usuario.email,
+                'nombre_completo': '',
+                'telefono': '',
+                'direccion': '',
+                'pais': '',
+                'region': '',
+                'codigo_postal': '',
+                'imagen': '',
+                'fecha_registro': usuario.fecha_registro.isoformat() if usuario.fecha_registro else ''
+            }), 200
         return jsonify({
             'email': usuario.email,
             'nombre_completo': datos_personales.nombre_completo,
@@ -67,7 +78,8 @@ def editar_datos_personales():
     if 'direccion' not in body:
         return jsonify({'msg': 'necesitas enviar tu dirección'}), 400
 
-    datos_personales = db.session.query(DatosPersonales).filter_by(usuario_id=usuario_token_id).first()
+    datos_personales = db.session.query(DatosPersonales).filter_by(
+        usuario_id=usuario_token_id).first()
     if not datos_personales:
         datos_personales = DatosPersonales(usuario_id=usuario_token_id)
 
