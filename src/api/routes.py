@@ -28,10 +28,32 @@ def handle_hello():
 #  EDITS
 
 
-@api.route('/datos-personales', methods=['POST', 'PUT'])
+@api.route('/datos-personales', methods=['GET', 'POST', 'PUT'])
 @jwt_required()
 def editar_datos_personales():
     usuario_token_id = int(get_jwt_identity())
+    usuario = db.session.query(Usuario).get(usuario_token_id)
+    
+    if not usuario:
+        return jsonify({'msg': 'Usuario no encontrado'}), 404
+
+    if request.method == 'GET':
+        datos_personales = db.session.query(DatosPersonales).filter_by(usuario_id=usuario_token_id).first()
+        
+        if not datos_personales:
+            return jsonify({'msg': 'Datos personales no encontrados'}), 404
+            
+        return jsonify({
+            'email': usuario.email,
+            'nombre_completo': datos_personales.nombre_completo,
+            'telefono': datos_personales.telefono,
+            'direccion': datos_personales.direccion,
+            'pais': datos_personales.pais if hasattr(datos_personales, 'pais') else '',
+            'region': datos_personales.region if hasattr(datos_personales, 'region') else '',
+            'codigo_postal': datos_personales.codigo_postal if hasattr(datos_personales, 'codigo_postal') else '',
+            'imagen': datos_personales.img,
+            'fecha_registro': usuario.fecha_registro.isoformat() if hasattr(usuario, 'fecha_registro') and usuario.fecha_registro else ''
+        }), 200
 
     body = request.get_json(silent=True)
     if not body:
@@ -44,12 +66,7 @@ def editar_datos_personales():
     if 'direccion' not in body:
         return jsonify({'msg': 'necesitas enviar tu dirección'}), 400
 
-    usuario = db.session.query(Usuario).get(usuario_token_id)
-    if not usuario:
-        return jsonify({'msg': 'Usuario no encontrado'}), 404
-
-    datos_personales = db.session.query(
-        DatosPersonales).filter_by(usuario_id=usuario_token_id).first()
+    datos_personales = db.session.query(DatosPersonales).filter_by(usuario_id=usuario_token_id).first()
     if not datos_personales:
         datos_personales = DatosPersonales(usuario_id=usuario_token_id)
 
@@ -57,6 +74,9 @@ def editar_datos_personales():
     datos_personales.telefono = body['telefono']
     datos_personales.direccion = body['direccion']
     datos_personales.img = body.get('img')
+    datos_personales.pais = body.get('pais')
+    datos_personales.region = body.get('region')
+    datos_personales.codigo_postal = body.get('codigo_postal')
 
     db.session.add(datos_personales)
     db.session.commit()
