@@ -30,8 +30,9 @@ class ArticuloModelView(ModelView):
     column_list = ['id', 'titulo', 'caracteristicas', 'estado',
                    'modelo', 'cantidad', 'categoria', 'img',
                    'usuario_id',
-                   'usuario', 'articulos_favoritos', 'ratings']
-    
+                   'usuario', 'articulos_favoritos', 'ratings',]
+
+
 """     form_columns = ['titulo', 'caracteristicas', 'estado',
                     'modelo', 'cantidad', 'categoria', 'img',
                     'usuario_id',
