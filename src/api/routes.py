@@ -28,7 +28,7 @@ def handle_hello():
 #  EDITS
 
 
-@api.route('/editar-datos-personales/', methods=['PUT'])
+@api.route('/datos-personales', methods=['POST', 'PUT'])
 @jwt_required()
 def editar_datos_personales():
     usuario_token_id = int(get_jwt_identity())
@@ -394,31 +394,32 @@ def obtener_historial_truekes():
     """
     try:
         usuario_token_id = int(get_jwt_identity())
-        
+
         # Query para obtener transacciones donde el usuario participa
         # Tanto como propietario (sus artículos) como receptor
         truekes_como_propietario = db.session.query(TransaccionTrueke).join(
             Articulo, TransaccionTrueke.articulo_propietario_id == Articulo.id
         ).filter(Articulo.usuario_id == usuario_token_id).all()
-        
+
         truekes_como_receptor = db.session.query(TransaccionTrueke).join(
             Articulo, TransaccionTrueke.articulo_receptor_id == Articulo.id
         ).filter(Articulo.usuario_id == usuario_token_id).all()
-        
+
         # Combinar y eliminar duplicados
-        todas_las_transacciones = list(set(truekes_como_propietario + truekes_como_receptor))
-        
+        todas_las_transacciones = list(
+            set(truekes_como_propietario + truekes_como_receptor))
+
         historial = []
         for transaccion in todas_las_transacciones:
             # Determinar rol del usuario en esta transacción
             es_propietario = transaccion.articulo_propietario.usuario_id == usuario_token_id
-            
+
             historial_item = {
                 'id': transaccion.id,
                 'fecha_creacion': transaccion.fecha_creacion.isoformat() if hasattr(transaccion, 'fecha_creacion') else None,
                 'comentarios': transaccion.comentarios,
                 'rol_usuario': 'propietario' if es_propietario else 'receptor',
-                
+
                 # Datos del artículo propio
                 'mi_articulo': {
                     'id': transaccion.articulo_propietario.id if es_propietario else transaccion.articulo_receptor.id,
@@ -427,7 +428,7 @@ def obtener_historial_truekes():
                     'img': transaccion.articulo_propietario.img if es_propietario else transaccion.articulo_receptor.img,
                     'estado': transaccion.articulo_propietario.estado if es_propietario else transaccion.articulo_receptor.estado
                 },
-                
+
                 # Datos del artículo intercambiado
                 'articulo_intercambiado': {
                     'id': transaccion.articulo_receptor.id if es_propietario else transaccion.articulo_propietario.id,
@@ -436,25 +437,25 @@ def obtener_historial_truekes():
                     'img': transaccion.articulo_receptor.img if es_propietario else transaccion.articulo_propietario.img,
                     'estado': transaccion.articulo_receptor.estado if es_propietario else transaccion.articulo_propietario.estado
                 },
-                
+
                 # Datos del otro usuario
                 'otro_usuario': {
                     'id': transaccion.articulo_receptor.usuario.id if es_propietario else transaccion.articulo_propietario.usuario.id,
                     'nombre_de_usuario': transaccion.articulo_receptor.usuario.nombre_de_usuario if es_propietario else transaccion.articulo_propietario.usuario.nombre_de_usuario
                 }
             }
-            
+
             historial.append(historial_item)
-        
+
         # Ordenar por fecha (más recientes primero) si existe el campo fecha_creacion
         # Si no tienes fecha_creacion, ordenar por id
         historial.sort(key=lambda x: x['id'], reverse=True)
-        
+
         return jsonify({
             'historial': historial,
             'total': len(historial)
         }), 200
-        
+
     except Exception as e:
         return jsonify({'error': f'Error al obtener historial: {str(e)}'}), 500
 
@@ -467,26 +468,27 @@ def obtener_estadisticas_truekes():
     """
     try:
         usuario_token_id = int(get_jwt_identity())
-        
+
         # Contar truekes como propietario
         truekes_como_propietario = db.session.query(TransaccionTrueke).join(
             Articulo, TransaccionTrueke.articulo_propietario_id == Articulo.id
         ).filter(Articulo.usuario_id == usuario_token_id).count()
-        
+
         # Contar truekes como receptor
         truekes_como_receptor = db.session.query(TransaccionTrueke).join(
             Articulo, TransaccionTrueke.articulo_receptor_id == Articulo.id
         ).filter(Articulo.usuario_id == usuario_token_id).count()
-        
+
         # Total de artículos publicados por el usuario
-        total_articulos = db.session.query(Articulo).filter_by(usuario_id=usuario_token_id).count()
-        
+        total_articulos = db.session.query(Articulo).filter_by(
+            usuario_id=usuario_token_id).count()
+
         # Categorías más intercambiadas
         categorias_query = db.session.query(
             Articulo.categoria,
             db.func.count(TransaccionTrueke.id).label('total')
         ).join(
-            TransaccionTrueke, 
+            TransaccionTrueke,
             db.or_(
                 TransaccionTrueke.articulo_propietario_id == Articulo.id,
                 TransaccionTrueke.articulo_receptor_id == Articulo.id
@@ -494,12 +496,12 @@ def obtener_estadisticas_truekes():
         ).filter(
             Articulo.usuario_id == usuario_token_id
         ).group_by(Articulo.categoria).all()
-        
+
         categorias_stats = [
-            {'categoria': cat, 'total_truekes': total} 
+            {'categoria': cat, 'total_truekes': total}
             for cat, total in categorias_query
         ]
-        
+
         return jsonify({
             'truekes_como_propietario': truekes_como_propietario,
             'truekes_como_receptor': truekes_como_receptor,
@@ -508,7 +510,7 @@ def obtener_estadisticas_truekes():
             'categorias_mas_intercambiadas': categorias_stats,
             'tasa_intercambio': round((truekes_como_propietario + truekes_como_receptor) / max(total_articulos, 1) * 100, 2)
         }), 200
-        
+
     except Exception as e:
         return jsonify({'error': f'Error al obtener estadísticas: {str(e)}'}), 500
 
@@ -522,25 +524,26 @@ def obtener_detalle_trueke(trueke_id):
     """
     try:
         usuario_token_id = int(get_jwt_identity())
-        
-        transaccion = db.session.query(TransaccionTrueke).filter_by(id=trueke_id).first()
-        
+
+        transaccion = db.session.query(
+            TransaccionTrueke).filter_by(id=trueke_id).first()
+
         if not transaccion:
             return jsonify({'error': 'Trueke no encontrado'}), 404
-        
+
         # Verificar que el usuario participó en este trueke
         es_propietario = transaccion.articulo_propietario.usuario_id == usuario_token_id
         es_receptor = transaccion.articulo_receptor.usuario_id == usuario_token_id
-        
+
         if not (es_propietario or es_receptor):
             return jsonify({'error': 'No tienes acceso a este trueke'}), 403
-        
+
         detalle = {
             'id': transaccion.id,
             'fecha_creacion': transaccion.fecha_creacion.isoformat() if hasattr(transaccion, 'fecha_creacion') else None,
             'comentarios': transaccion.comentarios,
             'rol_usuario': 'propietario' if es_propietario else 'receptor',
-            
+
             'articulo_propietario': {
                 'id': transaccion.articulo_propietario.id,
                 'titulo': transaccion.articulo_propietario.titulo,
@@ -556,7 +559,7 @@ def obtener_detalle_trueke(trueke_id):
                     'email': transaccion.articulo_propietario.usuario.email
                 }
             },
-            
+
             'articulo_receptor': {
                 'id': transaccion.articulo_receptor.id,
                 'titulo': transaccion.articulo_receptor.titulo,
@@ -572,7 +575,7 @@ def obtener_detalle_trueke(trueke_id):
                     'email': transaccion.articulo_receptor.usuario.email
                 }
             },
-            
+
             # Comentarios asociados al trueke (si tienes la relación)
             'comentarios_transaccion': [
                 {
@@ -584,24 +587,11 @@ def obtener_detalle_trueke(trueke_id):
                 for comentario in transaccion.comentarios_transaccion
             ] if hasattr(transaccion, 'comentarios_transaccion') else []
         }
-        
+
         return jsonify(detalle), 200
-        
+
     except Exception as e:
         return jsonify({'error': f'Error al obtener detalle del trueke: {str(e)}'}), 500
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 # Rutas temporales para debug en postman
@@ -611,23 +601,26 @@ def obtener_detalle_trueke(trueke_id):
 def debug_trueke(trueke_id):
     if os.getenv("FLASK_DEBUG") != "1":
         return jsonify({'msg': 'Solo disponible en desarrollo'}), 404
-        
+
     usuario_token_id = int(get_jwt_identity())
-    
+
     # Buscar el trueke
-    transaccion = db.session.query(TransaccionTrueke).filter_by(id=trueke_id).first()
-    
+    transaccion = db.session.query(
+        TransaccionTrueke).filter_by(id=trueke_id).first()
+
     if not transaccion:
         return jsonify({
             'error': 'Trueke no encontrado',
             'trueke_id_buscado': trueke_id,
             'todos_los_truekes': [t.id for t in db.session.query(TransaccionTrueke).all()]
         }), 404
-    
+
     # Verificar participación del usuario
-    es_propietario = transaccion.articulo_propietario.usuario_id == int(usuario_token_id)
-    es_receptor = transaccion.articulo_receptor.usuario_id == int(usuario_token_id)
-    
+    es_propietario = transaccion.articulo_propietario.usuario_id == int(
+        usuario_token_id)
+    es_receptor = transaccion.articulo_receptor.usuario_id == int(
+        usuario_token_id)
+
     return jsonify({
         'trueke_encontrado': True,
         'trueke_id': transaccion.id,
@@ -649,22 +642,22 @@ def debug_trueke(trueke_id):
 def debug_articulo(articulo_id):
     if os.getenv("FLASK_DEBUG") != "1":
         return jsonify({'msg': 'Solo disponible en desarrollo'}), 404
-        
+
     usuario_token_id = int(get_jwt_identity())
-    
+
     # Buscar el artículo
     articulo = db.session.query(Articulo).get(articulo_id)
-    
+
     if not articulo:
         return jsonify({
             'error': 'Artículo no encontrado',
             'articulo_id_buscado': articulo_id,
             'todos_los_articulos': [
-                {'id': a.id, 'usuario_id': a.usuario_id, 'titulo': a.titulo} 
+                {'id': a.id, 'usuario_id': a.usuario_id, 'titulo': a.titulo}
                 for a in db.session.query(Articulo).all()
             ]
         }), 404
-    
+
     return jsonify({
         'articulo_encontrado': True,
         'articulo_id': articulo.id,

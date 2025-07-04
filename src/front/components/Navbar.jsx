@@ -99,11 +99,10 @@ export const Navbar = () => {
 								<option value="libros">Libros</option>
 								<option value="juguetes">Juguetes</option>
 							</select>
-							<button onClick={callBusqueda} type="submit" className="border-0 text-white px-4 py-2 rounded ms-2">
-								<svg xmlns="http://www.w3.org/2000/svg" width="18px" height="18px" viewBox="0 0 1244 1280">
-									<g transform="translate(0,1280) scale(0.1,-0.1)" fill="#000000">
-										<path d="M4025 12789 ... (ICON PATH OMITTED FOR BREVITY) ..." />
-									</g>
+							<button onClick={callBusqueda} type="submit" className="border-0 px-4 py-2 rounded ms-2">
+								<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+									<circle cx="11" cy="11" r="8" />
+									<line x1="21" y1="21" x2="16.65" y2="16.65" />
 								</svg>
 							</button>
 						</div>
