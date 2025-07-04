@@ -106,6 +106,23 @@ def obtener_articulos_por_categoria(categoria):
     return jsonify(resultados), 200
 
 
+@api.route('/articulos', methods=['GET'])
+def obtener_todos_los_articulos():
+    articulos = Articulo.query.all()
+
+    resultados = []
+    for articulo in articulos:
+        resultados.append({
+            'id': articulo.id,
+            'titulo': articulo.titulo,
+            'img': articulo.img,
+            'estado': articulo.estado,
+            'fecha_publicacion': articulo.fecha_publicacion.isoformat() if articulo.fecha_publicacion else None
+        })
+
+    return jsonify(resultados), 200
+
+
 @api.route('/articulo/<int:articulo_id>', methods=['GET'])
 def obtener_datos_articulo(articulo_id):
 

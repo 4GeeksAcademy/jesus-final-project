@@ -60,6 +60,14 @@ body {
   line-height: 1.5;
 }
 
+.bg-home {
+  background-image: url("./assets/img/home.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  height: 100%;
+  min-height: 500px;
+}
 .bg-comotruekear {
   background-image: url("./assets/img/ayudaysoporte.png");
   background-repeat: no-repeat;
@@ -81,6 +89,9 @@ body {
 }
 .bg-truekear-fondo {
   background-color: #e1eaf6;
+}
+.bg-home-fondo {
+  background-color: #77a7e9;
 }
 
 .no-hover:active {
