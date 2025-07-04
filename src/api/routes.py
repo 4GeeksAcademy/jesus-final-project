@@ -2,8 +2,9 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 import os
+from sqlalchemy import func
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, Usuario, DatosPersonales, Articulo, ArticuloFavorito, TransaccionTrueke
+from api.models import db, Usuario, DatosPersonales, Articulo, ArticuloFavorito, TransaccionTrueke, Rating
 from api.utils import generate_sitemap, APIException
 from datetime import datetime, timezone
 import time
@@ -124,6 +125,49 @@ def obtener_articulos_por_categoria(categoria):
         })
 
     return jsonify(resultados), 200
+
+
+@api.route('/articulos', methods=['GET'])
+def obtener_todos_los_articulos():
+    articulos = Articulo.query.all()
+
+    resultados = []
+    for articulo in articulos:
+        resultados.append({
+            'id': articulo.id,
+            'titulo': articulo.titulo,
+            'img': articulo.img,
+            'estado': articulo.estado,
+            'fecha_publicacion': articulo.fecha_publicacion.isoformat() if articulo.fecha_publicacion else None
+        })
+
+    return jsonify(resultados), 200
+
+
+@api.route('/rating', methods=['GET'])
+def obtener_todos_los_ratings():
+    ratings = (
+        db.session.query(
+            Rating.usuario_id,
+            Usuario.nombre_de_usuario.label('nombre_de_usuario'),
+            func.avg(Rating.puntuacion).label('promedio_puntuacion')
+        )
+        .join(Usuario, Usuario.id == Rating.usuario_id)
+        .group_by(Rating.usuario_id, Usuario.nombre_de_usuario)
+        .order_by(func.avg(Rating.puntuacion).desc())
+        .all()
+    )
+
+    rating_data = [
+        {
+            'usuario_id': r.usuario_id,
+            'nombre_de_usuario': r.nombre_de_usuario,
+            'promedio_puntuacion': round(r.promedio_puntuacion, 2)
+        }
+        for r in ratings
+    ]
+
+    return jsonify(rating_data), 200
 
 
 @api.route('/articulo/<int:articulo_id>', methods=['GET'])

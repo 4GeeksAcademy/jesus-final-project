@@ -60,6 +60,14 @@ body {
   line-height: 1.5;
 }
 
+.bg-home {
+  background-image: url("./assets/img/home.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  height: 100%;
+  min-height: 500px;
+}
 .bg-comotruekear {
   background-image: url("./assets/img/ayudaysoporte.png");
   background-repeat: no-repeat;
@@ -82,6 +90,9 @@ body {
 .bg-truekear-fondo {
   background-color: #e1eaf6;
 }
+.bg-home-fondo {
+  background-color: #77a7e9;
+}
 
 .no-hover:active {
   border-color: transparent !important;
@@ -95,5 +106,62 @@ body {
 
   .texto-cita {
     font-size: 1.25rem;
+  }
+}
+
+/* HOME */
+
+.containerHome {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  padding: 40px 20px;
+  max-width: 1500px;
+  margin: 0 auto;
+}
+.textoRating {
+  padding: 0px 20px;
+  max-width: 1500px;
+  margin: 0 auto;
+}
+
+.containerHome2 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  padding: 40px 20px;
+  max-width: 1500px;
+  margin: 0 auto;
+}
+
+.bg-carousel {
+  background-color: #ffdcc2;
+  margin-bottom: 100px;
+}
+
+.carousel-item h3 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+.categoriasHomeCarusel:hover {
+  cursor: pointer;
+  transform: scale(1.2);
+  transition: transform 0.3s ease;
+}
+
+@media (max-width: 1200px) {
+  .containerHome {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .containerHome2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .containerHome,
+  .containerHome2 {
+    grid-template-columns: repeat(1, 1fr);
   }
 }
