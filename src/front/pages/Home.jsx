@@ -161,7 +161,7 @@ export const Home = () => {
 					</motion.div>
 				))}
 			</div>
-			<div className="bg-carousel ">
+			<div className="bg-carousel my-5 ">
 				<div id="carouselExampleCaptions" className="carousel slide" data-bs-ride="carousel" style={{ maxWidth: '200px', margin: 'auto' }}>
 					<div class="carousel-indicators">
 						<button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" className="active" aria-current="true" aria-label="Slide 1"></button>
