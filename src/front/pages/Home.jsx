@@ -237,7 +237,7 @@ export const Home = () => {
 							<img
 								src={libros}
 								className="d-block w-100"
-								alt="Iconolibro"
+								alt="Icono libro"
 								style={{ maxHeight: '200px', objectFit: 'cover' }}
 							/>
 							<div className="text-center mt-2">
@@ -250,9 +250,13 @@ export const Home = () => {
 						<div className="carousel-item">
 							<img
 								src={juguetes}
-								className="d-block w-100 juguete"
+								className="d-block w-100"
 								alt="Icono juguete"
-								style={{ maxHeight: '200px', objectFit: 'cover' }}
+								style={{
+									height: '200px',
+									objectFit: 'cover',
+									overflow: 'hidden'
+								}}
 							/>
 							<div className="text-center mt-2">
 								<h5>Juguetes</h5>
