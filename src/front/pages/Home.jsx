@@ -162,9 +162,9 @@ export const Home = () => {
 				))}
 			</div>
 			<div className="bg-carousel ">
-				<div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel" style={{ maxWidth: '200px', margin: 'auto' }}>
+				<div id="carouselExampleCaptions" className="carousel slide" data-bs-ride="carousel" style={{ maxWidth: '200px', margin: 'auto' }}>
 					<div class="carousel-indicators">
-						<button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+						<button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" className="active" aria-current="true" aria-label="Slide 1"></button>
 						<button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
 						<button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
 						<button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="3" aria-label="Slide 4"></button>
@@ -172,15 +172,15 @@ export const Home = () => {
 						<button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="5" aria-label="Slide 6"></button>
 					</div>
 
-					<div class="carousel-inner ">
-						<div class="carousel-item active">
+					<div className="carousel-inner ">
+						<div className="carousel-item active">
 							<img
 								src={electronica}
-								class="d-block w-100"
+								className="d-block w-100"
 								alt="Icono electrónica"
 								style={{ maxHeight: '200px', objectFit: 'cover' }}
 							/>
-							<div class="text-center mt-2">
+							<div className="text-center mt-2">
 								<h5>Electrónica</h5>
 								<p onClick={() => {
 									navigate(`/articulos/electronica`);
@@ -188,14 +188,14 @@ export const Home = () => {
 							</div>
 						</div>
 
-						<div class="carousel-item">
+						<div className="carousel-item">
 							<img
 								src={ropa}
-								class="d-block w-100"
+								className="d-block w-100"
 								alt="Ropa"
 								style={{ maxHeight: '200px', objectFit: 'cover' }}
 							/>
-							<div class="text-center mt-2">
+							<div className="text-center mt-2">
 								<h5>Ropa</h5>
 								<p onClick={() => {
 									navigate(`/articulos/ropa`);
@@ -203,14 +203,14 @@ export const Home = () => {
 							</div>
 						</div>
 
-						<div class="carousel-item">
+						<div className="carousel-item">
 							<img
 								src={casa}
-								class="d-block w-100"
+								className="d-block w-100"
 								alt="Icono casa"
 								style={{ maxHeight: '200px', objectFit: 'cover' }}
 							/>
-							<div class="text-center mt-2">
+							<div className="text-center mt-2">
 								<h5>Casa</h5>
 								<p onClick={() => {
 									navigate(`/articulos/casa`);
@@ -218,14 +218,14 @@ export const Home = () => {
 							</div>
 						</div>
 
-						<div class="carousel-item">
+						<div className="carousel-item">
 							<img
 								src={deportes}
-								class="d-block w-100"
+								className="d-block w-100"
 								alt="Icono deportes"
 								style={{ maxHeight: '200px', objectFit: 'cover' }}
 							/>
-							<div class="text-center mt-2">
+							<div className="text-center mt-2">
 								<h5>Deportes</h5>
 								<p onClick={() => {
 									navigate(`/articulos/deportes`);
@@ -233,28 +233,28 @@ export const Home = () => {
 							</div>
 						</div>
 
-						<div class="carousel-item">
+						<div className="carousel-item">
 							<img
 								src={libros}
-								class="d-block w-100"
+								className="d-block w-100"
 								alt="Iconolibro"
 								style={{ maxHeight: '200px', objectFit: 'cover' }}
 							/>
-							<div class="text-center mt-2">
+							<div className="text-center mt-2">
 								<h5>Libros</h5>
 								<p onClick={() => {
 									navigate(`/articulos/libros`);
 								}} className="mb-5 categoriasHomeCarusel">Explora la sección de libros</p>
 							</div>
 						</div>
-						<div class="carousel-item">
+						<div className="carousel-item">
 							<img
 								src={juguetes}
-								class="d-block w-100 juguete"
+								className="d-block w-100 juguete"
 								alt="Icono juguete"
 								style={{ maxHeight: '200px', objectFit: 'cover' }}
 							/>
-							<div class="text-center mt-2">
+							<div className="text-center mt-2">
 								<h5>Juguetes</h5>
 								<p onClick={() => {
 									navigate(`/articulos/juguetes`);
