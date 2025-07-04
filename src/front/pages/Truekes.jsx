@@ -5,28 +5,26 @@ const backendUrl = import.meta.env.VITE_BACKEND_URL;
 export const Truekes = () => {
     const { id } = useParams();
     const [trueke, setTrueke] = useState(null);
-    const [loading, setLoading] = usestate(true);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
 
-    // Obtiene token de localStorage
     const getAuthToken = () => {
-        const authData = localStorage.getItem('authTokens');
-        return authData ? JSON.parse(authData).access : null;
+        return localStorage.getItem('token');
     };
 
-    //Trueke especifico o lista
     useEffect(() => {
         const fetchTrueke = async () => {
             try {
                 const token = getAuthToken();
                 if (!token) {
-                    navigate('/login');
+                    navigate('/identificate');
                     return;
                 }
 
-                const url = id ? `${backendUrl}${id}`
-                    : 'api/truekes';
+                const url = id 
+                    ? `${backendUrl}/api/truekes/${id}`
+                    : `${backendUrl}/api/truekes`;
 
                 const response = await fetch(url, {
                     headers: {
@@ -35,9 +33,10 @@ export const Truekes = () => {
                 });
 
                 if (response.status === 401) {
-                    //token invalid o exp
-                    localStorage.removeItem('authTokens');
-                    navigate('/login');
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('refresh_token');
+                    localStorage.removeItem('userId');
+                    navigate('/identificate');
                     return;
                 }
 
@@ -57,25 +56,28 @@ export const Truekes = () => {
         fetchTrueke();
     }, [id, navigate]);
 
-    const crearTrueke = async (FormData) => {
+    const crearTrueke = async (formData) => {
         try {
             const token = getAuthToken();
             if (!token) {
-                navigate('/login');
+                navigate('/identificate');
                 return;
             }
-            const response = await fetch('api/truekes', {   //cambiar fetch
+            
+            const response = await fetch(`${backendUrl}/api/truekes`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify(FormData)
+                body: JSON.stringify(formData)
             });
 
             if (response.status === 401) {
-                localStorage.removeItem('authToken');
-                navigate('/login');
+                localStorage.removeItem('token');
+                localStorage.removeItem('refresh_token');
+                localStorage.removeItem('userId');
+                navigate('/identificate');
                 return;
             }
 
@@ -85,7 +87,7 @@ export const Truekes = () => {
             }
 
             const data = await response.json();
-            navigate(`/truekes/${data.id}`);
+            navigate(`/trueke/${data.id}`);
         } catch (err) {
             setError(err.message);
         }
@@ -95,22 +97,24 @@ export const Truekes = () => {
         try {
             const token = getAuthToken();
             if (!token) {
-                navigate('/login');
+                navigate('/identificate');
                 return;
             }
 
-            const response = await fetch(`${backendUrl}api/truekes/${truekeId}`, {   //cambiar
+            const response = await fetch(`${backendUrl}/api/truekes/${truekeId}`, {
                 method: 'PUT',
                 headers: {
-                    'Content-Type': 'application.json',
+                    'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify(actualizar)
             });
 
             if (response.status === 401) {
-                localStorage.removeItem('authTokens');
-                navigate('/login');
+                localStorage.removeItem('token');
+                localStorage.removeItem('refresh_token');
+                localStorage.removeItem('userId');
+                navigate('/identificate');
                 return;
             }
 
@@ -118,7 +122,6 @@ export const Truekes = () => {
                 throw new Error('Error al actualizar trueke');
             }
 
-            // act el local
             setTrueke(prev => ({ ...prev, ...actualizar }));
         } catch (err) {
             setError(err.message);
@@ -126,8 +129,10 @@ export const Truekes = () => {
     };
 
     const cerrarSesion = () => {
-        localStorage.removeItem('authTokens');
-        navigate('/login');
+        localStorage.removeItem('token');
+        localStorage.removeItem('refresh_token');
+        localStorage.removeItem('userId');
+        navigate('/identificate');
     };
 
     if (loading) return <div>Cargando...</div>;
@@ -135,7 +140,37 @@ export const Truekes = () => {
 
     return (
         <div className="trueke-container">
-
+            <div className="container mt-4">
+                <div className="row">
+                    <div className="col-12">
+                        <h2>Gestión de Truekes</h2>
+                        {trueke ? (
+                            <div className="card">
+                                <div className="card-body">
+                                    <h5 className="card-title">Trueke #{trueke.id}</h5>
+                                    <p className="card-text">
+                                        <strong>Comentarios:</strong> {trueke.comentarios || 'Sin comentarios'}
+                                    </p>
+                                    <div className="row">
+                                        <div className="col-md-6">
+                                            <h6>Artículo Propietario:</h6>
+                                            <p>{trueke.propietario}</p>
+                                        </div>
+                                        <div className="col-md-6">
+                                            <h6>Artículo Receptor:</h6>
+                                            <p>{trueke.receptor}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="alert alert-info">
+                                <p>No se encontraron truekes.</p>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
         </div>
-    )
-}
+    );
+};
