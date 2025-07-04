@@ -12,6 +12,17 @@ export const ComoTruekear = () => {
   const [oks, setOks] = useState([false, false, false, false]);
   const [VamosAEllo, setVamosAEllo] = useState(false)
 
+
+  const handleClick = () => {
+
+    setVamosAEllo(prev => !prev);
+
+
+    const seccion = document.getElementById("botonScroll");
+    if (seccion) {
+      seccion.scrollIntoView({ behavior: "smooth" });
+    }
+  };
   const toggleOk = (index) => {
     setOks(prev => {
       const newOks = [...prev];
@@ -114,7 +125,7 @@ export const ComoTruekear = () => {
           </p>
           <div className="d-grid gap-2 d-md-flex justify-content-md-start">
             <button
-              onClick={() => setVamosAEllo(prev => !prev)}
+              onClick={handleClick}
               type="button"
               className={VamosAEllo ? "btn btn-success btn-lg px-4 me-md-2" : "btn btn-primary btn-lg px-4 me-md-2"}
             >
@@ -123,9 +134,9 @@ export const ComoTruekear = () => {
           </div>
         </div>
 
-        <div className="col-12 col-lg-4 p-0 bg-comotruekear"></div>
-      </div>
+        <div className="col-12 col-lg-4 p-0 bg-comotruekear" id="botonScroll"></div>
 
+      </div>
       <div className="container-fluid px-5">
         <section
           className="my-5 px-4"
