@@ -107,77 +107,84 @@ export const ArticulosXCategoria = () => {
   };
 
   return (
-    <div style={styles.container}>
-      {Array.isArray(articulos) && articulos.length > 0 ? (
-        articulos.map((articulo) => (
-          <motion.div
-            key={articulo.id}
-            className="card"
-            variants={cardVariants}
-            initial="hidden"
-            animate="visible"
-            whileHover={{ scale: 1.03 }}
-            style={styles.card}
-          >
-            <img src={articulo.img} alt={articulo.titulo} style={styles.image} />
-            <div style={styles.content}>
-              <div style={styles.titleContainer}>
-                <h3 style={styles.title}>{articulo.titulo}</h3>
-                {refresh_token && (
-                  <span
-                    style={styles.heart}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleLike(articulo.id);
-                    }}
-                  >
-                    {likes[articulo.id] ? (
-                      <i className="bi bi-heart-fill"></i>
-                    ) : (
-                      <i className="bi bi-heart"></i>
-                    )}
-                  </span>
-                )}
-              </div>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 1 }}
+    >
+      <div style={styles.container}>
+        {Array.isArray(articulos) && articulos.length > 0 ? (
+          articulos.map((articulo) => (
+            <motion.div
+              key={articulo.id}
+              className="card"
+              variants={cardVariants}
+              initial="hidden"
+              animate="visible"
+              whileHover={{ scale: 1.03 }}
+              style={styles.card}
+            >
+              <img src={articulo.img} alt={articulo.titulo} style={styles.image} />
+              <div style={styles.content}>
+                <div style={styles.titleContainer}>
+                  <h3 style={styles.title}>{articulo.titulo}</h3>
+                  {refresh_token && (
+                    <span
+                      style={styles.heart}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleLike(articulo.id);
+                      }}
+                    >
+                      {likes[articulo.id] ? (
+                        <i className="bi bi-heart-fill"></i>
+                      ) : (
+                        <i className="bi bi-heart"></i>
+                      )}
+                    </span>
+                  )}
+                </div>
 
-              <p style={styles.subtitle}>
-                <strong>Modelo:</strong> {articulo.modelo}
-              </p>
-              <p style={styles.subtitle}>
-                <strong>Estado:</strong> {articulo.estado}
-              </p>
-              <p style={styles.subtitle}>
-                <strong>Categoría:</strong> {articulo.categoria}
-              </p>
-              <div className="d-flex">
                 <p style={styles.subtitle}>
-                  <strong>Cantidad:</strong> {articulo.cantidad}
+                  <strong>Modelo:</strong> {articulo.modelo}
                 </p>
-                <span
-                  style={styles.box}
-                  onClick={() => {
-                    navigate(`/articulo/${articulo.id}`);
-                  }}
-                  className="ms-auto"
-                >
-                  <i className="bi bi-box2-heart"></i>
-                </span>
-              </div>
-              <div style={styles.caracteristicas}>
-                <p>
-                  <strong>Características:</strong> {articulo.caracteristicas}
+                <p style={styles.subtitle}>
+                  <strong>Estado:</strong> {articulo.estado}
                 </p>
+                <p style={styles.subtitle}>
+                  <strong>Categoría:</strong> {articulo.categoria}
+                </p>
+                <div className="d-flex">
+                  <p style={styles.subtitle}>
+                    <strong>Cantidad:</strong> {articulo.cantidad}
+                  </p>
+                  <span
+                    style={styles.box}
+                    onClick={() => {
+                      navigate(`/articulo/${articulo.id}`);
+                    }}
+                    className="ms-auto"
+                  >
+                    <i className="bi bi-box2-heart"></i>
+                  </span>
+                </div>
+                <div style={styles.caracteristicas}>
+                  <p>
+                    <strong>Características:</strong> {articulo.caracteristicas}
+                  </p>
+                </div>
               </div>
-            </div>
-          </motion.div>
-        ))
-      ) : (
-        <div style={{ textAlign: "center", marginTop: "40px", width: "100%" }}>
-          <p>No hay artículos en esta categoría.</p>
-          <img src="https://source.unsplash.com/300x200/?empty,box" alt="No articles" />
-        </div>
-      )}
-    </div>
+            </motion.div>
+          ))
+        ) : (
+          <div style={{ textAlign: "center", marginTop: "40px", width: "100%" }}>
+            <p>No hay artículos en esta categoría.</p>
+            <img src="https://source.unsplash.com/300x200/?empty,box" alt="No articles" />
+          </div>
+        )}
+      </div>
+    </motion.div>
   );
 };
 
@@ -242,7 +249,7 @@ const styles = {
   caracteristicas: {
     maxHeight: "60px",
     overflowY: "auto",
-    fontSize: "0.85rem",
+    fontSize: "0.8rem",
     color: "#333",
     backgroundColor: "#f9f9f9",
     padding: "8px",

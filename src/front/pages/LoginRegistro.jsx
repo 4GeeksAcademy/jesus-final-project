@@ -133,234 +133,241 @@ export const LoginRegistro = () => {
 
   return (
     <motion.div
-      className="container-fluid login-bg"
-      variants={backgroundVariants}
-      animate={mode}
-      initial={false}
-      style={{ minHeight: "100vh" }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 1 }}
     >
-      <div className="row vh-100 position-relative overflow-hidden">
-        <AnimatePresence mode="wait">
-          {mode === "registro" && (
-            <motion.div
-              key="registro"
-              className="position-absolute top-0 start-0 w-100 h-100"
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 50 }}
-              transition={{ duration: 0.4 }}
-            >
-              <div className="row h-100">
-                <div className="col-12 col-md-6 d-flex align-items-center justify-content-center p-5">
-                  <form className="w-75" onSubmit={handleSubmit}>
-                    <h2 className="mb-4">Registro</h2>
-                    <div className="form-group mb-3">
-                      <label>Nombre de usuario</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        name="nombre_de_usuario"
-                        value={datosUsuario.nombre_de_usuario}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                    <div className="form-group mb-3">
-                      <label>Email</label>
-                      <input
-                        type="email"
-                        className="form-control"
-                        name="email"
-                        value={datosUsuario.email}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                    <div className="form-group mb-4 position-relative w-100">
-                      <label>Contraseña</label>
-                      <div style={{ position: "relative", width: "100%" }}>
+      <motion.div
+        className="container-fluid login-bg"
+        variants={backgroundVariants}
+        animate={mode}
+        initial={false}
+        style={{ minHeight: "100vh" }}
+      >
+        <div className="row vh-100 position-relative overflow-hidden">
+          <AnimatePresence mode="wait">
+            {mode === "registro" && (
+              <motion.div
+                key="registro"
+                className="position-absolute top-0 start-0 w-100 h-100"
+                initial={{ opacity: 0, x: -50 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 50 }}
+                transition={{ duration: 0.4 }}
+              >
+                <div className="row h-100">
+                  <div className="col-12 col-md-6 d-flex align-items-center justify-content-center p-5">
+                    <form className="w-75" onSubmit={handleSubmit}>
+                      <h2 className="mb-4">Registro</h2>
+                      <div className="form-group mb-3">
+                        <label>Nombre de usuario</label>
                         <input
-                          type={mostrarPassword ? "text" : "password"}
-                          className="form-control pe-5"
-                          name="password"
-                          value={datosUsuario.password}
+                          type="text"
+                          className="form-control"
+                          name="nombre_de_usuario"
+                          value={datosUsuario.nombre_de_usuario}
                           onChange={handleChange}
                           required
-                          style={{ paddingRight: "3rem", width: "100%" }}
                         />
-                        <i
-                          className={`bi ${mostrarPassword ? "bi-eye-slash" : "bi-eye"
-                            } position-absolute`}
-                          style={{
-                            top: "50%",
-                            right: "1rem",
-                            transform: "translateY(-50%)",
-                            cursor: "pointer",
-                            color: "#6c757d",
-                            fontSize: "1.5rem",
-                            lineHeight: 1,
-                          }}
-                          onClick={() => setMostrarPassword(!mostrarPassword)}
-                        ></i>
                       </div>
-                    </div>
-                    <button type="submit" className="btn btn-success w-100">
-                      Registrarme
-                    </button>
-                    <p
-                      className="mt-3 text-info"
-                      style={{ cursor: "pointer" }}
-                      onClick={() => setMode("login")}
-                    >
-                      ¿Ya tienes cuenta? Inicia sesión
-                    </p>
-                  </form>
-                </div>
-                <div className="col-12 col-md-6 fondo-lateral d-none d-md-block"></div>
-              </div>
-            </motion.div>
-          )}
-
-          {mode === "login" && (
-            <motion.div
-              key="login"
-              className="position-absolute top-0 start-0 w-100 h-100"
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -50 }}
-              transition={{ duration: 0.4 }}
-            >
-              <div className="row h-100">
-                <div className="col-12 col-md-6 fondo-lateral d-none d-md-block"></div>
-                <div className="col-12 col-md-6 d-flex align-items-center justify-content-center p-5">
-                  <form className="w-75" onSubmit={handleSubmit}>
-                    <h2 className="mb-4">Iniciar sesión</h2>
-                    <div className="form-group mb-3">
-                      <label>Email</label>
-                      <input
-                        type="email"
-                        className="form-control"
-                        name="email"
-                        value={datosUsuario.email}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                    <div className="form-group mb-4 position-relative w-100">
-                      <label>Contraseña</label>
-                      <div style={{ position: "relative", width: "100%" }}>
+                      <div className="form-group mb-3">
+                        <label>Email</label>
                         <input
-                          type={mostrarPassword ? "text" : "password"}
-                          className="form-control pe-5"
-                          name="password"
-                          value={datosUsuario.password}
+                          type="email"
+                          className="form-control"
+                          name="email"
+                          value={datosUsuario.email}
                           onChange={handleChange}
                           required
-                          style={{ paddingRight: "3rem", width: "100%" }}
                         />
-                        <i
-                          className={`bi ${mostrarPassword ? "bi-eye-slash" : "bi-eye"
-                            } position-absolute`}
-                          style={{
-                            top: "50%",
-                            right: "1rem",
-                            transform: "translateY(-50%)",
-                            cursor: "pointer",
-                            color: "#6c757d",
-                            fontSize: "1.5rem",
-                            lineHeight: 1,
-                          }}
-                          onClick={() => setMostrarPassword(!mostrarPassword)}
-                        ></i>
                       </div>
-                    </div>
-                    <button type="submit" className="btn btn-primary w-100">
-                      Iniciar sesión
-                    </button>
-                    <div className="mt-3 d-flex justify-content-between">
-                      <span
-                        className="text-info"
+                      <div className="form-group mb-4 position-relative w-100">
+                        <label>Contraseña</label>
+                        <div style={{ position: "relative", width: "100%" }}>
+                          <input
+                            type={mostrarPassword ? "text" : "password"}
+                            className="form-control pe-5"
+                            name="password"
+                            value={datosUsuario.password}
+                            onChange={handleChange}
+                            required
+                            style={{ paddingRight: "3rem", width: "100%" }}
+                          />
+                          <i
+                            className={`bi ${mostrarPassword ? "bi-eye-slash" : "bi-eye"
+                              } position-absolute`}
+                            style={{
+                              top: "50%",
+                              right: "1rem",
+                              transform: "translateY(-50%)",
+                              cursor: "pointer",
+                              color: "#6c757d",
+                              fontSize: "1.5rem",
+                              lineHeight: 1,
+                            }}
+                            onClick={() => setMostrarPassword(!mostrarPassword)}
+                          ></i>
+                        </div>
+                      </div>
+                      <button type="submit" className="btn btn-success w-100">
+                        Registrarme
+                      </button>
+                      <p
+                        className="mt-3 text-info"
                         style={{ cursor: "pointer" }}
-                        onClick={() => setMode("registro")}
+                        onClick={() => setMode("login")}
                       >
-                        ¿No tienes cuenta? Registrate
-                      </span>
+                        ¿Ya tienes cuenta? Inicia sesión
+                      </p>
+                    </form>
+                  </div>
+                  <div className="col-12 col-md-6 fondo-lateral d-none d-md-block"></div>
+                </div>
+              </motion.div>
+            )}
 
-                      <span
-                        className="olvidaste-pass"
-                        style={{ cursor: "pointer" }}
-                        onClick={() =>
-                          Swal.fire({
-                            title: "Recuperar contraseña",
-                            html:
-                              `<input type="email" id="swal-input-email" class="swal2-input" placeholder="email@ejemplo.com" autocapitalize="off">` +
-                              `<input type="email" id="swal-input-email2" class="swal2-input" placeholder="Confirma tu email" autocapitalize="off">`,
-                            focusConfirm: false,
-                            showCancelButton: true,
-                            confirmButtonText: "Enviar",
-                            showLoaderOnConfirm: true,
-                            preConfirm: async () => {
-                              const email1 = document.getElementById('swal-input-email').value;
-                              const email2 = document.getElementById('swal-input-email2').value;
+            {mode === "login" && (
+              <motion.div
+                key="login"
+                className="position-absolute top-0 start-0 w-100 h-100"
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -50 }}
+                transition={{ duration: 0.4 }}
+              >
+                <div className="row h-100">
+                  <div className="col-12 col-md-6 fondo-lateral d-none d-md-block"></div>
+                  <div className="col-12 col-md-6 d-flex align-items-center justify-content-center p-5">
+                    <form className="w-75" onSubmit={handleSubmit}>
+                      <h2 className="mb-4">Iniciar sesión</h2>
+                      <div className="form-group mb-3">
+                        <label>Email</label>
+                        <input
+                          type="email"
+                          className="form-control"
+                          name="email"
+                          value={datosUsuario.email}
+                          onChange={handleChange}
+                          required
+                        />
+                      </div>
+                      <div className="form-group mb-4 position-relative w-100">
+                        <label>Contraseña</label>
+                        <div style={{ position: "relative", width: "100%" }}>
+                          <input
+                            type={mostrarPassword ? "text" : "password"}
+                            className="form-control pe-5"
+                            name="password"
+                            value={datosUsuario.password}
+                            onChange={handleChange}
+                            required
+                            style={{ paddingRight: "3rem", width: "100%" }}
+                          />
+                          <i
+                            className={`bi ${mostrarPassword ? "bi-eye-slash" : "bi-eye"
+                              } position-absolute`}
+                            style={{
+                              top: "50%",
+                              right: "1rem",
+                              transform: "translateY(-50%)",
+                              cursor: "pointer",
+                              color: "#6c757d",
+                              fontSize: "1.5rem",
+                              lineHeight: 1,
+                            }}
+                            onClick={() => setMostrarPassword(!mostrarPassword)}
+                          ></i>
+                        </div>
+                      </div>
+                      <button type="submit" className="btn btn-primary w-100">
+                        Iniciar sesión
+                      </button>
+                      <div className="mt-3 d-flex justify-content-between">
+                        <span
+                          className="text-info"
+                          style={{ cursor: "pointer" }}
+                          onClick={() => setMode("registro")}
+                        >
+                          ¿No tienes cuenta? Registrate
+                        </span>
 
-                              if (!email1 || !email2) {
-                                Swal.showValidationMessage("Por favor, completa ambos campos.");
-                                return false;
-                              }
+                        <span
+                          className="olvidaste-pass"
+                          style={{ cursor: "pointer" }}
+                          onClick={() =>
+                            Swal.fire({
+                              title: "Recuperar contraseña",
+                              html:
+                                `<input type="email" id="swal-input-email" class="swal2-input" placeholder="email@ejemplo.com" autocapitalize="off">` +
+                                `<input type="email" id="swal-input-email2" class="swal2-input" placeholder="Confirma tu email" autocapitalize="off">`,
+                              focusConfirm: false,
+                              showCancelButton: true,
+                              confirmButtonText: "Enviar",
+                              showLoaderOnConfirm: true,
+                              preConfirm: async () => {
+                                const email1 = document.getElementById('swal-input-email').value;
+                                const email2 = document.getElementById('swal-input-email2').value;
 
-                              if (!email1.includes("@") || !email2.includes("@")) {
-                                Swal.showValidationMessage("Introduce un correo válido que contenga '@'.");
-                                return false;
-                              }
-
-                              if (email1 !== email2) {
-                                Swal.showValidationMessage("Los correos no coinciden, por favor intenta nuevamente.");
-                                return false;
-                              }
-
-                              try {
-                                const response = await fetch(`${backendUrl}enviar-mensaje`, {
-                                  method: "POST",
-                                  headers: { "Content-Type": "application/json" },
-                                  body: JSON.stringify({ mailTo: email1 }),
-                                });
-
-                                if (!response.ok) {
-                                  const errData = await response.json();
-                                  throw new Error(errData.msg || "No se pudo enviar el email");
+                                if (!email1 || !email2) {
+                                  Swal.showValidationMessage("Por favor, completa ambos campos.");
+                                  return false;
                                 }
 
-                                return response.json();
-                              } catch (error) {
-                                Swal.showValidationMessage(`Error en la petición: ${error.message}`);
-                                return false;
-                              }
-                            },
-                            allowOutsideClick: () => !Swal.isLoading(),
-                          }).then((result) => {
-                            if (result.isConfirmed) {
-                              Swal.fire({
-                                title: "Email enviado",
-                                text: "Revisa tu bandeja de entrada para restablecer tu contraseña.",
-                                icon: "success",
-                              });
-                            }
-                          })
-                        }
-                      >
-                        ¿Olvidaste tu contraseña?
-                      </span>
+                                if (!email1.includes("@") || !email2.includes("@")) {
+                                  Swal.showValidationMessage("Introduce un correo válido que contenga '@'.");
+                                  return false;
+                                }
 
-                    </div>
-                  </form>
+                                if (email1 !== email2) {
+                                  Swal.showValidationMessage("Los correos no coinciden, por favor intenta nuevamente.");
+                                  return false;
+                                }
+
+                                try {
+                                  const response = await fetch(`${backendUrl}enviar-mensaje`, {
+                                    method: "POST",
+                                    headers: { "Content-Type": "application/json" },
+                                    body: JSON.stringify({ mailTo: email1 }),
+                                  });
+
+                                  if (!response.ok) {
+                                    const errData = await response.json();
+                                    throw new Error(errData.msg || "No se pudo enviar el email");
+                                  }
+
+                                  return response.json();
+                                } catch (error) {
+                                  Swal.showValidationMessage(`Error en la petición: ${error.message}`);
+                                  return false;
+                                }
+                              },
+                              allowOutsideClick: () => !Swal.isLoading(),
+                            }).then((result) => {
+                              if (result.isConfirmed) {
+                                Swal.fire({
+                                  title: "Email enviado",
+                                  text: "Revisa tu bandeja de entrada para restablecer tu contraseña.",
+                                  icon: "success",
+                                });
+                              }
+                            })
+                          }
+                        >
+                          ¿Olvidaste tu contraseña?
+                        </span>
+
+                      </div>
+                    </form>
+                  </div>
                 </div>
-              </div>
-            </motion.div>
-          )
-          }
-        </AnimatePresence >
-      </div >
-    </motion.div >
+              </motion.div>
+            )
+            }
+          </AnimatePresence >
+        </div >
+      </motion.div >
+    </motion.div>
   );
 };
 

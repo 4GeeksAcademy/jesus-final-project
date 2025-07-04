@@ -83,6 +83,10 @@ body {
   background-color: #e1eaf6;
 }
 
+.no-hover:active {
+  border-color: transparent !important;
+}
+
 @media (min-width: 768px) {
   .contenedor-soporte {
     max-width: 500px;

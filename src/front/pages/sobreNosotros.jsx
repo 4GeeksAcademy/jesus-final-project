@@ -1,7 +1,7 @@
 import React from "react";
 import equipo from "../assets/img/equipo.png";
 import { useNavigate } from "react-router-dom";
-
+import { motion } from "framer-motion";
 const SobreNosotros = () => {
   const navigate = useNavigate();
 
@@ -21,34 +21,41 @@ const SobreNosotros = () => {
   };
 
   return (
-    <div className="container my-5">
-      <div className="row align-items-center">
-        <div className="col-lg-8 mb-4">
-          <h1 className="mb-4 fw-bold fs-2">¿Quiénes Somos?</h1>
-          <div className="lh-lg">
-            {paragraphs.map((paragraph, index) => (
-              <p key={index} className="text-muted fs-5">
-                {paragraph}
-              </p>
-            ))}
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 1 }}
+    >
+      <div className="container my-5">
+        <div className="row align-items-center">
+          <div className="col-lg-8 mb-4">
+            <h1 className="mb-4 fw-bold fs-2">¿Quiénes Somos?</h1>
+            <div className="lh-lg">
+              {paragraphs.map((paragraph, index) => (
+                <p key={index} className="text-muted fs-5">
+                  {paragraph}
+                </p>
+              ))}
+            </div>
+            <button
+              onClick={goHome}
+              className="btn btn-primary btn-lg mt-4">
+              TRUEKETEO
+            </button>
           </div>
-          <button
-            onClick={goHome}
-            className="btn btn-primary btn-lg mt-4">
-            TRUEKETEO
-          </button>
-        </div>
 
-        <div className="col-lg-4 d-flex justify-content-center justify-content-lg-end mt-lg-5">
-          <img
-            src={equipo}
-            alt="Equipo de TRUEKETEO"
-            className="img-fluid rounded shadow"
-            style={{ maxWidth: "100%", width: "600px" }}
-          />
+          <div className="col-lg-4 d-flex justify-content-center justify-content-lg-end mt-lg-5">
+            <img
+              src={equipo}
+              alt="Equipo de TRUEKETEO"
+              className="img-fluid rounded shadow"
+              style={{ maxWidth: "100%", width: "600px" }}
+            />
+          </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

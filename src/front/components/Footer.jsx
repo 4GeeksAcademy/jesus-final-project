@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import logo from "../assets/img/logo.png";
-
+import { motion } from "framer-motion";
 
 export const Footer = () => {
 	const navigate = useNavigate();
@@ -25,8 +25,8 @@ export const Footer = () => {
 		},
 		footerSection: {
 			margin: "1rem",
-    		flex: "0 0 300px",
-    		minWidth: "200px",
+			flex: "0 0 300px",
+			minWidth: "200px",
 		},
 		logoSection: {
 			display: "flex",
@@ -36,9 +36,9 @@ export const Footer = () => {
 		},
 		footerLogo: {
 			maxWidth: "120px",
-    		height: "auto",
-    		cursor: "pointer",
-    		transition: "transform 0.3s",
+			height: "auto",
+			cursor: "pointer",
+			transition: "transform 0.3s",
 		},
 		footerTitle: {
 			color: "#333",
@@ -93,61 +93,67 @@ export const Footer = () => {
 	};
 
 	return (
+		<motion.div
+			initial={{ opacity: 0 }}
+			animate={{ opacity: 1 }}
+			exit={{ opacity: 0 }}
+			transition={{ duration: 1 }}
+		>
+			<footer style={styles.footer}>
+				<div style={styles.footerContent}>
 
-		<footer style={styles.footer}>
-			<div style={styles.footerContent}>
+					{/* logo sección*/}
+					<div style={{ ...styles.footerSection, ...styles.logoSection }}>
+						<img
+							src={logo}
+							alt="Logo de Trueke"
+							style={styles.footerLogo}
+							onClick={() => handleNavigation("/")}
+							onMouseEnter={() => handleMouseEnter('logo')}
+							onMouseLeave={() => handleMouseLeave('logo')} />
+					</div>
 
-				{/* logo sección*/}
-				<div style={{ ...styles.footerSection, ...styles.logoSection }}>
-					<img
-						src={logo}
-						alt="Logo de Trueke"
-						style={styles.footerLogo}
-						onClick={() => handleNavigation("/")}
-						onMouseEnter={() => handleMouseEnter('logo')}
-						onMouseLeave={() => handleMouseLeave('logo')} />
+					{/* columna 1*/}
+					<div style={styles.footerSection}>
+						<h3 style={styles.footerTitle}>Compañía</h3>
+						<ul style={styles.footerLinks}>
+							<li style={styles.footerLinkItem}>
+								<span style={{
+									...styles.footerLink,
+									...(hoverStates.sobreNosotros && styles.hoverEffect)
+								}}
+									onClick={() => handleNavigation("/sobre-nosotros")}
+									onMouseEnter={() => handleMouseEnter('sobreNosotros')}
+									onMouseLeave={() => handleMouseLeave('sobreNosotros')}>
+									Sobre Nosotros
+								</span>
+							</li>
+							<li style={styles.footerLinkItem}>
+								<span style={{
+									...styles.footerLink,
+									...(hoverStates.politica && styles.hoverEffect)
+								}}
+									onClick={() => handleNavigation("/politica-privacidad")}
+									onMouseEnter={() => handleMouseEnter('politica')}
+									onMouseLeave={() => handleMouseLeave('politica')}>
+									Política y privacidad
+								</span>
+							</li>
+							<li style={styles.footerLinkItem}>
+								<span style={{
+									...styles.footerLink,
+									...(hoverStates.contacto && styles.hoverEffect)
+								}}
+									onClick={() => handleNavigation("/contacto")}
+									onMouseEnter={() => handleMouseEnter('contacto')}
+									onMouseLeave={() => handleMouseLeave('contacto')}>
+									Contacto
+								</span>
+							</li>
+						</ul>
+					</div>
 				</div>
-
-				{/* columna 1*/}
-				<div style={styles.footerSection}>
-					<h3 style={styles.footerTitle}>Compañía</h3>
-					<ul style={styles.footerLinks}>
-						<li style={styles.footerLinkItem}>
-							<span style={{
-								...styles.footerLink,
-								...(hoverStates.sobreNosotros && styles.hoverEffect)
-							}}
-								onClick={() => handleNavigation("/sobre-nosotros")}
-								onMouseEnter={() => handleMouseEnter('sobreNosotros')}
-								onMouseLeave={() => handleMouseLeave('sobreNosotros')}>
-								Sobre Nosotros
-							</span>
-						</li>
-						<li style={styles.footerLinkItem}>
-							<span style={{
-								...styles.footerLink,
-								...(hoverStates.politica && styles.hoverEffect)
-							}}
-								onClick={() => handleNavigation("/politica-privacidad")}
-								onMouseEnter={() => handleMouseEnter('politica')}
-								onMouseLeave={() => handleMouseLeave('politica')}>
-								Política y privacidad
-							</span>
-						</li>
-						<li style={styles.footerLinkItem}>
-							<span style={{
-								...styles.footerLink,
-								...(hoverStates.contacto && styles.hoverEffect)
-							}}
-								onClick={() => handleNavigation("/contacto")}
-								onMouseEnter={() => handleMouseEnter('contacto')}
-								onMouseLeave={() => handleMouseLeave('contacto')}>
-								Contacto
-							</span>
-						</li>
-					</ul>
-				</div>
-			</div>
-		</footer>
+			</footer>
+		</motion.div>
 	)
 };
