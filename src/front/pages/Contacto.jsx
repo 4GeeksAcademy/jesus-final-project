@@ -16,11 +16,12 @@ const Contacto = () => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 1 }}
+      style={{ minHeight: 'calc(100vh - 386px)' }}
     >
-      <div className="container my-5">
+      <div className="container my-5 ">
         <div className="row align-items-center">
-          {/* Texto */}
-          <div className="col-md-5">
+
+          <div className="col-md-5 ">
             <h2 className="mb-3">¡Estamos A Un Correo De Distancia!</h2>
             <p className="text-muted">Envíanos Tus Dudas A:</p>
             <a

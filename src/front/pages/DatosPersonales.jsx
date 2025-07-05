@@ -1,4 +1,4 @@
-import { img } from "framer-motion/client";
+import { img, p } from "framer-motion/client";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -15,6 +15,7 @@ export const DatosPersonales = () => {
   const navigate = useNavigate();
   const { usuarioId } = useParams();
   const [userRating, setUserRating] = useState(null);
+  const [favoritos, setFavoritos] = useState(null)
 
   const [userData, setUserData] = useState({
     email: "",
@@ -47,6 +48,47 @@ export const DatosPersonales = () => {
     } catch (error) {
       console.error('Error fetching user rating:', error);
       setUserRating(null);
+    }
+  };
+
+  const fetchFavoritos = async () => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      Swal.fire({
+        title: "Token vencido",
+        text: "Redireccionado al Log in",
+        icon: "error",
+      }).then(() => {
+        dispatch({ type: "logout" });
+      });
+      return;
+    }
+
+    try {
+      const response = await fetch(`${backendUrl}api/favoritos`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setFavoritos(data);
+      } else {
+        Swal.fire({
+          title: "Error al cargar los favoritos",
+          text: data.msg || "Ocurrió un error.",
+          icon: "error",
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        title: "Error de red",
+        text: error.message,
+        icon: "error",
+      });
     }
   };
 
@@ -87,6 +129,7 @@ export const DatosPersonales = () => {
 
     fetchUserData();
     fetchUserRating();
+    fetchFavoritos();
   }, []);
 
   // Cambios en los inputs
@@ -181,7 +224,7 @@ export const DatosPersonales = () => {
         });
         setEditing(false);
 
-        // Volver a cargar los datos para asegurar consistencia
+
         const fetchResponse = await fetch(`${backendUrl}api/datos-personales`, {
           method: "GET",
           headers: {
@@ -269,7 +312,6 @@ export const DatosPersonales = () => {
       });
     }
   };
-
 
 
   const renderStars = (rating) => {
@@ -468,8 +510,80 @@ export const DatosPersonales = () => {
                 </div>
               </div>
 
+
+              <div id="favoritosCarousel" className="carousel slide" data-bs-ride="carousel">
+                <div className="carousel-inner">
+                  {!favoritos || favoritos.length === 0 ? (
+                    <div className="text-center mt-3">
+                      <p>Aún no tienes ningún favorito asignado</p>
+                    </div>
+                  ) : (
+                    favoritos.map((fav, index) => (
+                      <div
+                        key={fav.id ?? fav.articulo_id ?? index}
+                        className={`carousel-item ${index === 0 ? "active" : ""}`}
+                      >
+                        <div className="card d-flex flex-column align-items-center shadow-sm mt-4 bg-white rounded">
+                          <div className="d-flex justify-content-center mt-4">
+                            <h5>Artículos Favoritos</h5>
+                          </div>
+                          <img
+                            src={fav.img ?? ""}
+                            alt={fav.titulo ?? "Imagen favorita"}
+                            className="card-img-top rounded mt-3 imagen-datos-personales-fav"
+                            style={{
+                              width: "auto",
+                              height: "100px",
+                              objectFit: "cover",
+                              boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => {
+                              if (fav.articulo_id) {
+                                navigate(`/articulo/${fav.articulo_id}`);
+                              }
+                            }}
+                          />
+                          <div className="card-body text-center">
+                            <h6
+                              className="card-title fw-semibold text-truncate"
+                              title={fav.titulo ?? ""}
+                              style={{ maxWidth: "160px" }}
+                            >
+                              {fav.titulo ?? "Sin título"}
+                            </h6>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+
+                <button
+                  className="carousel-control-prev"
+                  type="button"
+                  data-bs-target="#favoritosCarousel"
+                  data-bs-slide="prev"
+                  style={{ filter: "invert(1)" }}
+                >
+                  <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span className="visually-hidden">Anterior</span>
+                </button>
+                <button
+                  className="carousel-control-next"
+                  type="button"
+                  data-bs-target="#favoritosCarousel"
+                  data-bs-slide="next"
+                  style={{ filter: "invert(1)" }}
+                >
+                  <span className="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span className="visually-hidden">Siguiente</span>
+                </button>
+              </div>
+
+
               <motion.div
-                className="card2 mt-3"
+                className="card2 mt-5"
                 variants={cardVariants}
                 initial="hidden"
                 animate="visible"

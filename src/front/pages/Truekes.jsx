@@ -22,7 +22,7 @@ export const Truekes = () => {
                     return;
                 }
 
-                const url = id 
+                const url = id
                     ? `${backendUrl}/api/truekes/${id}`
                     : `${backendUrl}/api/truekes`;
 
@@ -63,7 +63,7 @@ export const Truekes = () => {
                 navigate('/identificate');
                 return;
             }
-            
+
             const response = await fetch(`${backendUrl}/api/truekes`, {
                 method: 'POST',
                 headers: {
