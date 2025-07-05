@@ -21,7 +21,8 @@ from flask_bcrypt import Bcrypt
 from flask_uuid import FlaskUUID
 import uuid
 from flask_cors import CORS
-frontendUrl = os.getenv('VITE_FRONTEND_URL', 'http://localhost:3001/')  # Valor por defecto
+frontendUrl = os.getenv('VITE_FRONTEND_URL',
+                        'http://localhost:3001/')  # Valor por defecto
 
 
 # from models import Person
@@ -32,6 +33,8 @@ static_file_dir = os.path.join(os.path.dirname(
 app = Flask(__name__)
 app.url_map.strict_slashes = False
 app.config["JWT_SECRET_KEY"] = "super-secret"
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
+app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(hours=12)
 jwt = JWTManager(app)
 app.config.update(dict(
     DEBUG=False,
@@ -131,8 +134,9 @@ def enviar_mensaje():
     mail_ok = db.session.query(Usuario).filter_by(email=mail_to).first()
     if not mail_ok:
         return jsonify({'msg': 'Usuario no encontrado'}), 404
-    
-    registro = db.session.query(RestaurarCodigosPassword).filter_by(email=mail_to).first()
+
+    registro = db.session.query(
+        RestaurarCodigosPassword).filter_by(email=mail_to).first()
 
     if registro is None:
         nuevo_codigo = uuid.uuid4()
@@ -143,7 +147,8 @@ def enviar_mensaje():
         )
         db.session.add(registro)
     else:
-        registro.fecha_expedicion = datetime.now(timezone.utc) + timedelta(hours=2)
+        registro.fecha_expedicion = datetime.now(
+            timezone.utc) + timedelta(hours=2)
         nuevo_codigo = registro.codigo_uuid
 
     db.session.commit()
@@ -157,14 +162,14 @@ def enviar_mensaje():
         html=render_template('mensajeMail.html', link=link, logo=logo)
     )
     mail.send(msg)
-    
+
     # Testing en Postman
     if os.getenv("FLASK_DEBUG") == "1":
         return jsonify({
             'msg': 'Mail enviado correctamente',
             'uuid_debug': str(nuevo_codigo)
         }), 201
-    
+
     return jsonify({'msg': 'Mail enviado correctamente'}), 201
 
 
@@ -186,7 +191,7 @@ def mypage(codigo_uuid):
     if fecha_exp.tzinfo is None:
         # Si es naive, asumir que es UTC y convertir a aware
         fecha_exp = fecha_exp.replace(tzinfo=timezone.utc)
-    
+
     if fecha_exp < datetime.now(timezone.utc):
         return jsonify({'msg': 'El código ha expirado'}), 400
 

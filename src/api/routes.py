@@ -26,6 +26,21 @@ def handle_hello():
 
     return jsonify(response_body), 200
 
+
+@api.route('borrar-cuenta', methods=['DELETE'])
+@jwt_required()
+def borrar_cuenta():
+    usuario_token_id = int(get_jwt_identity())
+    usuario = db.session.query(Usuario).get(usuario_token_id)
+
+    if not usuario:
+        return jsonify({'msg': 'Usuario no encontrado'}), 404
+
+    db.session.delete(usuario)
+    db.session.commit()
+
+    return jsonify({'msg': 'Usuario borrado exitosamente'}), 200
+
 #  EDITS
 
 

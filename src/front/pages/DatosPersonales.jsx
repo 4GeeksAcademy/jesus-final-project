@@ -1,11 +1,17 @@
 import { img } from "framer-motion/client";
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import useGlobalReducer from "../hooks/useGlobalReducer";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
 const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
 export const DatosPersonales = () => {
+  const { dispatch } = useGlobalReducer();
+  const navigate = useNavigate()
+
   const [userData, setUserData] = useState({
     email: "",
     nombre_completo: "",
@@ -56,7 +62,7 @@ export const DatosPersonales = () => {
     fetchUserData();
   }, []);
 
-    
+
 
   // Cambios en los inputs
   const handleInputChange = (e) => {
@@ -89,7 +95,11 @@ export const DatosPersonales = () => {
       }
     } catch (error) {
       console.error("Error uploading image:", error);
-      alert("Error al subir la imagen");
+      await Swal.fire({
+        title: "Error al subir la imagen",
+        icon: "error",
+        confirmButtonText: "Ok",
+      });
     } finally {
       setUploading(false);
     }
@@ -107,7 +117,12 @@ export const DatosPersonales = () => {
 
     // Validar campos requeridos
     if (!userData.nombre_completo || !userData.telefono || !userData.direccion) {
-      alert("Por favor complete todos los campos obligatorios (Nombre, Teléfono y Dirección)");
+      await Swal.fire({
+        title: `Por favor complete todos los campos obligatorios (Nombre, Teléfono y Dirección`,
+        icon: "error",
+        confirmButtonText: "Ok",
+      });
+
       return;
     }
 
@@ -134,7 +149,11 @@ export const DatosPersonales = () => {
 
       if (response.ok) {
         const data = await response.json();
-        alert("Perfil actualizado correctamente");
+        await Swal.fire({
+          title: `Perfil actualizado correctamente`,
+          icon: "success",
+          confirmButtonText: "Ok",
+        });
         setEditing(false);
 
         // Volver a cargar los datos para asegurar consistencia
@@ -165,6 +184,69 @@ export const DatosPersonales = () => {
   };
 
   if (loading) return <div className="text-center mt-5">Cargando datos...</div>;
+
+
+
+  const handleDeleteAccount = async () => {
+    const result = await Swal.fire({
+      title: "¿Estás seguro que querés eliminar tu cuenta?",
+      text: "¡No podrás revertir este cambio!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Sí"
+    });
+
+    if (result.isConfirmed) {
+      await borrarCuentaAPI();
+    }
+  };
+
+  const borrarCuentaAPI = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await fetch(`${backendUrl}api/borrar-cuenta`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('refresh_token');
+        localStorage.removeItem('userId');
+
+
+        await Swal.fire({
+          title: "Cuenta eliminada",
+          text: "Tu cuenta ha sido eliminada exitosamente.",
+          icon: "success",
+        });
+        dispatch({ type: "logout" });
+        navigate("/");
+
+      } else {
+        Swal.fire({
+          title: "Error al eliminar la cuenta",
+          text: data.msg || "Ocurrió un error.",
+          icon: "error",
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        title: "Error de red",
+        text: error.message,
+        icon: "error",
+      });
+    }
+  };
+
+
+
 
   return (
     <div className="container mt-4">
@@ -302,6 +384,7 @@ export const DatosPersonales = () => {
                 disabled={!editing}
               />
             </div>
+
           </div>
 
           {/* Columna de imagen */}
@@ -343,8 +426,28 @@ export const DatosPersonales = () => {
               </div>
             </div>
           </div>
+
         </div>
       </form>
+      <div className="my-4 row">
+        <div className="col-md-8">
+          <h5>
+            Zona de peligro
+          </h5>
+          <div className="p-2" style={{ border: "2px solid rgb(194, 34, 34)", borderRadius: "6px" }}>
+            <div className="d-flex">
+              <p className="px-2" style={{ color: "rgb(194, 34, 34)" }}>Eliminar cuenta</p>
+              <button onClick={handleDeleteAccount} className="btn btn-outline-danger ms-auto">Eliminar cuenta</button>
+            </div>
+            <p
+              className="px-2 mt-0 mb-0"
+              style={{ color: "rgb(194, 34, 34)", fontSize: "14px" }}
+            >
+              Una vez que elimines tu cuenta se borrarán todos tus datos
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
