@@ -285,240 +285,247 @@ export const DatosPersonales = () => {
 
 
   return (
-    <div className="container mt-4">
-      <form onSubmit={handleSubmit}>
-        <div className="row">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 1 }}
+    >
+      <div className="container mt-4">
+        <form onSubmit={handleSubmit}>
+          <div className="row">
 
-          {/* Columna de datos */}
-          <div className="col-md-8">
-            <div className="d-flex justify-content-between mb-4">
-              <h2>Mi Perfil</h2>
-              {!editing ? (
-                <button
-                  type="button"
-                  className="btn btn-outline-primary"
-                  onClick={() => setEditing(true)}
-                >
-                  Editar Información
-                </button>
-              ) : (
-                <div>
+            {/* Columna de datos */}
+            <div className="col-md-8">
+              <div className="d-flex justify-content-between mb-4">
+                <h2>Mi Perfil</h2>
+                {!editing ? (
                   <button
                     type="button"
-                    className="btn btn-outline-secondary me-2"
-                    onClick={() => setEditing(false)}
+                    className="btn btn-outline-primary"
+                    onClick={() => setEditing(true)}
                   >
-                    Cancelar
+                    Editar Información
                   </button>
-                  <button type="submit" className="btn btn-primary">
-                    Guardar Cambios
-                  </button>
-                </div>
-              )}
-            </div>
+                ) : (
+                  <div>
+                    <button
+                      type="button"
+                      className="btn btn-outline-secondary me-2"
+                      onClick={() => setEditing(false)}
+                    >
+                      Cancelar
+                    </button>
+                    <button type="submit" className="btn btn-primary">
+                      Guardar Cambios
+                    </button>
+                  </div>
+                )}
+              </div>
 
-            {/* Campos inmutables */}
-            <div className="mb-3">
-              <label className="form-label">E-mail</label>
-              <input
-                type="email"
-                className="form-control bg-light"
-                value={userData.email}
-                readOnly
-                disabled
-              />
-              <small className="text-muted">El email no se puede modificar después del registro</small>
-            </div>
-
-            <div className="mb-3">
-              <label className="form-label">Nombre Completo</label>
-              <input
-                type="text"
-                className="form-control"
-                name="nombre_completo"
-                value={userData.nombre_completo}
-                onChange={handleInputChange}
-                disabled={!editing}
-              />
-              <small className="text-muted">Nombre completo del usuario</small>
-            </div>
-
-            <div className="mb-3">
-              <label className="form-label">Fecha de Registro</label>
-              <input
-                type="text"
-                className="form-control bg-light"
-                value={userData.fecha_registro ? new Date(userData.fecha_registro).toLocaleDateString('es-ES', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric'
-                }) : ''}
-                readOnly
-                disabled
-              />
-            </div>
-
-            {/* Campos editables */}
-            <div className="mb-3">
-              <label htmlFor="telefono" className="form-label">Teléfono</label>
-              <input
-                type="tel"
-                className="form-control"
-                id="telefono"
-                name="telefono"
-                value={userData.telefono}
-                onChange={handleInputChange}
-                disabled={!editing}
-                required
-              />
-            </div>
-
-            <div className="mb-3">
-              <h5>Dirección</h5>
-              <label htmlFor="direccion" className="form-label">Dirección</label>
-              <input
-                type="text"
-                className="form-control"
-                id="direccion"
-                name="direccion"
-                value={userData.direccion}
-                onChange={handleInputChange}
-                disabled={!editing}
-                required
-              />
-
-              <label htmlFor="pais" className="form-label">País</label>
-              <input
-                type="text"
-                className="form-control"
-                id="pais"
-                name="pais"
-                value={"España"}
-                readOnly
-                disabled
-              />
-
-              <label htmlFor="region" className="form-label">Región</label>
-              <input
-                type="text"
-                className="form-control"
-                id="region"
-                name="region"
-                value={userData.region}
-                onChange={handleInputChange}
-                disabled={!editing}
-              />
-
-              <label htmlFor="codigo_postal" className="form-label">Código Postal</label>
-              <input
-                type="text"
-                className="form-control"
-                id="codigo_postal"
-                name="codigo_postal"
-                value={userData.codigo_postal}
-                onChange={handleInputChange}
-                disabled={!editing}
-              />
-            </div>
-
-          </div>
-
-          {/* Columna de imagen */}
-          <div className="col-md-4">
-            <div className="card">
-              <div className="card-body text-center">
-                <h5 className="card-title">Foto de Perfil</h5>
-
-                <div className="mb-3">
-                  <img
-                    src={userData.imagen || "https://via.placeholder.com/200"}
-                    className="img-thumbnail"
-                    alt="Perfil"
-                    style={{ width: '200px', height: '200px', objectFit: 'cover' }}
-                  />
-                </div>
-
-                <button
-                  type="button"
-                  className={`btn ${userData.imagen ? 'btn-outline-primary' : 'btn-primary'}`}
-                  onClick={() => fileInputRef.current.click()}
-                  disabled={uploading || !editing}
-                >
-                  {uploading ? 'Subiendo...' : (userData.imagen ? 'Cambiar Imagen' : 'Subir Imagen')}
-                </button>
+              {/* Campos inmutables */}
+              <div className="mb-3">
+                <label className="form-label">E-mail</label>
                 <input
-                  type="file"
-                  ref={fileInputRef}
-                  onChange={handleImageChange}
-                  accept="image/*"
-                  className="d-none"
+                  type="email"
+                  className="form-control bg-light"
+                  value={userData.email}
+                  readOnly
+                  disabled
+                />
+                <small className="text-muted">El email no se puede modificar después del registro</small>
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label">Nombre Completo</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="nombre_completo"
+                  value={userData.nombre_completo}
+                  onChange={handleInputChange}
+                  disabled={!editing}
+                />
+                <small className="text-muted">Nombre completo del usuario</small>
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label">Fecha de Registro</label>
+                <input
+                  type="text"
+                  className="form-control bg-light"
+                  value={userData.fecha_registro ? new Date(userData.fecha_registro).toLocaleDateString('es-ES', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  }) : ''}
+                  readOnly
+                  disabled
+                />
+              </div>
+
+              {/* Campos editables */}
+              <div className="mb-3">
+                <label htmlFor="telefono" className="form-label">Teléfono</label>
+                <input
+                  type="tel"
+                  className="form-control"
+                  id="telefono"
+                  name="telefono"
+                  value={userData.telefono}
+                  onChange={handleInputChange}
+                  disabled={!editing}
+                  required
+                />
+              </div>
+
+              <div className="mb-3">
+                <h5>Dirección</h5>
+                <label htmlFor="direccion" className="form-label">Dirección</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="direccion"
+                  name="direccion"
+                  value={userData.direccion}
+                  onChange={handleInputChange}
+                  disabled={!editing}
+                  required
+                />
+
+                <label htmlFor="pais" className="form-label">País</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="pais"
+                  name="pais"
+                  value={"España"}
+                  readOnly
+                  disabled
+                />
+
+                <label htmlFor="region" className="form-label">Región</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="region"
+                  name="region"
+                  value={userData.region}
+                  onChange={handleInputChange}
                   disabled={!editing}
                 />
 
-                <p className="text-muted small mt-2">
-                  Formatos: JPG, PNG, WEBP<br />
-                  Máx. 5MB
-                </p>
+                <label htmlFor="codigo_postal" className="form-label">Código Postal</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="codigo_postal"
+                  name="codigo_postal"
+                  value={userData.codigo_postal}
+                  onChange={handleInputChange}
+                  disabled={!editing}
+                />
               </div>
+
             </div>
 
-            <motion.div
-              className="card2 mt-3"
-              variants={cardVariants}
-              initial="hidden"
-              animate="visible"
-              whileHover={{ scale: 1.03 }}
-              style={styles.card2}
-            >
-              <div style={styles.content}>
-                <div style={styles.titleContainer} className="d-flex justify-content-center">
-                  <h3 style={styles.title}>
-                    {!userRating || userRating.cantidad_ratings === 0
-                      ? 'Aún no te han puntuado'
-                      : userRating.cantidad_ratings === 1
-                        ? `${userRating.cantidad_ratings} valoración`
-                        : `${userRating.cantidad_ratings} valoraciones`}
-                  </h3>
-                </div>
-                <div className="d-flex justify-content-center">
-                  <p style={styles.subtitle2} className="justify-content-center">
-                    {!userRating || userRating.cantidad_ratings === 0 ? (
-                      <strong>💭💭💭</strong>
-                    ) : (
-                      <>
-                        <strong>Rating promedio:</strong> {userRating.promedio_rating} {renderStars(userRating.promedio_rating)}
-                        <p> {userRating.promedio_rating <= 2 ? `Mejorá tus valoraciones para atraer más truekes 💪 ` : `Sigue así , mantene tus valoraciones altas 🚀`} </p>
-                      </>
-                    )}
+            {/* Columna de imagen */}
+            <div className="col-md-4">
+              <div className="card">
+                <div className="card-body text-center">
+                  <h5 className="card-title">Foto de Perfil</h5>
+
+                  <div className="mb-3">
+                    <img
+                      src={userData.imagen || "https://via.placeholder.com/200"}
+                      className="img-thumbnail"
+                      alt="Perfil"
+                      style={{ width: '200px', height: '200px', objectFit: 'cover' }}
+                    />
+                  </div>
+
+                  <button
+                    type="button"
+                    className={`btn ${userData.imagen ? 'btn-outline-primary' : 'btn-primary'}`}
+                    onClick={() => fileInputRef.current.click()}
+                    disabled={uploading || !editing}
+                  >
+                    {uploading ? 'Subiendo...' : (userData.imagen ? 'Cambiar Imagen' : 'Subir Imagen')}
+                  </button>
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleImageChange}
+                    accept="image/*"
+                    className="d-none"
+                    disabled={!editing}
+                  />
+
+                  <p className="text-muted small mt-2">
+                    Formatos: JPG, PNG, WEBP<br />
+                    Máx. 5MB
                   </p>
                 </div>
               </div>
-            </motion.div>
+
+              <motion.div
+                className="card2 mt-3"
+                variants={cardVariants}
+                initial="hidden"
+                animate="visible"
+                whileHover={{ scale: 1.03 }}
+                style={styles.card2}
+              >
+                <div style={styles.content}>
+                  <div style={styles.titleContainer} className="d-flex justify-content-center">
+                    <h3 style={styles.title}>
+                      {!userRating || userRating.cantidad_ratings === 0
+                        ? 'Aún no te han puntuado'
+                        : userRating.cantidad_ratings === 1
+                          ? `${userRating.cantidad_ratings} valoración`
+                          : `${userRating.cantidad_ratings} valoraciones`}
+                    </h3>
+                  </div>
+                  <div className="d-flex justify-content-center">
+                    <p style={styles.subtitle2} className="justify-content-center">
+                      {!userRating || userRating.cantidad_ratings === 0 ? (
+                        <strong>💭💭💭</strong>
+                      ) : (
+                        <>
+                          <strong>Rating promedio:</strong> {userRating.promedio_rating} {renderStars(userRating.promedio_rating)}
+                          <p> {userRating.promedio_rating <= 2 ? `Mejorá tus valoraciones para atraer más truekes 💪 ` : `Sigue así , mantene tus valoraciones altas 🚀`} </p>
+                        </>
+                      )}
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+
+            </div>
 
           </div>
-
-        </div>
-      </form>
-      <div className="my-4 row">
-        <div className="col-md-8">
-          <h5>
-            Zona de peligro
-          </h5>
-          <div className="p-2" style={{ border: "2px solid rgb(194, 34, 34)", borderRadius: "6px" }}>
-            <div className="d-flex">
-              <p className="px-2" style={{ color: "rgb(194, 34, 34)" }}>Eliminar cuenta</p>
-              <button onClick={handleDeleteAccount} className="btn btn-outline-danger ms-auto">Eliminar cuenta</button>
+        </form>
+        <div className="my-4 row">
+          <div className="col-md-8">
+            <h5>
+              Zona de peligro
+            </h5>
+            <div className="p-2" style={{ border: "2px solid rgb(194, 34, 34)", borderRadius: "6px" }}>
+              <div className="d-flex">
+                <p className="px-2" style={{ color: "rgb(194, 34, 34)" }}>Eliminar cuenta</p>
+                <button onClick={handleDeleteAccount} className="btn btn-outline-danger ms-auto">Eliminar cuenta</button>
+              </div>
+              <p
+                className="px-2 mt-0 mb-0"
+                style={{ color: "rgb(194, 34, 34)", fontSize: "14px" }}
+              >
+                Una vez que elimines tu cuenta se borrarán todos tus datos
+              </p>
             </div>
-            <p
-              className="px-2 mt-0 mb-0"
-              style={{ color: "rgb(194, 34, 34)", fontSize: "14px" }}
-            >
-              Una vez que elimines tu cuenta se borrarán todos tus datos
-            </p>
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

@@ -1,4 +1,5 @@
 import React from "react";
+import { motion } from "framer-motion";
 
 const PoliticaPrivacidad = () => {
   const texto = `POLÍTICA DE PRIVACIDAD DE TRUEKETEO
@@ -50,16 +51,23 @@ Recuerda que puedes visitar esta página para consultar la política de privacid
   const paragraphs = texto.split('\n\n');
 
   return (
-    <div className="container my-5">
-      <h1 className="mb-4 fw-bold fs-2">Política y Privacidad</h1>
-      <div className="lh-lg">
-        {paragraphs.map((paragraph, index) => (
-          <p key={index} className="text-muted fs-5">
-            {paragraph}
-          </p>
-        ))}
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 1 }}
+    >
+      <div className="container my-5">
+        <h1 className="mb-4 fw-bold fs-2">Política y Privacidad</h1>
+        <div className="lh-lg">
+          {paragraphs.map((paragraph, index) => (
+            <p key={index} className="text-muted fs-5">
+              {paragraph}
+            </p>
+          ))}
+        </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
