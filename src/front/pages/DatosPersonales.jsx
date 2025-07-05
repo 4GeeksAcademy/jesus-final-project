@@ -358,7 +358,7 @@ export const DatosPersonales = () => {
                     >
                       Cancelar
                     </button>
-                    <button type="submit" className="btn btn-primary">
+                    <button type="submit" className="btn btn-primary" >
                       Guardar Cambios
                     </button>
                   </div>

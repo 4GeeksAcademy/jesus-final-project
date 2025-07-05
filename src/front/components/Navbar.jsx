@@ -16,8 +16,9 @@ export const Navbar = () => {
 	const userId = store.userId;
 	const [busqueda, setBusqueda] = useState("");
 	const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("");
-	const [Img, setImg] = useState();
-
+	const [Img, setImg] = useState({ img: "" });
+	const [loading, setLoading] = useState(true); 
+	
 
 	const callBusqueda = async () => {
 		try {
@@ -70,9 +71,6 @@ export const Navbar = () => {
 						imagen: data.img || ""
 					});
 
-					if (data.id) {
-						fetchUserRating(data.id);
-					}
 				} else {
 					throw new Error(await response.text());
 				}
