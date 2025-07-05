@@ -207,9 +207,9 @@ def obtener_rating_usuario(id):
     ratings = db.session.query(Rating).filter(Rating.usuario_id == id).all()
 
     if ratings:
-        promedio = sum(r.rating for r in ratings) / len(ratings)
+        promedio = sum(r.puntuacion for r in ratings) / len(ratings)
     else:
-        promedio = None
+        promedio = 0
 
     return jsonify({
         "usuario_id": id,

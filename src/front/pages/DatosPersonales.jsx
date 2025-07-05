@@ -33,15 +33,12 @@ export const DatosPersonales = () => {
   const [editing, setEditing] = useState(false);
   const fileInputRef = useRef(null);
 
-
   const fetchUserRating = async () => {
     try {
-      const response = await fetch(`${backendUrl}rating/${usuarioId}`);
-      console.log('Fetching rating for user ID:', usuarioId);
+      const response = await fetch(`${backendUrl}api/rating/${usuarioId}`);
 
       if (response.ok) {
         const data = await response.json();
-        console.log('Rating data:', data);
         setUserRating(data);
       } else {
         console.error(`Error: ${response.status} - ${response.statusText}`);
@@ -52,7 +49,8 @@ export const DatosPersonales = () => {
       setUserRating(null);
     }
   };
-  // Obtener datos del usuario
+
+
   useEffect(() => {
     const fetchUserData = async () => {
       const token = localStorage.getItem("token");
@@ -68,10 +66,15 @@ export const DatosPersonales = () => {
 
         if (response.ok) {
           const data = await response.json();
+
           setUserData({
             ...data,
             imagen: data.img || ""
           });
+
+          if (data.id) {
+            fetchUserRating(data.id);
+          }
         } else {
           throw new Error(await response.text());
         }
@@ -85,9 +88,6 @@ export const DatosPersonales = () => {
     fetchUserData();
     fetchUserRating();
   }, []);
-
-
-
 
   // Cambios en los inputs
   const handleInputChange = (e) => {
@@ -475,7 +475,9 @@ export const DatosPersonales = () => {
                   <h3 style={styles.title}>
                     {!userRating || userRating.cantidad_ratings === 0
                       ? 'Aún no te han puntuado'
-                      : `${userRating.cantidad_ratings} valoraciones`}
+                      : userRating.cantidad_ratings === 1
+                        ? `${userRating.cantidad_ratings} valoración`
+                        : `${userRating.cantidad_ratings} valoraciones`}
                   </h3>
                 </div>
                 <div className="d-flex justify-content-center">
@@ -485,6 +487,7 @@ export const DatosPersonales = () => {
                     ) : (
                       <>
                         <strong>Rating promedio:</strong> {userRating.promedio_rating} {renderStars(userRating.promedio_rating)}
+                        <p> {userRating.promedio_rating <= 2 ? `Mejorá tus valoraciones para atraer más truekes 💪 ` : `Sigue así , mantene tus valoraciones altas 🚀`} </p>
                       </>
                     )}
                   </p>
