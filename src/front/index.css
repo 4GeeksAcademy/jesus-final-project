@@ -108,6 +108,13 @@ body {
     font-size: 1.25rem;
   }
 }
+.imagen-datos-personales-fav {
+  transition: transform 0.3s ease;
+}
+.imagen-datos-personales-fav:hover {
+  cursor: pointer;
+  transform: scale(1.2);
+}
 
 /* HOME */
 

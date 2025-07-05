@@ -301,12 +301,20 @@ def obtener_favoritos():
     usuario_token_id = int(get_jwt_identity())
 
     favoritos = db.session.query(ArticuloFavorito).filter_by(
-        usuario_id=usuario_token_id
+        usuario_id=usuario_token_id,
+        es_favorito=True
     ).all()
 
-    favoritos_ids = [f.articulo_id for f in favoritos]
+    favoritos_serializados = [
+        {
+            "articulo_id": f.articulo.id,
+            "titulo": f.articulo.titulo,
+            "img": f.articulo.img
+        }
+        for f in favoritos if f.articulo
+    ]
 
-    return jsonify(favoritos_ids), 200
+    return jsonify(favoritos_serializados), 200
 
 
 @api.route('/agregar-articulos-favoritos', methods=['POST'])
