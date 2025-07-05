@@ -3,6 +3,8 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import useGlobalReducer from "../hooks/useGlobalReducer";
+import { useParams } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
@@ -10,7 +12,9 @@ const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
 export const DatosPersonales = () => {
   const { dispatch } = useGlobalReducer();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const { usuarioId } = useParams();
+  const [userRating, setUserRating] = useState(null);
 
   const [userData, setUserData] = useState({
     email: "",
@@ -29,6 +33,25 @@ export const DatosPersonales = () => {
   const [editing, setEditing] = useState(false);
   const fileInputRef = useRef(null);
 
+
+  const fetchUserRating = async () => {
+    try {
+      const response = await fetch(`${backendUrl}rating/${usuarioId}`);
+      console.log('Fetching rating for user ID:', usuarioId);
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Rating data:', data);
+        setUserRating(data);
+      } else {
+        console.error(`Error: ${response.status} - ${response.statusText}`);
+        setUserRating(null);
+      }
+    } catch (error) {
+      console.error('Error fetching user rating:', error);
+      setUserRating(null);
+    }
+  };
   // Obtener datos del usuario
   useEffect(() => {
     const fetchUserData = async () => {
@@ -60,7 +83,9 @@ export const DatosPersonales = () => {
     };
 
     fetchUserData();
+    fetchUserRating();
   }, []);
+
 
 
 
@@ -247,6 +272,17 @@ export const DatosPersonales = () => {
 
 
 
+  const renderStars = (rating) => {
+    const starsCount = Math.min(5, Math.round(rating));
+    return '⭐'.repeat(starsCount);
+  };
+
+  const cardVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+  };
+
+
 
   return (
     <div className="container mt-4">
@@ -425,6 +461,37 @@ export const DatosPersonales = () => {
                 </p>
               </div>
             </div>
+
+            <motion.div
+              className="card2 mt-3"
+              variants={cardVariants}
+              initial="hidden"
+              animate="visible"
+              whileHover={{ scale: 1.03 }}
+              style={styles.card2}
+            >
+              <div style={styles.content}>
+                <div style={styles.titleContainer} className="d-flex justify-content-center">
+                  <h3 style={styles.title}>
+                    {!userRating || userRating.cantidad_ratings === 0
+                      ? 'Aún no te han puntuado'
+                      : `${userRating.cantidad_ratings} valoraciones`}
+                  </h3>
+                </div>
+                <div className="d-flex justify-content-center">
+                  <p style={styles.subtitle2} className="justify-content-center">
+                    {!userRating || userRating.cantidad_ratings === 0 ? (
+                      <strong>💭💭💭</strong>
+                    ) : (
+                      <>
+                        <strong>Rating promedio:</strong> {userRating.promedio_rating} {renderStars(userRating.promedio_rating)}
+                      </>
+                    )}
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+
           </div>
 
         </div>
@@ -450,4 +517,45 @@ export const DatosPersonales = () => {
       </div>
     </div>
   );
+};
+
+
+const styles = {
+
+
+  content: {
+    padding: "16px",
+    display: "flex",
+    flexDirection: "column",
+    gap: "6px",
+  },
+  titleContainer: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  title: {
+    margin: "0",
+    fontSize: "1.1rem",
+    fontWeight: "600",
+  },
+
+  subtitle2: {
+    margin: "0",
+    fontSize: "0.9rem",
+    color: "#fff",
+  },
+  card2: {
+    border: "1px solid #e0e0e0",
+    borderRadius: "12px",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+    overflow: "hidden",
+    cursor: "pointer",
+    display: "flex",
+    flexDirection: "column",
+    transition: "transform 0.2s ease, box-shadow 0.2s ease",
+    backgroundColor: "#262626",
+    color: "#fff",
+  },
+
 };

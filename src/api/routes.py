@@ -197,6 +197,27 @@ def obtener_todos_los_ratings():
     return jsonify(rating_data), 200
 
 
+@api.route('/rating/<int:id>', methods=['GET'])
+def obtener_rating_usuario(id):
+    usuario = db.session.query(Usuario).get(id)
+
+    if not usuario:
+        return jsonify({"error": "Usuario no encontrado"}), 404
+
+    ratings = db.session.query(Rating).filter(Rating.usuario_id == id).all()
+
+    if ratings:
+        promedio = sum(r.rating for r in ratings) / len(ratings)
+    else:
+        promedio = None
+
+    return jsonify({
+        "usuario_id": id,
+        "promedio_rating": promedio,
+        "cantidad_ratings": len(ratings)
+    })
+
+
 @api.route('/articulo/<int:articulo_id>', methods=['GET'])
 def obtener_datos_articulo(articulo_id):
 
