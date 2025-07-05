@@ -29,7 +29,7 @@ const Cloudinary = () => {
             const file = await response.json();
             setImage(file.secure_url);
             setLoading(false);
-            //await actions.sendPhoto(file.secure_url) //15 Enviamos la url a un action para hacer algo en back. Lo dejamos bloqueado para que no de error de importacion de Context actions o de la función.
+            await actions.sendPhoto(file.secure_url)
         } catch (error) {
             console.error('Error uploading image:', error);
             setLoading(false);

@@ -220,7 +220,8 @@ class DatosPersonales(db.Model):
             'telefono': self.telefono,
             'direccion': self.direccion,
             'fecha_registro': self.fecha_registro.isoformat() if self.fecha_registro else None,
-            'usuario_id': self.usuario_id
+            'usuario_id': self.usuario_id,
+            'img': self.img
         }
 
 
