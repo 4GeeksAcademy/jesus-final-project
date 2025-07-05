@@ -520,7 +520,7 @@ export const DatosPersonales = () => {
                   ) : (
                     favoritos.map((fav, index) => (
                       <div
-                        key={fav.id ?? fav.articulo_id ?? index}
+                        key={fav.articulo_id}
                         className={`carousel-item ${index === 0 ? "active" : ""}`}
                       >
                         <div className="card d-flex flex-column align-items-center shadow-sm mt-4 bg-white rounded">
