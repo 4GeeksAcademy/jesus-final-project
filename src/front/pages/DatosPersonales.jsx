@@ -558,27 +558,30 @@ export const DatosPersonales = () => {
                     ))
                   )}
                 </div>
-
-                <button
-                  className="carousel-control-prev"
-                  type="button"
-                  data-bs-target="#favoritosCarousel"
-                  data-bs-slide="prev"
-                  style={{ filter: "invert(1)" }}
-                >
-                  <span className="carousel-control-prev-icon" aria-hidden="true"></span>
-                  <span className="visually-hidden">Anterior</span>
-                </button>
-                <button
-                  className="carousel-control-next"
-                  type="button"
-                  data-bs-target="#favoritosCarousel"
-                  data-bs-slide="next"
-                  style={{ filter: "invert(1)" }}
-                >
-                  <span className="carousel-control-next-icon" aria-hidden="true"></span>
-                  <span className="visually-hidden">Siguiente</span>
-                </button>
+                {favoritos && favoritos.length > 0 && (
+                  <>
+                    <button
+                      className="carousel-control-prev"
+                      type="button"
+                      data-bs-target="#favoritosCarousel"
+                      data-bs-slide="prev"
+                      style={{ filter: "invert(1)" }}
+                    >
+                      <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+                      <span className="visually-hidden">Anterior</span>
+                    </button>
+                    <button
+                      className="carousel-control-next"
+                      type="button"
+                      data-bs-target="#favoritosCarousel"
+                      data-bs-slide="next"
+                      style={{ filter: "invert(1)" }}
+                    >
+                      <span className="carousel-control-next-icon" aria-hidden="true"></span>
+                      <span className="visually-hidden">Siguiente</span>
+                    </button>
+                  </>
+                )}
               </div>
 
 
