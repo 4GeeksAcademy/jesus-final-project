@@ -67,7 +67,7 @@ def editar_datos_personales():
                 'pais': '',
                 'region': '',
                 'codigo_postal': '',
-                'imagen': '',
+                'img': '',
                 'fecha_registro': usuario.fecha_registro.isoformat() if usuario.fecha_registro else ''
             }), 200
         return jsonify({
@@ -78,7 +78,7 @@ def editar_datos_personales():
             'pais': datos_personales.pais if hasattr(datos_personales, 'pais') else '',
             'region': datos_personales.region if hasattr(datos_personales, 'region') else '',
             'codigo_postal': datos_personales.codigo_postal if hasattr(datos_personales, 'codigo_postal') else '',
-            'imagen': datos_personales.img,
+            'img': datos_personales.img,
             'fecha_registro': usuario.fecha_registro.isoformat() if hasattr(usuario, 'fecha_registro') and usuario.fecha_registro else ''
         }), 200
 

@@ -4,7 +4,7 @@ import logo from "../assets/img/logo.png";
 import { useNavigate } from "react-router";
 import { useAuthMode } from "../hooks/AuthModeContext";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
@@ -16,6 +16,7 @@ export const Navbar = () => {
 	const userId = store.userId;
 	const [busqueda, setBusqueda] = useState("");
 	const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("");
+	const [Img, setImg] = useState();
 
 
 	const callBusqueda = async () => {
@@ -48,6 +49,42 @@ export const Navbar = () => {
 			});
 		}
 	};
+	useEffect(() => {
+		const userImg = async () => {
+			const token = localStorage.getItem("token");
+			if (!token) return;
+
+			try {
+				const response = await fetch(`${backendUrl}api/datos-personales`, {
+					method: "GET",
+					headers: {
+						'Authorization': `Bearer ${token}`
+					}
+				});
+
+				if (response.ok) {
+					const data = await response.json();
+
+					setImg({
+						...data,
+						imagen: data.img || ""
+					});
+
+					if (data.id) {
+						fetchUserRating(data.id);
+					}
+				} else {
+					throw new Error(await response.text());
+				}
+			} catch (error) {
+				console.error("Error fetch userData:", error);
+			} finally {
+				setLoading(false);
+			}
+		};
+		userImg();
+	}, []);
+
 
 	return (
 		<motion.div
@@ -158,7 +195,7 @@ export const Navbar = () => {
 									className="rounded-circle"
 									width="32"
 									height="32"
-									src={"CLOUDINARY"}
+									src={Img.img}
 									alt="User profile"
 								/>
 								<span className="fw-semibold text-dark">Mis datos</span>
