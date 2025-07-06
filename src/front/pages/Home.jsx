@@ -1,54 +1,51 @@
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import electronica from "../assets/img/electronica.png"
-import ropa from "../assets/img/ropa.png"
-import deportes from "../assets/img/deportes.png"
-import casa from "../assets/img/casa.png"
-import libros from "../assets/img/libros.png"
-import juguetes from "../assets/img/juguetes.png"
-
+import { useNavigate, Link } from "react-router-dom"; // Importamos Link
+import electronica from "../assets/img/electronica.png";
+import ropa from "../assets/img/ropa.png";
+import deportes from "../assets/img/deportes.png";
+import casa from "../assets/img/casa.png";
+import libros from "../assets/img/libros.png";
+import juguetes from "../assets/img/juguetes.png";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
-const cloud_name = import.meta.env.CLOUD_NAME
 
 export const Home = () => {
-	const navigate = useNavigate()
+	const navigate = useNavigate();
 	const [articulos, setArticulos] = useState([]);
 	const [rating, setRating] = useState([]);
-
+	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
-		const fetchArticulos = async () => {
+		const fetchData = async () => {
 			try {
-				const response = await fetch(`${backendUrl}api/articulos`);
-				if (response.ok) {
-					const data = await response.json();
-					const ordenados = data
-						.sort((a, b) => new Date(b.fecha_publicacion) - new Date(a.fecha_publicacion))
-						.slice(0, 4);
-					setArticulos(ordenados);
-				}
-			} catch (err) {
-				console.error("Error al cargar artículos por categoría", err);
-			}
-		};
-		const fetchRating = async () => {
-			try {
-				const response = await fetch(`${backendUrl}api/rating`);
-				if (response.ok) {
-					const data = await response.json();
-					const ordenados = data
-						.slice(0, 3);
-					setRating(ordenados);
+				setLoading(true);
+
+				// Fetch artículos
+				const articulosResponse = await fetch(`${backendUrl}/api/articulos`);
+				if (articulosResponse.ok) {
+					const articulosData = await articulosResponse.json();
+					setArticulos(
+						articulosData
+							.sort((a, b) => new Date(b.fecha_publicacion) - new Date(a.fecha_publicacion))
+							.slice(0, 4)
+					);
 				}
 
+				// Fetch ratings
+				const ratingResponse = await fetch(`${backendUrl}/api/rating`);
+				if (ratingResponse.ok) {
+					const ratingData = await ratingResponse.json();
+					setRating(ratingData.slice(0, 3));
+				}
 			} catch (err) {
-				console.error("Error al cargar los usuarios con mejor rating", err);
+				console.error("Error al cargar datos:", err);
+			} finally {
+				setLoading(false);
 			}
-		}
-		fetchArticulos();
-		fetchRating();
+		};
+
+		fetchData();
 	}, []);
 
 	const renderStars = (rating) => {
@@ -61,8 +58,15 @@ export const Home = () => {
 		visible: { opacity: 1, y: 0 },
 	};
 
-
-
+	if (loading) {
+		return (
+			<div className="d-flex justify-content-center align-items-center" style={{ height: "100vh" }}>
+				<div className="spinner-border text-primary" role="status">
+					<span className="visually-hidden">Cargando...</span>
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<motion.div
@@ -71,16 +75,16 @@ export const Home = () => {
 			exit={{ opacity: 0 }}
 			transition={{ duration: 1 }}
 		>
+			{/* Hero Section */}
 			<div className="row gx-0 mx-0 align-items-stretch bg-home-fondo">
 				<div className="col-12 col-lg-4 p-0 bg-home"></div>
-				<div className="col-12 col-lg-8 d-flex flex-column  px-5 justify-content-center">
+				<div className="col-12 col-lg-8 d-flex flex-column px-5 justify-content-center">
 					<h1 className="display-5 lh-1 mb-3 text-white" style={{ fontSize: "3rem" }}>
 						Truekes: el lugar donde tus cosas encuentran nuevo valor
 					</h1>
-					<p className="lead  text-white">
+					<p className="lead text-white">
 						Intercambiá lo que ya no usás por lo que realmente necesitás. Conectá con otras personas, acordá un trueque justo y empezá a darle una segunda vida a tus objetos favoritos.
 					</p>
-					{/* Aquí va el nuevo botón */}
 					<div className="d-flex justify-content-center mt-4">
 						<motion.button
 							whileHover={{ scale: 1.05 }}
@@ -101,59 +105,54 @@ export const Home = () => {
 						</motion.button>
 					</div>
 				</div>
-
 			</div>
 
+			{/* Últimos Artículos */}
 			<div className="containerHome mt-5 pb-0">
 				<h4>Últimos Artículos</h4>
 			</div>
 			<div className="containerHome">
-
-				{(
-					articulos.map((articulo) => (
-						<motion.div
-							key={articulo.id}
-							className="card"
-							variants={cardVariants}
-							initial="hidden"
-							animate="visible"
-							whileHover={{ scale: 1.03 }}
-							style={styles.card}
-						>
-							<img src={articulo.img} alt={articulo.titulo} style={styles.image} />
+				{articulos.map((articulo) => (
+					<motion.div
+						key={articulo.id}
+						className="card"
+						variants={cardVariants}
+						initial="hidden"
+						animate="visible"
+						whileHover={{ scale: 1.03 }}
+						style={styles.card}
+					>
+						{/* Usamos Link en lugar de onClick */}
+						<Link to={`/articulo/${articulo.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+							<img
+								src={articulo.img}
+								alt={articulo.titulo}
+								style={styles.image}
+								onError={(e) => {
+									e.target.src = 'https://via.placeholder.com/300x200?text=Imagen+no+disponible';
+								}}
+							/>
 							<div style={styles.content}>
 								<div style={styles.titleContainer} className="d-flex justify-content-center">
 									<h3 style={styles.title}>{articulo.titulo}</h3>
-
 								</div>
-
 								<div className="d-flex justify-content-center">
 									<p style={styles.subtitle}>
 										<strong>Estado:</strong> {articulo.estado}
 									</p>
 								</div>
-								<span
-									style={styles.box}
-									onClick={() => {
-										navigate(`/articulo/${articulo.id}`);
-									}}
-									className="ms-auto"
-								>
+								<span style={styles.box}>
 									<i className="bi bi-box2-heart"></i>
 								</span>
-
-
-
-
 							</div>
-						</motion.div>
-					))
-
-				)}
+						</Link>
+					</motion.div>
+				))}
 			</div>
 
-			<div className="pb-0 mt-5" >
-				<h4 className="textoRating"> Usuarios mejores puntuados</h4>
+			{/* Usuarios mejor puntuados */}
+			<div className="pb-0 mt-5">
+				<h4 className="textoRating">Usuarios mejores puntuados</h4>
 			</div>
 			<div className="containerHome2 mb-5">
 				{rating.map((usuario) => (
@@ -166,7 +165,6 @@ export const Home = () => {
 						whileHover={{ scale: 1.03 }}
 						style={styles.card2}
 					>
-
 						<div style={styles.content}>
 							<div style={styles.titleContainer} className="d-flex justify-content-center">
 								<h3 style={styles.title}>{usuario.nombre_de_usuario}</h3>
@@ -177,117 +175,55 @@ export const Home = () => {
 								</p>
 							</div>
 						</div>
-
 					</motion.div>
 				))}
 			</div>
+
+			{/* Carrusel de categorías */}
 			<div className="bg-carousel">
 				<div id="carouselExampleCaptions" className="carousel slide" data-bs-ride="carousel" style={{ maxWidth: '200px', margin: 'auto' }}>
-					<div class="carousel-indicators">
-						<button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" className="active" aria-current="true" aria-label="Slide 1"></button>
-						<button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
-						<button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
-						<button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="3" aria-label="Slide 4"></button>
-						<button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="4" aria-label="Slide 5"></button>
-						<button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="5" aria-label="Slide 6"></button>
+					<div className="carousel-indicators">
+						{[0, 1, 2, 3, 4, 5].map((index) => (
+							<button
+								key={index}
+								type="button"
+								data-bs-target="#carouselExampleCaptions"
+								data-bs-slide-to={index}
+								className={index === 0 ? "active" : ""}
+								aria-label={`Slide ${index + 1}`}
+							></button>
+						))}
 					</div>
 
-					<div className="carousel-inner ">
-						<div className="carousel-item active">
-							<img
-								src={electronica}
-								className="d-block w-100"
-								alt="Icono electrónica"
-								style={{ maxHeight: '200px', objectFit: 'cover' }}
-							/>
-							<div className="text-center mt-2">
-								<h5>Electrónica</h5>
-								<p onClick={() => {
-									navigate(`/articulos/electronica`);
-								}} className="mb-5 categoriasHomeCarusel">Explora la sección de electrónica</p>
+					<div className="carousel-inner">
+						{[
+							{ img: electronica, title: "Electrónica", category: "electronica" },
+							{ img: ropa, title: "Ropa", category: "ropa" },
+							{ img: casa, title: "Casa", category: "casa" },
+							{ img: deportes, title: "Deportes", category: "deportes" },
+							{ img: libros, title: "Libros", category: "libros" },
+							{ img: juguetes, title: "Juguetes", category: "juguetes" }
+						].map((item, index) => (
+							<div className={`carousel-item ${index === 0 ? "active" : ""}`} key={item.category}>
+								<img
+									src={item.img}
+									className="d-block w-100"
+									alt={`Icono ${item.title}`}
+									style={{ maxHeight: '200px', objectFit: 'cover' }}
+								/>
+								<div className="text-center mt-2">
+									<h5>{item.title}</h5>
+									<Link
+										to={`/articulos/${item.category}`}
+										className="mb-5 categoriasHomeCarusel"
+										style={{ display: 'block', cursor: 'pointer' }}
+									>
+										Explora la sección de {item.title.toLowerCase()}
+									</Link>
+								</div>
 							</div>
-						</div>
-
-						<div className="carousel-item">
-							<img
-								src={ropa}
-								className="d-block w-100"
-								alt="Ropa"
-								style={{ maxHeight: '200px', objectFit: 'cover' }}
-							/>
-							<div className="text-center mt-2">
-								<h5>Ropa</h5>
-								<p onClick={() => {
-									navigate(`/articulos/ropa`);
-								}} className="mb-5 categoriasHomeCarusel">Explora la sección de ropa</p>
-							</div>
-						</div>
-
-						<div className="carousel-item">
-							<img
-								src={casa}
-								className="d-block w-100"
-								alt="Icono casa"
-								style={{ maxHeight: '200px', objectFit: 'cover' }}
-							/>
-							<div className="text-center mt-2">
-								<h5>Casa</h5>
-								<p onClick={() => {
-									navigate(`/articulos/casa`);
-								}} className="mb-5 categoriasHomeCarusel">Explora la sección de casa</p>
-							</div>
-						</div>
-
-						<div className="carousel-item">
-							<img
-								src={deportes}
-								className="d-block w-100"
-								alt="Icono deportes"
-								style={{ maxHeight: '200px', objectFit: 'cover' }}
-							/>
-							<div className="text-center mt-2">
-								<h5>Deportes</h5>
-								<p onClick={() => {
-									navigate(`/articulos/deportes`);
-								}} className="mb-5 categoriasHomeCarusel">Explora la sección de deportes</p>
-							</div>
-						</div>
-
-						<div className="carousel-item">
-							<img
-								src={libros}
-								className="d-block w-100"
-								alt="Icono libro"
-								style={{ maxHeight: '200px', objectFit: 'cover' }}
-							/>
-							<div className="text-center mt-2">
-								<h5>Libros</h5>
-								<p onClick={() => {
-									navigate(`/articulos/libros`);
-								}} className="mb-5 categoriasHomeCarusel">Explora la sección de libros</p>
-							</div>
-						</div>
-						<div className="carousel-item">
-							<img
-								src={juguetes}
-								className="d-block w-100"
-								alt="Icono juguete"
-								style={{
-									height: '200px',
-									objectFit: 'cover',
-									overflow: 'hidden'
-								}}
-							/>
-							<div className="text-center mt-2">
-								<h5>Juguetes</h5>
-								<p onClick={() => {
-									navigate(`/articulos/juguetes`);
-								}}
-									className="mb-5 categoriasHomeCarusel">Explora la sección de juguetes</p>
-							</div>
-						</div>
+						))}
 					</div>
-
 
 					<button
 						className="carousel-control-prev"
@@ -311,12 +247,11 @@ export const Home = () => {
 					</button>
 				</div>
 			</div>
-
-		</motion.div >
+		</motion.div>
 	);
 };
 
-
+// Estilos (se mantienen igual)
 const baseCardStyle = {
 	border: "1px solid #e0e0e0",
 	borderRadius: "12px",
@@ -382,16 +317,4 @@ const styles = {
 		fontSize: "0.9rem",
 		color: "#fff",
 	},
-	caracteristicas: {
-		maxHeight: "60px",
-		overflowY: "auto",
-		fontSize: "0.8rem",
-		color: "#333",
-		backgroundColor: "#f9f9f9",
-		padding: "8px",
-		borderRadius: "6px",
-		marginTop: "8px",
-		border: "1px solid #eee",
-	},
-
 };

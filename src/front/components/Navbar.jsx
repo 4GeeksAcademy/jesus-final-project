@@ -16,7 +16,6 @@ export const Navbar = () => {
 	const userId = store.userId;
 	const [busqueda, setBusqueda] = useState("");
 	const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("");
-	const [Img, setImg] = useState({ img: "" });
 	const [loading, setLoading] = useState(true); 
 	
 
@@ -50,39 +49,7 @@ export const Navbar = () => {
 			});
 		}
 	};
-	useEffect(() => {
-		const userImg = async () => {
-			const token = localStorage.getItem("token");
-			if (!token) return;
-
-			try {
-				const response = await fetch(`${backendUrl}api/datos-personales`, {
-					method: "GET",
-					headers: {
-						'Authorization': `Bearer ${token}`
-					}
-				});
-
-				if (response.ok) {
-					const data = await response.json();
-
-					setImg({
-						...data,
-						imagen: data.img || ""
-					});
-
-				} else {
-					throw new Error(await response.text());
-				}
-			} catch (error) {
-				console.error("Error fetch userData:", error);
-			} finally {
-				setLoading(false);
-			}
-		};
-		userImg();
-	}, []);
-
+	
 
 	return (
 		<motion.div
@@ -185,17 +152,7 @@ export const Navbar = () => {
 								className="btn btn-light d-flex align-items-center me-1 gap-2 border rounded shadow-sm"
 								onClick={() => navigate(`/datospersonales/${userId}`)}
 							>
-								<img
-									onError={(e) => {
-										e.currentTarget.src =
-											"https://img.freepik.com/vector-premium/icono-perfil-usuario-estilo-plano-ilustracion-vector-avatar-miembro-sobre-fondo-aislado-concepto-negocio-signo-permiso-humano_157943-15752.jpg";
-									}}
-									className="rounded-circle"
-									width="32"
-									height="32"
-									src={Img.img}
-									alt="User profile"
-								/>
+								
 								<span className="fw-semibold text-dark">Mis datos</span>
 							</button>
 
