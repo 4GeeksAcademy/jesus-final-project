@@ -80,8 +80,28 @@ export const Home = () => {
 					<p className="lead  text-white">
 						Intercambiá lo que ya no usás por lo que realmente necesitás. Conectá con otras personas, acordá un trueque justo y empezá a darle una segunda vida a tus objetos favoritos.
 					</p>
-
+					{/* Aquí va el nuevo botón */}
+					<div className="d-flex justify-content-center mt-4">
+						<motion.button
+							whileHover={{ scale: 1.05 }}
+							whileTap={{ scale: 0.95 }}
+							className="btn btn-primary btn-lg"
+							onClick={() => navigate('/publicar-articulo')}
+							style={{
+								backgroundColor: '#4a6bff',
+								border: 'none',
+								borderRadius: '8px',
+								padding: '12px 24px',
+								fontSize: '1.1rem',
+								fontWeight: '600'
+							}}
+						>
+							<i className="bi bi-plus-circle me-2"></i>
+							Crear Publicación
+						</motion.button>
+					</div>
 				</div>
+
 			</div>
 
 			<div className="containerHome mt-5 pb-0">
@@ -292,7 +312,7 @@ export const Home = () => {
 				</div>
 			</div>
 
-		</motion.div>
+		</motion.div >
 	);
 };
 
