@@ -1,9 +1,11 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Swal from "sweetalert2";
 import { motion } from "framer-motion";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
+const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
 export const PublicarArticulo = () => {
     const [informacionArticulo, setInformacionArticulo] = useState({
@@ -18,7 +20,10 @@ export const PublicarArticulo = () => {
     const [error, setError] = useState(null);
     const [publicado, setPublicado] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [uploadingImage, setUploadingImage] = useState(false);
+    const [imagePreview, setImagePreview] = useState(null);
     const navigate = useNavigate();
+    const fileInputRef = useRef(null);
 
     const token = localStorage.getItem('token');
 
@@ -28,8 +33,111 @@ export const PublicarArticulo = () => {
         }
     }, [token, navigate]);
 
+    // Función para subir imagen a Cloudinary
+    const uploadImage = async (file) => {
+        setUploadingImage(true);
+        setError(null);
+
+        try {
+            // Mostrar vista previa antes de subir
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                setImagePreview(e.target.result);
+            };
+            reader.readAsDataURL(file);
+
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('upload_preset', uploadPreset);
+            formData.append('cloud_name', cloudName);
+
+            const response = await fetch(
+                `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+                {
+                    method: 'POST',
+                    body: formData
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error('Error al subir la imagen a Cloudinary');
+            }
+
+            const data = await response.json();
+            setInformacionArticulo(prev => ({
+                ...prev,
+                img: data.secure_url
+            }));
+
+            Swal.fire({
+                title: "¡Imagen subida!",
+                text: "La imagen se ha cargado correctamente",
+                icon: "success",
+                timer: 2000,
+                showConfirmButton: false
+            });
+
+        } catch (error) {
+            console.error("Error uploading image:", error);
+            setImagePreview(null);
+            setError("Error al subir la imagen. Por favor, inténtalo de nuevo.");
+
+            Swal.fire({
+                title: "Error",
+                text: "No se pudo subir la imagen. Verifica que sea válida e inténtalo nuevamente.",
+                icon: "error",
+            });
+        } finally {
+            setUploadingImage(false);
+        }
+    };
+
+    // Manejar cambio de imagen seleccionada
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        // Validaciones
+        if (file.size > 5 * 1024 * 1024) {
+            Swal.fire({
+                title: "Archivo demasiado grande",
+                text: "El tamaño máximo permitido es 5MB",
+                icon: "error",
+            });
+            return;
+        }
+
+        const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
+        if (!validTypes.includes(file.type)) {
+            Swal.fire({
+                title: "Formato no soportado",
+                text: "Solo se aceptan JPG, PNG o WEBP",
+                icon: "error",
+            });
+            return;
+        }
+
+        uploadImage(file);
+    };
+
     const manejarMensaje = async (e) => {
         e.preventDefault();
+
+        // Validar campos requeridos
+        if (!informacionArticulo.titulo ||
+            !informacionArticulo.caracteristicas ||
+            !informacionArticulo.categoria ||
+            !informacionArticulo.modelo ||
+            !informacionArticulo.estado ||
+            !informacionArticulo.img) {
+            Swal.fire({
+                title: "Campos incompletos",
+                text: "Por favor completa todos los campos obligatorios",
+                icon: "error",
+            });
+            return;
+        }
+
         setLoading(true);
         setError(null);
 
@@ -56,7 +164,10 @@ export const PublicarArticulo = () => {
                 title: "¡Éxito!",
                 text: "Artículo publicado correctamente",
                 icon: "success",
-                confirmButtonText: "Ver artículo"
+                showConfirmButton: true,
+                confirmButtonText: "Ver artículo",
+                showCancelButton: true,
+                cancelButtonText: "Volver al inicio"
             }).then((result) => {
                 if (result.isConfirmed) {
                     navigate(`/articulo/${data.articulo.id}`);
@@ -65,6 +176,7 @@ export const PublicarArticulo = () => {
                 }
             });
 
+            // Resetear formulario
             setInformacionArticulo({
                 titulo: '',
                 caracteristicas: '',
@@ -74,11 +186,12 @@ export const PublicarArticulo = () => {
                 estado: '',
                 cantidad: 1,
             });
+            setImagePreview(null);
 
         } catch (err) {
             setError(err.message);
             setPublicado(false);
-            
+
             Swal.fire({
                 title: "Error",
                 text: err.message,
@@ -128,7 +241,7 @@ export const PublicarArticulo = () => {
                         <div className="card-header">
                             <h4 className="mb-0">Publicar Nuevo Artículo</h4>
                         </div>
-                        
+
                         <div className="card-body">
                             <form onSubmit={manejarMensaje}>
                                 <div className="row">
@@ -150,7 +263,7 @@ export const PublicarArticulo = () => {
                                             />
                                         </div>
                                     </div>
-                                    
+
                                     <div className="col-md-6">
                                         <div className="mb-3">
                                             <label htmlFor="categoria" className="form-label">
@@ -210,7 +323,7 @@ export const PublicarArticulo = () => {
                                             />
                                         </div>
                                     </div>
-                                    
+
                                     <div className="col-md-6">
                                         <div className="mb-3">
                                             <label htmlFor="estado" className="form-label">
@@ -254,51 +367,71 @@ export const PublicarArticulo = () => {
                                             />
                                         </div>
                                     </div>
-                                    
+
                                     <div className="col-md-6">
                                         <div className="mb-3">
                                             <label htmlFor="img" className="form-label">
-                                                URL de la imagen *
+                                                Imagen del artículo *
                                             </label>
-                                            <input
-                                                type="url"
-                                                className="form-control"
-                                                id="img"
-                                                name="img"
-                                                value={informacionArticulo.img}
-                                                onChange={manejarCambiar}
-                                                required
-                                                placeholder="https://ejemplo.com/imagen.jpg"
-                                            />
+                                            <div className="d-flex flex-column gap-2">
+                                                <button
+                                                    className={`btn ${informacionArticulo.img ? 'btn-outline-primary' : 'btn-primary'} ${uploadingImage ? 'disabled' : ''}`}
+                                                    type="button"
+                                                    onClick={() => fileInputRef.current.click()}
+                                                    disabled={uploadingImage}
+                                                >
+                                                    {uploadingImage ? (
+                                                        <>
+                                                            <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                                            Subiendo...
+                                                        </>
+                                                    ) : (
+                                                        informacionArticulo.img ? 'Cambiar Imagen' : 'Subir Imagen'
+                                                    )}
+                                                </button>
+                                                <input
+                                                    type="file"
+                                                    ref={fileInputRef}
+                                                    onChange={handleImageChange}
+                                                    accept="image/*"
+                                                    className="d-none"
+                                                    disabled={uploadingImage}
+                                                />
+                                                <small className="text-muted">Formatos: JPG, PNG, WEBP - Máx. 5MB</small>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                {informacionArticulo.img && (
+                                {(imagePreview || informacionArticulo.img) && (
                                     <div className="mb-3">
-                                        <label className="form-label">Vista previa de la imagen:</label>
+                                        <label className="form-label">Vista previa:</label>
                                         <div className="text-center">
                                             <img
-                                                src={informacionArticulo.img}
+                                                src={imagePreview || informacionArticulo.img}
                                                 alt="Vista previa"
                                                 className="img-fluid rounded"
-                                                style={{ maxHeight: "200px", objectFit: "contain" }}
+                                                style={{
+                                                    maxHeight: "200px",
+                                                    objectFit: "contain",
+                                                    border: "1px solid #dee2e6"
+                                                }}
                                                 onError={(e) => {
-                                                    e.target.style.display = 'none';
+                                                    e.target.src = "https://via.placeholder.com/200?text=Imagen+no+disponible";
                                                 }}
                                             />
                                         </div>
                                     </div>
                                 )}
 
-                                <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <div className="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
                                     <Link to="/" className="btn btn-secondary">
                                         Cancelar
                                     </Link>
                                     <button
                                         type="submit"
                                         className="btn btn-primary"
-                                        disabled={loading}
+                                        disabled={loading || uploadingImage}
                                     >
                                         {loading ? (
                                             <>
