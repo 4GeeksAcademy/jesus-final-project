@@ -171,6 +171,28 @@ def obtener_todos_los_articulos():
     return jsonify(resultados), 200
 
 
+@api.route('/api/articulos-usuario/<int:user_id>', methods=['GET'])
+@jwt_required()
+def obtener_articulos_usuario(user_id):
+    # Verificar que el usuario solicitante es el mismo
+    if int(get_jwt_identity()) != user_id:
+        return jsonify({'msg': 'No autorizado'}), 403
+
+    articulos = Articulo.query.filter_by(usuario_id=user_id).all()
+
+    resultados = [{
+        'id': articulo.id,
+        'titulo': articulo.titulo,
+        'caracteristicas': articulo.caracteristicas,
+        'categoria': articulo.categoria,
+        'img': articulo.img,
+        'estado': articulo.estado,
+        'fecha_publicacion': articulo.fecha_publicacion.isoformat() if articulo.fecha_publicacion else None
+    } for articulo in articulos]
+
+    return jsonify(resultados), 200
+
+
 @api.route('/rating', methods=['GET'])
 def obtener_todos_los_ratings():
     ratings = (
@@ -712,6 +734,29 @@ def obtener_detalle_trueke(trueke_id):
 
     except Exception as e:
         return jsonify({'error': f'Error al obtener detalle del trueke: {str(e)}'}), 500
+
+
+# Quitamos /api/ para mantener consistencia
+@api.route('/mis-publicaciones', methods=['GET'])
+@jwt_required()
+def obtener_mis_publicaciones():
+    usuario_token_id = int(get_jwt_identity())
+
+    articulos = Articulo.query.filter_by(usuario_id=usuario_token_id).all()
+
+    resultados = [{
+        'id': articulo.id,
+        'titulo': articulo.titulo,
+        'caracteristicas': articulo.caracteristicas,
+        'categoria': articulo.categoria,
+        'img': articulo.img,
+        'modelo': articulo.modelo,
+        'estado': articulo.estado,
+        'cantidad': articulo.cantidad,
+        'fecha_publicacion': articulo.fecha_publicacion.isoformat() if articulo.fecha_publicacion else None
+    } for articulo in articulos]
+
+    return jsonify(resultados), 200
 
 
 # Rutas temporales para debug en postman

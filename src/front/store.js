@@ -1,9 +1,11 @@
 export const initialStore = () => {
   return {
     message: null,
-    user: [],
+    user: null,
     isAuthenticated: localStorage.getItem("token") ? true : false,
     userId: null,
+    token: null,
+    refresh_token: null 
   };
 };
 
@@ -16,6 +18,7 @@ export default function storeReducer(store, action = {}) {
         token: action.payload.token,
         refresh_token: action.payload.refreshToken,
         userId: action.payload.userId,
+        user: action.payload.user,
       };
 
     case "logout":
@@ -25,7 +28,10 @@ export default function storeReducer(store, action = {}) {
         token: null,
         refresh_token: null,
         userId: null,
+        user: null,
       };
+
+      
 
     default:
       console.error("Unknown action dispatched:", action);

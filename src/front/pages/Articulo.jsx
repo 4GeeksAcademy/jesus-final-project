@@ -229,23 +229,22 @@ export const Articulo = () => {
     }
   };
 
-  // Editar artículo - FUNCIÓN MEJORADA
+  // Editar artículo 
   const handleEditarArticulo = async (e) => {
     e.preventDefault();
 
     try {
-      // Preparamos el payload con todos los campos requeridos
       const payload = {
         titulo: datosEditados.titulo,
         caracteristicas: datosEditados.caracteristicas,
         categoria: datosEditados.categoria,
-        img: datosArticulo.img, // Usamos la imagen original ya que es campo requerido
+        img: datosArticulo.img, 
         modelo: datosEditados.modelo || '',
         estado: datosEditados.estado || '',
         cantidad: datosEditados.cantidad || 1
       };
 
-      console.log("Enviando datos:", payload); // Para depuración
+      console.log("Enviando datos:", payload); 
 
       const response = await fetch(`${backendUrl}/api/editar-datos-articulo/${id}`, {
         method: 'PUT',
@@ -263,11 +262,10 @@ export const Articulo = () => {
 
       const data = await response.json();
       
-      // Actualizamos los datos del artículo con la respuesta del servidor
       setDatosArticulo(prev => ({
         ...prev,
         ...datosEditados,
-        img: payload.img // Mantenemos la imagen original
+        img: payload.img 
       }));
       
       setEditando(false);
@@ -332,7 +330,7 @@ export const Articulo = () => {
             text: "Trueke creado correctamente",
             icon: "success",
           }).then(() => {
-            navigate(`/trueke/${data.id}`);
+            navigate(`/truekes/${userId}`);
           });
         } else {
           const errorData = await response.json();
