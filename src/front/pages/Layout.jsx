@@ -8,11 +8,19 @@ import { AuthModeProvider } from "../hooks/AuthModeContext";
 export const Layout = () => {
     return (
         <AuthModeProvider>
-            <ScrollToTop>
-                <Navbar />
-                <Outlet />
-                <Footer />
-            </ScrollToTop>
+            <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                minHeight: '100vh'
+            }}>
+                <ScrollToTop>
+                    <Navbar />
+                    <main style={{ flex: 1 }}>
+                        <Outlet />
+                    </main>
+                    <Footer />
+                </ScrollToTop>
+            </div>
         </AuthModeProvider>
-    )
-}
+    );
+};

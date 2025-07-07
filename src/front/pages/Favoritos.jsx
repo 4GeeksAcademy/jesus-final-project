@@ -118,12 +118,12 @@ export const Favoritos = () => {
             transition={{ duration: 0.5 }}
             className="container mt-5 pt-4"
         >
-            <div className="d-flex justify-content-between align-items-center mb-4">
-                <h2>Mis Favoritos</h2>
+            <div className="d-flex justify-content-center align-items-center">
+                <h2 className="text-center">Mis Favoritos</h2>
             </div>
 
             {favoritos.length === 0 ? (
-                <div className="text-center py-5">
+                <div className="text-center py-4">
                     <h4>No tienes artículos en favoritos</h4>
                     <p>Explora artículos y agrega los que te interesen</p>
                     <button className="btn btn-primary mt-3" onClick={() => navigate("/")}>
@@ -156,12 +156,12 @@ export const Favoritos = () => {
                                         <h5 className="mb-1">{fav.titulo}</h5>
                                         <span
                                             className={`badge rounded-pill ${fav.estado === "nuevo"
-                                                    ? "bg-success"
-                                                    : fav.estado === "como_nuevo"
-                                                        ? "bg-primary"
-                                                        : fav.estado === "bueno"
-                                                            ? "bg-info"
-                                                            : "bg-warning"
+                                                ? "bg-success"
+                                                : fav.estado === "como_nuevo"
+                                                    ? "bg-primary"
+                                                    : fav.estado === "bueno"
+                                                        ? "bg-info"
+                                                        : "bg-warning"
                                                 }`}
                                         >
                                             {fav.estado?.replace("_", " ")}
