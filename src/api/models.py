@@ -136,6 +136,7 @@ class TransaccionTrueke(db.Model):
         ForeignKey('articulo.id'), nullable=False)
     articulo_receptor_id: Mapped[int] = mapped_column(
         ForeignKey('articulo.id'), nullable=False)
+    
 
     # Relaciones
     articulo_propietario: Mapped['Articulo'] = relationship(
@@ -144,7 +145,7 @@ class TransaccionTrueke(db.Model):
         'Articulo', foreign_keys=[articulo_receptor_id])
     comentarios_transaccion: Mapped[list['Comentario']] = relationship(
         'Comentario', back_populates='transaccion', cascade='all, delete-orphan')
-
+    
     def __str__(self):
         return f'''Trueke: {self.articulo_propietario.usuario.nombre_de_usuario} y {self.articulo_receptor.usuario.nombre_de_usuario} 
         intercambian {self.articulo_propietario.titulo} y {self.articulo_receptor.titulo} respectivamente'''

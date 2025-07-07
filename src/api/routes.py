@@ -535,7 +535,7 @@ def eliminar_trueke(id):
         return jsonify({'error': str(e)}), 500
 
 
-@api.route('/truekes/<int:user_id>', methods=['GET'])
+@api.route('/truekes/historial/<int:user_id>', methods=['GET'])
 @jwt_required()
 def historial_truekes_usuario(user_id):
     usuario_token_id = int(get_jwt_identity())
@@ -550,10 +550,9 @@ def historial_truekes_usuario(user_id):
     ).filter(
         Articulo.usuario_id == user_id
     ).all()
-
+    print (truekes_como_receptor[0].articulo_receptor)
     historial = [{
         'id': t.id,
-        'fecha_creacion': t.fecha_creacion.isoformat(),
         'estado': t.estado,
         'rol_usuario': 'receptor',
         'mi_articulo': {

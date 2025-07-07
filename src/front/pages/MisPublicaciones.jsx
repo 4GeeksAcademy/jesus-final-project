@@ -150,7 +150,7 @@ export const MisPublicaciones = () => {
 
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`${backendUrl}/api/eliminar-articulo/${id}`, {
+      const response = await fetch(`${backendUrl}api/eliminar-articulo/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
