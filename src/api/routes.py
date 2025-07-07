@@ -174,9 +174,9 @@ def obtener_todos_los_articulos():
 @api.route('/api/mis-publicaciones', methods=['GET'])  # Cambiamos la ruta
 @jwt_required()
 def obtener_articulos_usuario():
-    
+
     user_id = int(get_jwt_identity())
-    
+
     articulos = Articulo.query.filter_by(usuario_id=user_id).all()
 
     resultados = [{
@@ -526,79 +526,49 @@ def eliminar_trueke(id):
         return jsonify({'error': str(e)}), 500
 
 
-@api.route('/historial-truekes', methods=['GET'])
+@api.route('/truekes/<int:user_id>', methods=['GET'])
 @jwt_required()
-def obtener_historial_truekes():
+def historial_truekes_usuario(user_id):
     """
-    Obtiene el historial de truekes del usuario autenticado
-    Incluye tanto truekes donde es propietario como receptor
+    Obtiene los truekes donde el usuario es receptor (no propietario).
+    Solo permitido si es el mismo usuario que está logueado (por seguridad).
     """
-    try:
-        usuario_token_id = int(get_jwt_identity())
+    usuario_token_id = int(get_jwt_identity())
+    if user_id != usuario_token_id:
+        return jsonify({'error': 'No autorizado'}), 403
 
-        # Query para obtener transacciones donde el usuario participa
-        # Tanto como propietario (sus artículos) como receptor
-        truekes_como_propietario = db.session.query(TransaccionTrueke).join(
-            Articulo, TransaccionTrueke.articulo_propietario_id == Articulo.id
-        ).filter(Articulo.usuario_id == usuario_token_id).all()
+    # Truekes donde el usuario es receptor
+    truekes_como_receptor = db.session.query(
+        TransaccionTrueke
+    ).join(
+        Articulo, TransaccionTrueke.articulo_receptor_id == Articulo.id
+    ).filter(
+        Articulo.usuario_id == user_id
+    ).all()
 
-        truekes_como_receptor = db.session.query(TransaccionTrueke).join(
-            Articulo, TransaccionTrueke.articulo_receptor_id == Articulo.id
-        ).filter(Articulo.usuario_id == usuario_token_id).all()
+    historial = [{
+        'id': t.id,
+        'fecha_creacion': t.fecha_creacion.isoformat(),
+        'estado': t.estado,
+        'rol_usuario': 'receptor',
+        'mi_articulo': {
+            'id': t.articulo_receptor.id,
+            'titulo': t.articulo_receptor.titulo,
+            'img': t.articulo_receptor.img
+        },
+        'articulo_intercambiado': {
+            'id': t.articulo_propietario.id,
+            'titulo': t.articulo_propietario.titulo,
+            'img': t.articulo_propietario.img
+        }
+    } for t in truekes_como_receptor]
 
-        # Combinar y eliminar duplicados
-        todas_las_transacciones = list(
-            set(truekes_como_propietario + truekes_como_receptor))
+    return jsonify({
+        'success': True,
+        'historial': historial
+    }), 200
 
-        historial = []
-        for transaccion in todas_las_transacciones:
-            # Determinar rol del usuario en esta transacción
-            es_propietario = transaccion.articulo_propietario.usuario_id == usuario_token_id
 
-            historial_item = {
-                'id': transaccion.id,
-                'fecha_creacion': transaccion.fecha_creacion.isoformat() if hasattr(transaccion, 'fecha_creacion') else None,
-                'comentarios': transaccion.comentarios,
-                'rol_usuario': 'propietario' if es_propietario else 'receptor',
-
-                # Datos del artículo propio
-                'mi_articulo': {
-                    'id': transaccion.articulo_propietario.id if es_propietario else transaccion.articulo_receptor.id,
-                    'titulo': transaccion.articulo_propietario.titulo if es_propietario else transaccion.articulo_receptor.titulo,
-                    'categoria': transaccion.articulo_propietario.categoria if es_propietario else transaccion.articulo_receptor.categoria,
-                    'img': transaccion.articulo_propietario.img if es_propietario else transaccion.articulo_receptor.img,
-                    'estado': transaccion.articulo_propietario.estado if es_propietario else transaccion.articulo_receptor.estado
-                },
-
-                # Datos del artículo intercambiado
-                'articulo_intercambiado': {
-                    'id': transaccion.articulo_receptor.id if es_propietario else transaccion.articulo_propietario.id,
-                    'titulo': transaccion.articulo_receptor.titulo if es_propietario else transaccion.articulo_propietario.titulo,
-                    'categoria': transaccion.articulo_receptor.categoria if es_propietario else transaccion.articulo_propietario.categoria,
-                    'img': transaccion.articulo_receptor.img if es_propietario else transaccion.articulo_propietario.img,
-                    'estado': transaccion.articulo_receptor.estado if es_propietario else transaccion.articulo_propietario.estado
-                },
-
-                # Datos del otro usuario
-                'otro_usuario': {
-                    'id': transaccion.articulo_receptor.usuario.id if es_propietario else transaccion.articulo_propietario.usuario.id,
-                    'nombre_de_usuario': transaccion.articulo_receptor.usuario.nombre_de_usuario if es_propietario else transaccion.articulo_propietario.usuario.nombre_de_usuario
-                }
-            }
-
-            historial.append(historial_item)
-
-        # Ordenar por fecha (más recientes primero) si existe el campo fecha_creacion
-        # Si no tienes fecha_creacion, ordenar por id
-        historial.sort(key=lambda x: x['id'], reverse=True)
-
-        return jsonify({
-            'historial': historial,
-            'total': len(historial)
-        }), 200
-
-    except Exception as e:
-        return jsonify({'error': f'Error al obtener historial: {str(e)}'}), 500
 
 
 @api.route('/historial-truekes/stats', methods=['GET'])

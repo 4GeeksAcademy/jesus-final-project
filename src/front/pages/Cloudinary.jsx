@@ -57,7 +57,7 @@ const Cloudinary = () => {
                 {loading ? (
                     <h3>Loading...</h3>
                 ) : (
-                    <img src={image} alt="imagen subida" />    //estilo imagen
+                    <img src={image} alt="imagen subida" />    
                 )}
             </motion.div>
 

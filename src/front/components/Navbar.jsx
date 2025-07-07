@@ -86,7 +86,7 @@ export const Navbar = () => {
         >
             <nav className="navbar navbar-light bg-light fixed-top py-2">
                 <div className="container-fluid d-flex align-items-center flex-nowrap">
-                    {/* Logo y menú hamburguesa (mobile) */}
+                    {/* Logo y menú hamburguesa tlf */}
                     <div className="d-flex align-items-center">
                         <button
                             className="navbar-toggler me-2 d-lg-none"
@@ -234,11 +234,11 @@ export const Navbar = () => {
                         )}
                     </div>
 
-                    {/* Menú móvil */}
+                    {/* Menú tlf */}
                     {showMobileMenu && (
                         <div className="mobile-menu-overlay">
                             <div className="mobile-menu-content">
-                                {/* Búsqueda - Mobile */}
+                                {/* Búsqueda - tlf */}
                                 <div className="mb-4">
                                     <div className="input-group">
                                         <input
@@ -279,7 +279,7 @@ export const Navbar = () => {
                                     </select>
                                 </div>
 
-                                {/* Links - Mobile */}
+                                {/* Links - tlf */}
                                 <div className="d-flex flex-column mb-4">
                                     <Link
                                         to="/sobre-nosotros"
@@ -316,7 +316,7 @@ export const Navbar = () => {
                                     </Link>
                                 </div>
 
-                                {/* Botones de usuario - Mobile */}
+                                {/* Botones de usuario - tlf */}
                                 <div className="d-flex flex-column">
                                     {store.isAuthenticated ? (
                                         <>

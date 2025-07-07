@@ -3,7 +3,7 @@ export const initialStore = () => {
     message: null,
     user: null,
     isAuthenticated: localStorage.getItem("token") ? true : false,
-    userId: null,
+    userId: localStorage.getItem("userId"),
     token: null,
     refresh_token: null 
   };

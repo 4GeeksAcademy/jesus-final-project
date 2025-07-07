@@ -14,6 +14,7 @@ import { LoginRegistro } from "./pages/LoginRegistro";
 import { CambiarContraseña } from "./pages/CambiarContraseña";
 import { PublicarArticulo } from "./pages/PublicarArticulo";
 import { Truekes } from "./pages/Truekes";
+import { TruekeDetalle } from "./pages/TruekeDetalle";
 import { ArticulosXCategoria } from "./pages/ArticulosXCategorias";
 import SobreNosotros from "./pages/sobreNosotros";
 import Contacto from "./pages/Contacto"
@@ -21,6 +22,7 @@ import { AyudaYSoporte } from "./pages/AyudaYSoporte"
 import PoliticaPrivacidad from "./pages/PoliticaPrivacidad";
 import { ComoTruekear } from "./pages/ComoTruekear";
 import { MisPublicaciones } from "./pages/MisPublicaciones";
+
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -37,15 +39,15 @@ export const router = createBrowserRouter(
       <Route path="/" element={<Home />} />
       <Route path="/single/:theId" element={<Single />} />  {/* Dynamic route for single items */}
       <Route path="/datospersonales/:usuarioId" element={<DatosPersonales />} />
-      <Route path="/articulo/:id" element={<Articulo />} />
       <Route path="/identificate" element={<LoginRegistro />} />
       <Route path="/cambiar-contraseña/:codigoUUID" element={<CambiarContraseña />} />
       <Route path="/publicar-articulo" element={<PublicarArticulo />} />
       <Route path="/articulos/:categorias" element={<ArticulosXCategoria />} />
-      <Route path="/truekes/:usuarioId" element={<Truekes />} />
+      <Route path="/articulo/:id" element={<Articulo />} />
       <Route path="/como-truekear" element={<ComoTruekear />} />
       <Route path="/ayuda-&-soporte" element={<AyudaYSoporte />} />
-     {/* <Route path="/trueke/:id" element={<DetalleTrueke />} /> */}
+      <Route path="/trueke-detalle/:truekeId" element={<TruekeDetalle />} />
+      <Route path="/truekes/:usuarioId" element={<Truekes />} />
       <Route path="/mis-publicaciones/:usuarioId" element={<MisPublicaciones />} />
       <Route path="/sobre-nosotros" element={<SobreNosotros />} />
       <Route path="/Contacto" element={<Contacto />} />

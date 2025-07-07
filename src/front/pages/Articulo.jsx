@@ -545,7 +545,7 @@ export const Articulo = () => {
         </div>
       </div>
 
-      {/* Modal de Edición */}
+      {/*  Edición */}
       {editando && (
         <div className="modal fade show" style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)', position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 1050 }}>
           <div className="modal-dialog modal-lg" style={{ marginTop: '5%' }}>
