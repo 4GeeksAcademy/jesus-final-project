@@ -8,6 +8,7 @@ const backendUrl = import.meta.env.VITE_BACKEND_URL;
 export const Truekes = () => {
     const navigate = useNavigate();
     const userId = localStorage.getItem("userId");
+    const token = localStorage.getItem("token");
 
     const [truekes, setTruekes] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -15,66 +16,41 @@ export const Truekes = () => {
 
     useEffect(() => {
         const fetchTruekes = async () => {
+            if (!token || !userId) {
+                console.warn("No hay token o userId en localStorage");
+                setLoading(false);
+                return;
+            }
+
             try {
-                setLoading(true);
-                setError(null);
-
-                const token = localStorage.getItem("token");
-                if (!token) {
-                    navigate("/login");
-                    return;
-                }
-
-                if (!userId) {
-                    throw new Error("No se encontró el ID de usuario");
-                }
-
-                console.log("Solicitando truekes a:", `${backendUrl}api/truekes/${userId}`);
-
-                const response = await fetch(`${backendUrl}api/truekes/${userId}`, {
-                    method: "GET",
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-Type": "application/json",
-                    },
-                });
-
-                // Si no hay contenido (204) o no encontrado (404)
-                if (response.status === 204 || response.status === 404) {
-                    setTruekes([]);
-                    return;
-                }
-
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error || errorData.msg || `Error ${response.status}`);
-                }
+                const response = await fetch(
+                    `${backendUrl}/api/truekes/${userId}`,
+                    {
+                        method: "GET",
+                        headers: {
+                            "Authorization": `Bearer ${token}`,
+                            "Content-Type": "application/json",
+                        },
+                    }
+                );
 
                 const data = await response.json();
-
-                // Validación de la estructura de datos
-                if (!data || !Array.isArray(data.historial)) {
-                    console.warn("Estructura de datos inesperada:", data);
-                    setTruekes([]);
-                    return;
+                if (response.ok) {
+                    setTruekes(data.historial || []);
+                } else {
+                    setError(data.msg || "Error al obtener truekes");
+                    console.error("Error al obtener truekes:", data);
                 }
-
-                setTruekes(data.historial);
             } catch (error) {
-                console.error("Error al obtener truekes:", error);
-                setError(error.message);
-                Swal.fire({
-                    title: "Error",
-                    text: error.message || "Error al cargar tus truekes",
-                    icon: "error",
-                });
+                console.error("Error de red al obtener truekes:", error);
+                setError("Error de red al cargar truekes");
             } finally {
                 setLoading(false);
             }
         };
 
         fetchTruekes();
-    }, [navigate, userId]);
+    }, [token, userId]);
 
     const handleVerTrueke = (id) => {
         navigate(`/trueke-detalle/${id}`);
@@ -97,8 +73,7 @@ export const Truekes = () => {
         if (!isConfirmed) return;
 
         try {
-            const token = localStorage.getItem("token");
-            const response = await fetch(`${backendUrl}api/truekes/${id}`, {
+            const response = await fetch(`${backendUrl}/api/truekes/${id}`, {
                 method: "DELETE",
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -201,8 +176,7 @@ export const Truekes = () => {
                                     <div>
                                         <h6>{trueke.mi_articulo?.titulo || "Artículo sin título"}</h6>
                                         <small className="text-muted">
-                                            {trueke.mi_articulo?.categoria || "Sin categoría"} •
-                                            Estado: {trueke.estado || "desconocido"}
+                                            {trueke.mi_articulo?.categoria || "Sin categoría"} • Estado: {trueke.estado || "desconocido"}
                                         </small>
                                     </div>
                                 </div>

@@ -4,14 +4,17 @@ export const initialStore = () => {
     user: null,
     isAuthenticated: localStorage.getItem("token") ? true : false,
     userId: localStorage.getItem("userId"),
-    token: null,
-    refresh_token: null 
+    token: localStorage.getItem("token") || null,
+    refresh_token: localStorage.getItem("refreshToken") || null
   };
 };
 
 export default function storeReducer(store, action = {}) {
   switch (action.type) {
     case "login_success":
+      localStorage.setItem("token", action.payload.token);
+      localStorage.setItem("refreshToken", action.payload.refreshToken);
+      localStorage.setItem("userId", action.payload.userId);
       return {
         ...store,
         isAuthenticated: true,
@@ -22,6 +25,9 @@ export default function storeReducer(store, action = {}) {
       };
 
     case "logout":
+      localStorage.removeItem("token");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("userId");
       return {
         ...store,
         isAuthenticated: false,

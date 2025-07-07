@@ -320,19 +320,28 @@ def eliminar_articulo(articulo_id):
 @jwt_required()
 def obtener_favoritos():
     usuario_token_id = int(get_jwt_identity())
-
-    favoritos = db.session.query(ArticuloFavorito).filter_by(
-        usuario_id=usuario_token_id,
-        es_favorito=True
+    favoritos = db.session.query(ArticuloFavorito, Articulo).join(
+        Articulo, ArticuloFavorito.articulo_id == Articulo.id
+    ).filter(
+        ArticuloFavorito.usuario_id == usuario_token_id,
+        ArticuloFavorito.es_favorito == True
     ).all()
+
+    if not favoritos:
+        return jsonify([]), 200
 
     favoritos_serializados = [
         {
-            "articulo_id": f.articulo.id,
-            "titulo": f.articulo.titulo,
-            "img": f.articulo.img
+            "articulo_id": articulo.id,
+            "titulo": articulo.titulo,
+            "caracteristicas": articulo.caracteristicas,
+            "categoria": articulo.categoria,
+            "img": articulo.img,
+            "modelo": articulo.modelo,
+            "estado": articulo.estado,
+            "fecha_publicacion": articulo.fecha_publicacion.isoformat() if articulo.fecha_publicacion else None
         }
-        for f in favoritos if f.articulo
+        for favorito, articulo in favoritos
     ]
 
     return jsonify(favoritos_serializados), 200
@@ -529,10 +538,6 @@ def eliminar_trueke(id):
 @api.route('/truekes/<int:user_id>', methods=['GET'])
 @jwt_required()
 def historial_truekes_usuario(user_id):
-    """
-    Obtiene los truekes donde el usuario es receptor (no propietario).
-    Solo permitido si es el mismo usuario que está logueado (por seguridad).
-    """
     usuario_token_id = int(get_jwt_identity())
     if user_id != usuario_token_id:
         return jsonify({'error': 'No autorizado'}), 403

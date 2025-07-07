@@ -22,7 +22,7 @@ import { AyudaYSoporte } from "./pages/AyudaYSoporte"
 import PoliticaPrivacidad from "./pages/PoliticaPrivacidad";
 import { ComoTruekear } from "./pages/ComoTruekear";
 import { MisPublicaciones } from "./pages/MisPublicaciones";
-
+import { Favoritos } from "./pages/Favoritos";
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -52,6 +52,7 @@ export const router = createBrowserRouter(
       <Route path="/sobre-nosotros" element={<SobreNosotros />} />
       <Route path="/Contacto" element={<Contacto />} />
       <Route path="/politica-privacidad" element={<PoliticaPrivacidad />} />
+      <Route path="/favoritos" element={<Favoritos />} />
     </Route>
   )
 );
