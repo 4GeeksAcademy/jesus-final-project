@@ -11,10 +11,14 @@ export const Truekes = () => {
 
     const [truekes, setTruekes] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchTruekes = async () => {
             try {
+                setLoading(true);
+                setError(null);
+
                 const token = localStorage.getItem("token");
                 if (!token) {
                     navigate("/login");
@@ -22,14 +26,10 @@ export const Truekes = () => {
                 }
 
                 if (!userId) {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Error",
-                        text: "No se encontró el usuario logueado",
-                    });
-                    navigate("/");
-                    return;
+                    throw new Error("No se encontró el ID de usuario");
                 }
+
+                console.log("Solicitando truekes a:", `${backendUrl}api/truekes/${userId}`);
 
                 const response = await fetch(`${backendUrl}api/truekes/${userId}`, {
                     method: "GET",
@@ -39,15 +39,30 @@ export const Truekes = () => {
                     },
                 });
 
+                // Si no hay contenido (204) o no encontrado (404)
+                if (response.status === 204 || response.status === 404) {
+                    setTruekes([]);
+                    return;
+                }
+
                 if (!response.ok) {
                     const errorData = await response.json();
                     throw new Error(errorData.error || errorData.msg || `Error ${response.status}`);
                 }
 
                 const data = await response.json();
-                setTruekes(data.historial || []);
+
+                // Validación de la estructura de datos
+                if (!data || !Array.isArray(data.historial)) {
+                    console.warn("Estructura de datos inesperada:", data);
+                    setTruekes([]);
+                    return;
+                }
+
+                setTruekes(data.historial);
             } catch (error) {
-                console.error("Error:", error);
+                console.error("Error al obtener truekes:", error);
+                setError(error.message);
                 Swal.fire({
                     title: "Error",
                     text: error.message || "Error al cargar tus truekes",
@@ -68,7 +83,7 @@ export const Truekes = () => {
     const handleCancelarTrueke = async (id, e) => {
         e.stopPropagation();
 
-        const confirmacion = await Swal.fire({
+        const { isConfirmed } = await Swal.fire({
             title: "¿Cancelar trueke?",
             text: "Esta acción no se puede deshacer",
             icon: "warning",
@@ -79,7 +94,7 @@ export const Truekes = () => {
             cancelButtonText: "No",
         });
 
-        if (!confirmacion.isConfirmed) return;
+        if (!isConfirmed) return;
 
         try {
             const token = localStorage.getItem("token");
@@ -96,11 +111,10 @@ export const Truekes = () => {
                 throw new Error(errorData.msg || `Error ${response.status}`);
             }
 
-            setTruekes(truekes.filter((t) => t.id !== id));
-
+            setTruekes(prev => prev.filter(t => t.id !== id));
             Swal.fire("Cancelado", "El trueke ha sido cancelado.", "success");
         } catch (error) {
-            console.error("Error:", error);
+            console.error("Error al cancelar trueke:", error);
             Swal.fire({
                 title: "Error",
                 text: error.message || "Error al cancelar el trueke",
@@ -115,6 +129,24 @@ export const Truekes = () => {
                 <div className="spinner-border text-primary" role="status">
                     <span className="visually-hidden">Cargando...</span>
                 </div>
+                <p className="ms-3">Cargando tus truekes...</p>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="container mt-5 pt-4">
+                <div className="alert alert-danger">
+                    <h4>Error al cargar los truekes</h4>
+                    <p>{error}</p>
+                    <button
+                        className="btn btn-primary"
+                        onClick={() => window.location.reload()}
+                    >
+                        Reintentar
+                    </button>
+                </div>
             </div>
         );
     }
@@ -127,14 +159,17 @@ export const Truekes = () => {
             transition={{ duration: 0.5 }}
             className="container mt-5 pt-4"
         >
-            <h2 className="mb-4">Mis Truekes </h2>
+            <h2 className="mb-4">Mis Truekes</h2>
 
             {truekes.length === 0 ? (
                 <div className="text-center py-5">
                     <h4>No tienes truekes aún</h4>
                     <p>Comienza intercambiando tus artículos</p>
-                    <button className="btn btn-primary mt-3" onClick={() => navigate("/")}>
-                        Ver artículos
+                    <button
+                        className="btn btn-primary mt-3"
+                        onClick={() => navigate("/")}
+                    >
+                        Ver artículos disponibles
                     </button>
                 </div>
             ) : (
@@ -150,27 +185,43 @@ export const Truekes = () => {
                             <div className="d-flex justify-content-between align-items-center">
                                 <div className="d-flex align-items-center">
                                     <img
-                                        src={trueke.mi_articulo?.img || "https://via.placeholder.com/100"}
-                                        alt={trueke.mi_articulo?.titulo}
+                                        src={trueke.mi_articulo?.img || "/placeholder-item.png"}
+                                        alt={trueke.mi_articulo?.titulo || "Artículo sin título"}
                                         className="me-3 rounded"
-                                        style={{ width: "80px", height: "80px", objectFit: "cover" }}
+                                        style={{
+                                            width: "80px",
+                                            height: "80px",
+                                            objectFit: "cover",
+                                            backgroundColor: "#f8f9fa"
+                                        }}
+                                        onError={(e) => {
+                                            e.target.src = "/placeholder-item.png";
+                                        }}
                                     />
                                     <div>
-                                        <h6>{trueke.mi_articulo?.titulo}</h6>
-                                        <small className="text-muted">{trueke.mi_articulo?.categoria || "Categoría no disponible"}</small>
+                                        <h6>{trueke.mi_articulo?.titulo || "Artículo sin título"}</h6>
+                                        <small className="text-muted">
+                                            {trueke.mi_articulo?.categoria || "Sin categoría"} •
+                                            Estado: {trueke.estado || "desconocido"}
+                                        </small>
                                     </div>
                                 </div>
 
                                 <div className="d-flex gap-2">
-                                    <button className="btn btn-sm btn-outline-primary" onClick={() => handleVerTrueke(trueke.id)}>
+                                    <button
+                                        className="btn btn-sm btn-outline-primary"
+                                        onClick={() => handleVerTrueke(trueke.id)}
+                                    >
                                         Detalles
                                     </button>
-                                    <button
-                                        className="btn btn-sm btn-outline-danger"
-                                        onClick={(e) => handleCancelarTrueke(trueke.id, e)}
-                                    >
-                                        Cancelar
-                                    </button>
+                                    {trueke.estado !== "cancelado" && (
+                                        <button
+                                            className="btn btn-sm btn-outline-danger"
+                                            onClick={(e) => handleCancelarTrueke(trueke.id, e)}
+                                        >
+                                            Cancelar
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         </motion.div>
