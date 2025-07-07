@@ -97,9 +97,9 @@ export const MisPublicaciones = () => {
     try {
       const token = localStorage.getItem("token");
       const payload = {
-      ...datosEditados,
-      img: datosEditados.img || articuloAEditar.img
-    };
+        ...datosEditados,
+        img: datosEditados.img || articuloAEditar.img
+      };
       const response = await fetch(
         `${backendUrl}/api/editar-datos-articulo/${articuloAEditar.id}`,
         {
@@ -196,13 +196,10 @@ export const MisPublicaciones = () => {
       transition={{ duration: 0.5 }}
       className="container mt-5 pt-4"
     >
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2>Mis Publicaciones</h2>
-        
-      </div>
 
       {publicaciones.length === 0 ? (
         <div className="text-center py-5">
+          <h2 className="pb-4">Mis Publicaciones</h2>
           <h4>No tienes publicaciones aún</h4>
           <p>Comienza creando tu primera publicación</p>
           <button
@@ -214,6 +211,7 @@ export const MisPublicaciones = () => {
         </div>
       ) : (
         <div className="list-group">
+          <h2 className="pb-4">Mis Publicaciones</h2>
           {publicaciones.map((publicacion) => (
             <motion.div
               key={publicacion.id}
@@ -236,15 +234,14 @@ export const MisPublicaciones = () => {
                   <div className="d-flex justify-content-between align-items-start">
                     <h5 className="mb-1">{publicacion.titulo}</h5>
                     <span
-                      className={`badge rounded-pill ${
-                        publicacion.estado === "nuevo"
-                          ? "bg-success"
-                          : publicacion.estado === "como_nuevo"
+                      className={`badge rounded-pill ${publicacion.estado === "nuevo"
+                        ? "bg-success"
+                        : publicacion.estado === "como_nuevo"
                           ? "bg-primary"
                           : publicacion.estado === "bueno"
-                          ? "bg-info"
-                          : "bg-warning"
-                      }`}
+                            ? "bg-info"
+                            : "bg-warning"
+                        }`}
                     >
                       {publicacion.estado?.replace("_", " ")}
                     </span>

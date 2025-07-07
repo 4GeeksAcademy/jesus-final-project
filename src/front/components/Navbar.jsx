@@ -84,8 +84,8 @@ export const Navbar = () => {
             exit={{ opacity: 0 }}
             transition={{ duration: 1 }}
         >
-            <nav className="navbar navbar-expand-xl  navbar-light bg-light fixed-top py-2">
-                <div className="container-fluid d-flex align-items-center flex-nowrap">
+            <nav className="navbar navbar-light bg-light fixed-top py-2">
+                <div className="container-fluid d-flex align-items-center flex-wrap">
                     {/* Logo y menú hamburguesa tlf */}
                     <div className="d-flex align-items-center">
                         <button
@@ -181,7 +181,6 @@ export const Navbar = () => {
                     </div>
 
                     {/* Botones de usuario - Desktop */}
-
                     <div className="d-none d-lg-flex align-items-center flex-nowrap ms-auto">
                         {store.isAuthenticated ? (
                             <>
@@ -240,7 +239,7 @@ export const Navbar = () => {
                         <div className="mobile-menu-overlay">
                             <div className="mobile-menu-content">
                                 {/* Búsqueda - tlf */}
-                                <div className="mb-4">
+                                <div className="mb-4" >
                                     <div className="input-group">
                                         <input
                                             type="text"

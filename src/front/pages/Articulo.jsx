@@ -493,12 +493,7 @@ export const Articulo = () => {
 
               {token ? (
                 <div className="d-grid gap-2">
-                  <button className="btn btn-primary" onClick={crearTrueke} disabled={loading}>
-                    <i className="bi bi-arrow-left-right me-2"></i>
-                    {loading ? 'Cargando...' : 'Crear Trueke'}
-                  </button>
-
-                  {es_mio && (
+                  {es_mio ? (
                     <>
                       <button className="btn btn-warning" onClick={() => setEditando(true)} disabled={loading}>
                         <i className="bi bi-pencil-square me-2"></i>
@@ -516,7 +511,7 @@ export const Articulo = () => {
                             confirmButtonColor: "#d33",
                             cancelButtonColor: "#3085d6",
                             confirmButtonText: "Sí, eliminar",
-                            cancelButtonText: "Cancelar"
+                            cancelButtonText: "Cancelar",
                           }).then((result) => {
                             if (result.isConfirmed) {
                               eliminarArticulo();
@@ -529,6 +524,11 @@ export const Articulo = () => {
                         Eliminar Artículo
                       </button>
                     </>
+                  ) : (
+                    <button className="btn btn-primary" onClick={crearTrueke} disabled={loading}>
+                      <i className="bi bi-arrow-left-right me-2"></i>
+                      {loading ? "Cargando..." : "Crear Trueke"}
+                    </button>
                   )}
                 </div>
               ) : (
@@ -540,6 +540,7 @@ export const Articulo = () => {
                 </div>
               )}
             </div>
+
           </div>
         </div>
       </div>
