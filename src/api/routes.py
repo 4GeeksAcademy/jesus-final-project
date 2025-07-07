@@ -171,13 +171,12 @@ def obtener_todos_los_articulos():
     return jsonify(resultados), 200
 
 
-@api.route('/api/articulos-usuario/<int:user_id>', methods=['GET'])
+@api.route('/api/mis-publicaciones', methods=['GET'])  # Cambiamos la ruta
 @jwt_required()
-def obtener_articulos_usuario(user_id):
-    # Verificar que el usuario solicitante es el mismo
-    if int(get_jwt_identity()) != user_id:
-        return jsonify({'msg': 'No autorizado'}), 403
-
+def obtener_articulos_usuario():
+    
+    user_id = int(get_jwt_identity())
+    
     articulos = Articulo.query.filter_by(usuario_id=user_id).all()
 
     resultados = [{
