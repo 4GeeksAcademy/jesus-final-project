@@ -8,7 +8,7 @@ const backendUrl = import.meta.env.VITE_BACKEND_URL.replace(/\/$/, "");
 
 export const Articulo = () => {
   const [error, setError] = useState(null);
-  const [datosArticulo, setDatosArticulo] = useState(null);
+  const [datosArticulo, setDatosArticulo] = useState([]);
   const [loading, setLoading] = useState(true);
   const [esFavorito, setEsFavorito] = useState(false);
   const [editando, setEditando] = useState(false);
@@ -25,6 +25,8 @@ export const Articulo = () => {
   const { id } = useParams();
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("userId");
+  const es_mio = datosArticulo.usuario_id == userId;
+
 
   // Categorías y estados disponibles
   const categorias = [
@@ -77,7 +79,7 @@ export const Articulo = () => {
         categoria: data.categoria,
         modelo: data.modelo,
         estado: data.estado,
-        cantidad: data.cantidad
+        cantidad: data.cantidad,
       });
 
     } catch (error) {
@@ -94,6 +96,7 @@ export const Articulo = () => {
       setLoading(false);
     }
   };
+
 
   // Verificar si es favorito
   const verificarFavorito = async () => {
@@ -238,13 +241,13 @@ export const Articulo = () => {
         titulo: datosEditados.titulo,
         caracteristicas: datosEditados.caracteristicas,
         categoria: datosEditados.categoria,
-        img: datosArticulo.img, 
+        img: datosArticulo.img,
         modelo: datosEditados.modelo || '',
         estado: datosEditados.estado || '',
         cantidad: datosEditados.cantidad || 1
       };
 
-      console.log("Enviando datos:", payload); 
+      console.log("Enviando datos:", payload);
 
       const response = await fetch(`${backendUrl}/api/editar-datos-articulo/${id}`, {
         method: 'PUT',
@@ -261,13 +264,13 @@ export const Articulo = () => {
       }
 
       const data = await response.json();
-      
+
       setDatosArticulo(prev => ({
         ...prev,
         ...datosEditados,
-        img: payload.img 
+        img: payload.img
       }));
-      
+
       setEditando(false);
 
       Swal.fire({
@@ -490,47 +493,43 @@ export const Articulo = () => {
 
               {token ? (
                 <div className="d-grid gap-2">
-                  <button
-                    className="btn btn-primary"
-                    onClick={crearTrueke}
-                    disabled={loading}
-                  >
+                  <button className="btn btn-primary" onClick={crearTrueke} disabled={loading}>
                     <i className="bi bi-arrow-left-right me-2"></i>
                     {loading ? 'Cargando...' : 'Crear Trueke'}
                   </button>
 
-                  <button
-                    className="btn btn-warning"
-                    onClick={() => setEditando(true)}
-                    disabled={loading}
-                  >
-                    <i className="bi bi-pencil-square me-2"></i>
-                    Editar Artículo
-                  </button>
+                  {es_mio && (
+                    <>
+                      <button className="btn btn-warning" onClick={() => setEditando(true)} disabled={loading}>
+                        <i className="bi bi-pencil-square me-2"></i>
+                        Editar Artículo
+                      </button>
 
-                  <button
-                    className="btn btn-danger"
-                    onClick={() => {
-                      Swal.fire({
-                        title: "¿Estás seguro?",
-                        text: "Esta acción no se puede deshacer",
-                        icon: "warning",
-                        showCancelButton: true,
-                        confirmButtonColor: "#d33",
-                        cancelButtonColor: "#3085d6",
-                        confirmButtonText: "Sí, eliminar",
-                        cancelButtonText: "Cancelar"
-                      }).then((result) => {
-                        if (result.isConfirmed) {
-                          eliminarArticulo();
-                        }
-                      });
-                    }}
-                    disabled={loading}
-                  >
-                    <i className="bi bi-trash me-2"></i>
-                    Eliminar Artículo
-                  </button>
+                      <button
+                        className="btn btn-danger"
+                        onClick={() => {
+                          Swal.fire({
+                            title: "¿Estás seguro?",
+                            text: "Esta acción no se puede deshacer",
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonColor: "#d33",
+                            cancelButtonColor: "#3085d6",
+                            confirmButtonText: "Sí, eliminar",
+                            cancelButtonText: "Cancelar"
+                          }).then((result) => {
+                            if (result.isConfirmed) {
+                              eliminarArticulo();
+                            }
+                          });
+                        }}
+                        disabled={loading}
+                      >
+                        <i className="bi bi-trash me-2"></i>
+                        Eliminar Artículo
+                      </button>
+                    </>
+                  )}
                 </div>
               ) : (
                 <div className="alert alert-info">

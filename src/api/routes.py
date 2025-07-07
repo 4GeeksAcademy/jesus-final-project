@@ -9,8 +9,7 @@ from api.utils import generate_sitemap, APIException
 from datetime import datetime, timezone
 import time
 from enum import Enum
-from flask_jwt_extended import get_jwt_identity
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import get_jwt_identity, verify_jwt_in_request, jwt_required
 from flask_cors import CORS
 api = Blueprint('api', __name__)
 CORS(api)
@@ -241,8 +240,7 @@ def obtener_rating_usuario(id):
 
 @api.route('/articulo/<int:articulo_id>', methods=['GET'])
 def obtener_datos_articulo(articulo_id):
-
-    articulo = db.session.query(Articulo).get(articulo_id)
+    articulo = db.session.get(Articulo, articulo_id)
     if not articulo:
         return jsonify({'msg': 'Artículo no encontrado'}), 404
 
@@ -255,7 +253,7 @@ def obtener_datos_articulo(articulo_id):
         'modelo': articulo.modelo,
         'estado': articulo.estado,
         'cantidad': articulo.cantidad,
-
+        'usuario_id': articulo.usuario_id
     }
 
     return jsonify(articulo_data), 200
@@ -343,7 +341,7 @@ def obtener_favoritos():
         }
         for favorito, articulo in favoritos
     ]
-    
+
     return jsonify(favoritos_serializados), 200
 
 
@@ -572,8 +570,6 @@ def historial_truekes_usuario(user_id):
         'success': True,
         'historial': historial
     }), 200
-
-
 
 
 @api.route('/historial-truekes/stats', methods=['GET'])

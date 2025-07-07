@@ -84,7 +84,7 @@ export const Navbar = () => {
             exit={{ opacity: 0 }}
             transition={{ duration: 1 }}
         >
-            <nav className="navbar navbar-light bg-light fixed-top py-2">
+            <nav className="navbar navbar-expand-xl  navbar-light bg-light fixed-top py-2">
                 <div className="container-fluid d-flex align-items-center flex-nowrap">
                     {/* Logo y menú hamburguesa tlf */}
                     <div className="d-flex align-items-center">
@@ -181,6 +181,7 @@ export const Navbar = () => {
                     </div>
 
                     {/* Botones de usuario - Desktop */}
+
                     <div className="d-none d-lg-flex align-items-center flex-nowrap ms-auto">
                         {store.isAuthenticated ? (
                             <>
