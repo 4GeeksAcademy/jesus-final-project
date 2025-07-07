@@ -52,7 +52,7 @@ export const router = createBrowserRouter(
       <Route path="/sobre-nosotros" element={<SobreNosotros />} />
       <Route path="/Contacto" element={<Contacto />} />
       <Route path="/politica-privacidad" element={<PoliticaPrivacidad />} />
-      <Route path="/favoritos" element={<Favoritos />} />
+      <Route path="/favoritos/:usuarioId" element={<Favoritos />} />
     </Route>
   )
 );

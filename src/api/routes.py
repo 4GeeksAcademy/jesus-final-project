@@ -343,7 +343,7 @@ def obtener_favoritos():
         }
         for favorito, articulo in favoritos
     ]
-
+    
     return jsonify(favoritos_serializados), 200
 
 
