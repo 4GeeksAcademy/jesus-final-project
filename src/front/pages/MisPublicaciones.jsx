@@ -198,12 +198,7 @@ export const MisPublicaciones = () => {
     >
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h2>Mis Publicaciones</h2>
-        <button
-          className="btn btn-primary"
-          onClick={() => navigate("/publicar-articulo")}
-        >
-          + Nueva Publicación
-        </button>
+        
       </div>
 
       {publicaciones.length === 0 ? (
