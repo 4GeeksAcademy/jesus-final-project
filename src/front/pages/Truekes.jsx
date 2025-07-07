@@ -24,7 +24,7 @@ export const Truekes = () => {
 
             try {
                 const response = await fetch(
-                    `${backendUrl}/api/truekes/${userId}`,
+                    `${backendUrl}/api/truekes/historial/${userId}`,
                     {
                         method: "GET",
                         headers: {
