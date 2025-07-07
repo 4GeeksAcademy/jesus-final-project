@@ -76,7 +76,7 @@ export const MisPublicaciones = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`${backendUrl}/api/eliminar-articulo/${id}`, {
+      const response = await fetch(`${backendUrl}api/eliminar-articulo/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -129,7 +129,7 @@ export const MisPublicaciones = () => {
         <h2>Mis Publicaciones</h2>
         <button
           className="btn btn-primary"
-          onClick={() => navigate("/crear-publicacion")}
+          onClick={() => navigate("/publicar-articulo")}
         >
           + Nueva Publicación
         </button>
@@ -141,7 +141,7 @@ export const MisPublicaciones = () => {
           <p>Comienza creando tu primera publicación</p>
           <button
             className="btn btn-primary mt-3"
-            onClick={() => navigate("/crear-publicacion")}
+            onClick={() => navigate("/publicar-articulo")}
           >
             Crear Publicación
           </button>
@@ -188,9 +188,7 @@ export const MisPublicaciones = () => {
                     <small className="text-muted">
                       <strong>Modelo:</strong> {publicacion.modelo || 'No especificado'}
                     </small>
-                    <small className="text-muted">
-                      <strong>Precio:</strong> ${publicacion.precio?.toLocaleString() || 'No especificado'}
-                    </small>
+                    
                   </div>
                 </div>
               </div>
