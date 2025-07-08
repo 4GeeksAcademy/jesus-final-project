@@ -283,6 +283,36 @@ export const DatosPersonales = () => {
 
       const data = await response.json();
 
+      if (response.status === 409 && data.error_type === "trueke_en_proceso") {
+              const esPropietario = data.es_ofertante;
+              const truekeEstado = data.trueke_estado
+                .replace(/_/g, " ");
+      
+              return Swal.fire({
+                title: "Trueke en proceso",
+                html: `
+                <p>${data.msg}</p>
+                <p><strong>Estado:</strong> ${truekeEstado}</p>
+                <p><strong>Rol:</strong> ${esPropietario ? "Propietario" : "Receptor"
+                  }</p>
+              `,
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Ir al trueke",
+                denyButtonText: "Cancelar trueke",
+                cancelButtonText: "Cerrar",
+              }).then((result) => {
+                if (result.isConfirmed) {
+      
+                  navigate(`/trueke-detalle/${data.trueke_id}`);
+                } else if (result.isDenied) {
+      
+      
+                  Swal.fire("Trueke cancelado", "Has cancelado el trueke.", "success");
+                }
+              });
+            }
+
       if (response.ok) {
         localStorage.removeItem('token');
         localStorage.removeItem('refresh_token');

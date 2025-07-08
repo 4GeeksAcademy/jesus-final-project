@@ -35,7 +35,8 @@ export const Articulo = () => {
     { value: 'hogar', label: 'Hogar' },
     { value: 'deportes', label: 'Deportes' },
     { value: 'libros', label: 'Libros' },
-    { value: 'juguetes', label: 'Juguetes' }
+    { value: 'juguetes', label: 'Juguetes' },
+    { value: 'otros', label: 'Otros' }
   ];
 
   const estados = [

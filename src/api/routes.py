@@ -35,6 +35,26 @@ def borrar_cuenta():
     if not usuario:
         return jsonify({'msg': 'Usuario no encontrado'}), 404
 
+    trueke_propietario = db.session.query(TransaccionTrueke).filter(
+      (TransaccionTrueke.articulo_propietario_id == usuario.id) &
+      (TransaccionTrueke.estado_transaccion.in_(['pendiente','aceptado','rechazado']))
+    ).first()
+
+    trueke_receptor = db.session.query(TransaccionTrueke).filter(
+        (TransaccionTrueke.articulo_receptor_id == usuario.id) &
+        (TransaccionTrueke.estado_transaccion.in_(['pendiente','aceptado','rechazado']))
+    ).first()
+
+    trueke_activo = trueke_propietario or trueke_receptor
+
+    if trueke_activo:
+        return jsonify({
+            'msg': 'No puedes eliminar este artículo porque tiene un trueke en proceso',
+            'error_type': 'trueke_en_proceso',
+            'trueke_id': trueke_activo.id,
+            'trueke_estado': trueke_activo.estado_transaccion,
+            'es_ofertante': trueke_activo == trueke_propietario
+        }), 409
     db.session.delete(usuario)
     db.session.commit()
 
