@@ -37,6 +37,7 @@ export const Articulo = () => {
     { value: 'libros', label: 'Libros' },
     { value: 'juguetes', label: 'Juguetes' },
     { value: 'otros', label: 'Otros' }
+
   ];
 
   const estados = [
@@ -353,7 +354,7 @@ export const Articulo = () => {
       </select>
       
       <label for="swal-textarea" style="display: block; margin-bottom: 5px; font-weight: bold;">
-        Comentarios adicionales (opcional):
+        Comentarios adicionales:
       </label>
       <textarea 
         id="swal-textarea" 
@@ -384,29 +385,17 @@ export const Articulo = () => {
           comentarios: textarea.value.trim()
         };
       }
-    });
-
+    }); 
+    if (!formValues) {
+    return false;
+    }
     if (formValues) {
       console.log('Artículo seleccionado ID:', formValues.articuloSeleccionado);
       console.log('Comentarios:', formValues.comentarios);
-
-      // Aquí puedes usar formValues.articuloSeleccionado y formValues.comentarios
-      // para hacer tu petición al backend
     }
 
-    /*     const { value: comentarios } = await Swal.fire({
-          title: "Crear Trueke",
-          input: "textarea",
-          inputLabel: "Comentarios adicionales (opcional)",
-          inputPlaceholder: "Escribe un comentario sobre este trueke...",
-          showCancelButton: true,
-          confirmButtonText: "Crear Trueke",
-          cancelButtonText: "Cancelar",
-        }); */
-
-    /* if (comentarios) { */
     try {
-      /* localStorage.setItem("userId", action.payload.userId); */
+      
       const response = await fetch(`${backendUrl}/api/truekes`, {
         method: "POST",
         headers: {
@@ -444,7 +433,7 @@ export const Articulo = () => {
         icon: "error",
       });
     }
-    /* } */
+    
   };
 
   useEffect(() => {
