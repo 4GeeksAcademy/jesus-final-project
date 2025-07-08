@@ -413,7 +413,7 @@ export const MisPublicaciones = () => {
                   </div>
 
                   <div className="alert alert-info mt-3">
-                    <small>Los campos marcados con * son obligatorios</small>
+                    <small>Los campos marcados con * son obligatorios </small>
                   </div>
 
                   <div className="modal-footer">
