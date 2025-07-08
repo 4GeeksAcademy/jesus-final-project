@@ -150,7 +150,7 @@ export const MisPublicaciones = () => {
 
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`${backendUrl}api/eliminar-articulo/${id}`, {
+      const response = await fetch(`${backendUrl}/api/eliminar-articulo/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -158,9 +158,33 @@ export const MisPublicaciones = () => {
         },
       });
 
+      const data = await response.json(); 
+
+      if (response.status === 409 && data.error_type === "trueke_en_proceso") {
+        const esPropietario = data. es_propietario;
+        const truekeEstado = data.trueke_estado.replace('_',' '); 
+
+        return Swal.fire({
+          title: "Trueke en proceso",
+          html: `
+          <p>${data.msg}</p>
+          <p><strong>Estado:</strong> ${truekeEstado}</p>
+          <p><strong>Rol:</strong> ${esPropietario ? 'Propietario' : 'Receptor'}</p>`,
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: 'Ir al trueke',
+          denyButtonText: 'Cancelar trueke',
+          cancelButtonText: 'Cerrar'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            navigate(`truekes/historial`);
+          } 
+        });
+       
+      }
+
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.msg || `Error ${response.status}`);
+        throw new Error(data.msg || `Error ${response.status}`);
       }
 
       setPublicaciones(publicaciones.filter((pub) => pub.id !== id));

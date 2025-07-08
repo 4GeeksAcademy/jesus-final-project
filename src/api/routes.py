@@ -303,15 +303,40 @@ def eliminar_articulo(articulo_id):
 
     articulo = db.session.query(Articulo).get(articulo_id)
     if not articulo:
-        return jsonify({'msg': 'Artículo no encontrado'}), 404
+        return jsonify({'msg': 'Artículo no encontrado', 'error_type': 'articulo_no_encontrado'}), 404
 
     if articulo.usuario_id != usuario_token_id:
-        return jsonify({'msg': 'No tienes permiso para editar este artículo'}), 403
+        return jsonify({'msg': 'No tienes permiso para editar este artículo', 'error_type':'permiso_denegado'}), 403
 
-    db.session.delete(articulo)
-    db.session.commit()
+    trueke_propietario = db.session.query(TransaccionTrueke).filter(
+      (TransaccionTrueke.articulo_id == articulo_id) &
+      (TransaccionTrueke.estado.in_(['pendiente','aceptado','en_proceso']))
+    ).first()
 
-    return jsonify({'msg': 'Artículo eliminado correctamente'}), 200
+    trueke_receptor = db.session.query(TransaccionTrueke).filter(
+        (TransaccionTrueke.articulo_id == articulo_id) &
+        (TransaccionTrueke.estado.in_(['pendiente','aceptado','en_proceso']))
+    ).first()
+
+    trueke_activo = trueke_propietario or trueke_receptor
+
+    if trueke_activo:
+        return jsonify({
+            'msg': 'No puedes eliminar este artículo porque tiene un trueke en proceso',
+            'error_type': 'trueke_en_proceso',
+            'trueke_id': trueke_activo.id,
+            'trueke_estado': trueke_activo.estado,
+            'es_ofertante': trueke_activo == trueke_propietario
+        }), 409
+    
+    try:
+        db.session.delete(articulo)
+        db.session.commit()
+        return jsonify({'msg': 'Artículo eliminado correctamente'}), 200
+    
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'msg': 'Error al eliminar el artículo', 'error': str(e)}), 500
 
 
 @api.route('/favoritos', methods=['GET'])
