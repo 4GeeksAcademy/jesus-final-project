@@ -61,7 +61,6 @@ export const TruekeDetalle = () => {
 
   const handleShow = () => setShowModal(true);
   const handleClose = () => setShowModal(false);
-
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -81,10 +80,13 @@ export const TruekeDetalle = () => {
         },
         body: JSON.stringify({
           puntaje: parseInt(puntaje),
-          comentario,
-          trueke_id: truekeId,
+          comentario: comentario,
+
         }),
       });
+
+      const data = await response.json();
+
 
       if (!response.ok) throw new Error("Error al enviar la review");
 

@@ -216,7 +216,6 @@ def obtener_todos_los_ratings():
 
     return jsonify(rating_data), 200
 
-
 @api.route('/rating-review/<int:trueke_id>', methods=['POST'])
 @jwt_required()
 def crear_rating_review(trueke_id):
@@ -226,14 +225,36 @@ def crear_rating_review(trueke_id):
     if not trueke:
         return jsonify({'msg': 'Trueke no encontrado'}), 404
 
-    usuario_destino_id = trueke.articulo_receptor_id
+    id_propietario = trueke.id_usuario_propietario
+    id_receptor = trueke.id_usuario_receptor
+    
+    participantes_ids = [id_propietario, id_receptor]
 
-    body = request.get_json(silent=True)
-    if not body or 'puntaje' not in body or 'comentario' not in body:
-        return jsonify({'msg': 'Debes enviar puntaje y comentario'}), 400
+    if usuario_id_remitente not in participantes_ids:
+        return jsonify({'msg': 'El usuario no participa en esta transacción'}), 400
+
+    if usuario_id_remitente == id_propietario:
+        usuario_destino_id = id_receptor
+    else:
+        usuario_destino_id = id_propietario
 
     if usuario_id_remitente == usuario_destino_id:
         return jsonify({'msg': 'No puedes dejar una review a ti mismo'}), 400
+
+    body = request.get_json(silent=True)
+    if not body:
+        return jsonify({'msg': 'Debes enviar datos en formato JSON'}), 400
+        
+    if 'puntaje' not in body or 'comentario' not in body:
+        return jsonify({'msg': 'Debes enviar puntaje y comentario'}), 400
+
+    existing_review = Rating.query.filter_by(
+        trueke_id=trueke_id, 
+        usuario_id=usuario_id_remitente
+    ).first()
+    
+    if existing_review:
+        return jsonify({'msg': 'Ya has dejado una reseña para esta transacción'}), 400
 
     nueva_review = Rating(
         puntuacion=body['puntaje'],
@@ -247,7 +268,6 @@ def crear_rating_review(trueke_id):
     db.session.commit()
 
     return jsonify({'msg': 'Review enviada con éxito'}), 201
-
 
 @api.route('/rating/<int:id>', methods=['GET'])
 def obtener_rating_usuario(id):
