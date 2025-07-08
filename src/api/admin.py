@@ -22,53 +22,52 @@ def setup_admin(app):
 class UsuarioModelView(ModelView):
     column_auto_selected = True
     column_list = ['id', 'nombre_de_usuario', 'email', 'password', 'is_active',
-                   'articulos', 'articulos_favoritos', 'ratings', 'datos_personales', 'comentarios', 'fecha_registro']
+                   'articulos', 'articulos_favoritos', 'ratings_realizados', 'ratings_recibidos', 'comentarios', 'datos_personales', 'fecha_registro']
+    form_columns = ['nombre_de_usuario', 'email',
+                    'password', 'is_active', 'fecha_registro']
 
 
 class ArticuloModelView(ModelView):
     column_auto_selected = True
-    column_list = ['id', 'titulo', 'caracteristicas', 'estado',
-                   'modelo', 'cantidad', 'categoria', 'img',
-                   'usuario_id',
-                   'usuario', 'articulos_favoritos', 'ratings',]
-
-
-"""     form_columns = ['titulo', 'caracteristicas', 'estado',
-                    'modelo', 'cantidad', 'categoria', 'img',
-                    'usuario_id',
-                    'usuario', 'articulos_favoritos', 'ratings'] """
+    column_list = ['id', 'titulo', 'caracteristicas', 'estado', 'modelo', 'cantidad',
+                   'categoria', 'img', 'usuario_id', 'usuario', 'articulos_favoritos', 'ratings']
+    form_columns = ['titulo', 'caracteristicas', 'estado',
+                    'modelo', 'cantidad', 'categoria', 'img', 'usuario_id']
 
 
 class ArticuloFavoritoModelView(ModelView):
     column_auto_selected = True
-    column_list = ['id',
-                   'usuario_id', 'articulo_id',
-                   'usuario', 'articulo']
+    column_list = ['id', 'usuario_id', 'articulo_id',
+                   'es_favorito', 'usuario', 'articulo']
+    form_columns = ['usuario_id', 'articulo_id', 'es_favorito']
 
 
 class TransaccionTruekeModelView(ModelView):
     column_auto_selected = True
-    column_list = ['id', 'comentarios',
-                   'articulo_propietario_id', 'articulo_receptor_id',
+    column_list = ['id', 'estado_transaccion', 'articulo_propietario_id', 'articulo_receptor_id',
                    'articulo_propietario', 'articulo_receptor', 'comentarios_transaccion']
+    form_columns = ['estado_transaccion',
+                    'articulo_propietario_id', 'articulo_receptor_id']
 
 
 class ComentarioModelView(ModelView):
     column_auto_selected = True
-    column_list = ['id', 'comentario',
-                   'usuario_id', 'transaccion_id',
-                   'usuario', 'transaccion']
+    column_list = ['id', 'comentario', 'usuario_id',
+                   'transaccion_id', 'usuario', 'transaccion']
+    form_columns = ['comentario', 'usuario_id', 'transaccion_id']
 
 
 class DatosPersonalesModelView(ModelView):
     column_auto_selected = True
-    column_list = ['id', 'nombre_completo', 'telefono', 'direccion', 'img',
-                   'usuario_id',
-                   'usuario']
+    column_list = ['id', 'nombre_completo', 'telefono', 'direccion',
+                   'pais', 'region', 'codigo_postal', 'img', 'usuario_id', 'usuario']
+    form_columns = ['nombre_completo', 'telefono', 'direccion',
+                    'pais', 'region', 'codigo_postal', 'img', 'usuario_id']
 
 
 class RatingModelView(ModelView):
     column_auto_selected = True
-    column_list = ['id', 'puntuacion', 'comentarios',
-                   'usuario_id', 'articulo_id',
-                   'usuario', 'articulo']
+    column_list = ['id', 'puntuacion', 'comentarios', 'usuario_id',
+                   'usuario_destino_id', 'articulo_id', 'usuario', 'articulo']
+    form_columns = ['puntuacion', 'comentarios',
+                    'usuario_id', 'usuario_destino_id', 'articulo_id']

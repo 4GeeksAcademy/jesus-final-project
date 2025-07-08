@@ -132,10 +132,12 @@ export const MisPublicaciones = () => {
   };
 
   // Eliminar publicación
+
   const handleEliminarPublicacion = async (id, e) => {
     e.stopPropagation();
 
-    const confirmacion = await Swal.fire({
+
+    const { isConfirmed } = await Swal.fire({
       title: "¿Estás seguro?",
       text: "¡No podrás revertir esto!",
       icon: "warning",
@@ -145,52 +147,61 @@ export const MisPublicaciones = () => {
       confirmButtonText: "Sí, eliminar",
       cancelButtonText: "Cancelar",
     });
-
-    if (!confirmacion.isConfirmed) return;
+    if (!isConfirmed) return;
 
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`${backendUrl}/api/eliminar-articulo/${id}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        `${backendUrl}/api/eliminar-articulo/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await response.json();
 
-      const data = await response.json(); 
 
       if (response.status === 409 && data.error_type === "trueke_en_proceso") {
-        const esPropietario = data. es_propietario;
-        const truekeEstado = data.trueke_estado.replace('_',' '); 
+        const esPropietario = data.es_ofertante;
+        const truekeEstado = data.trueke_estado
+          .replace(/_/g, " ");
 
         return Swal.fire({
           title: "Trueke en proceso",
           html: `
           <p>${data.msg}</p>
           <p><strong>Estado:</strong> ${truekeEstado}</p>
-          <p><strong>Rol:</strong> ${esPropietario ? 'Propietario' : 'Receptor'}</p>`,
+          <p><strong>Rol:</strong> ${esPropietario ? "Propietario" : "Receptor"
+            }</p>
+        `,
           icon: "warning",
           showCancelButton: true,
-          confirmButtonText: 'Ir al trueke',
-          denyButtonText: 'Cancelar trueke',
-          cancelButtonText: 'Cerrar'
+          confirmButtonText: "Ir al trueke",
+          denyButtonText: "Cancelar trueke",
+          cancelButtonText: "Cerrar",
         }).then((result) => {
           if (result.isConfirmed) {
-            navigate(`truekes/historial`);
-          } 
+
+            navigate(`/trueke-detalle/${data.trueke_id}`);
+          } else if (result.isDenied) {
+
+
+            Swal.fire("Trueke cancelado", "Has cancelado el trueke.", "success");
+          }
         });
-       
       }
 
       if (!response.ok) {
         throw new Error(data.msg || `Error ${response.status}`);
       }
 
-      setPublicaciones(publicaciones.filter((pub) => pub.id !== id));
+      setPublicaciones((prev) => prev.filter((pub) => pub.id !== id));
       Swal.fire("¡Eliminado!", "Tu publicación ha sido eliminada.", "success");
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error al eliminar publicación:", error);
       Swal.fire({
         title: "Error",
         text: error.message || "Error al eliminar la publicación",
@@ -198,6 +209,7 @@ export const MisPublicaciones = () => {
       });
     }
   };
+
 
   if (loading) {
     return (

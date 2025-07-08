@@ -37,6 +37,7 @@ export const Truekes = () => {
                 const data = await response.json();
                 if (response.ok) {
                     setTruekes(data.historial || []);
+
                 } else {
                     setError(data.msg || "Error al obtener truekes");
                     console.error("Error al obtener truekes:", data);
@@ -57,7 +58,58 @@ export const Truekes = () => {
     };
 
     const handleAceptarTrueke = (id) => {
+        Swal.fire({
+            title: '¿Quieres aceptar este trueke?',
+            text: "Si lo aceptas, se notificará por email al usuario para que puedan ponerse de acuerdo.",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Aceptar',
+            cancelButtonText: 'Cancelar',
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                await aceptarTrueke(id);
+                Swal.fire('¡Aceptado!', 'Se ha notificado al usuario.', 'success');
+            }
+        });
+    };
+    const aceptarTrueke = async (id) => {
+        try {
+            const response = await fetch(`${backendUrl}/api/aceptar-trueke/${id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
 
+            const data = await response.json();
+
+            if (!response.ok) {
+                setError(data.msg || "Error al aceptar el trueke");
+                console.error("Error al aceptar el trueke:", data);
+                return;
+            }
+
+            setEstadoTrueke("aceptado");
+
+            const notifyResponse = await fetch(`${backendUrl}/notificar-interesado`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ trueke_id: id })
+            });
+
+            if (!notifyResponse.ok) {
+                const notifyData = await notifyResponse.json();
+                console.error("Error al enviar notificación:", notifyData.msg);
+            }
+
+        } catch (error) {
+            console.error("Error de red al aceptar trueke o enviar notificación:", error);
+            setError("Error de red al aceptar el trueke o enviar notificación");
+        }
     };
 
     const handleCancelarTrueke = async (id, e) => {

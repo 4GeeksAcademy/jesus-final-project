@@ -6,7 +6,7 @@ from flask import Flask, request, jsonify, url_for, send_from_directory, render_
 from flask_migrate import Migrate
 from flask_swagger import swagger
 from api.utils import APIException, generate_sitemap
-from api.models import db, Usuario, RestaurarCodigosPassword
+from api.models import db, Usuario, RestaurarCodigosPassword, Articulo, TransaccionTrueke
 from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
@@ -171,6 +171,48 @@ def enviar_mensaje():
         }), 201
 
     return jsonify({'msg': 'Mail enviado correctamente'}), 201
+
+
+@app.route('/notificar-interesado', methods=['POST'])
+@jwt_required()
+def notificar_interesado():
+    data = request.json
+    trueke_id = data.get('trueke_id')
+
+    if not trueke_id:
+        return jsonify({'msg': 'trueke_id es requerido'}), 400
+
+    trueke = db.session.query(TransaccionTrueke).get(trueke_id)
+    if not trueke:
+        return jsonify({'msg': 'Trueke no encontrado'}), 404
+
+    articulo = db.session.query(Articulo).get(trueke.articulo_propietario_id)
+    if not articulo:
+        return jsonify({'msg': 'Artículo no encontrado'}), 404
+
+    duenio = db.session.query(Usuario).get(articulo.usuario_id)
+    interesado_id = int(get_jwt_identity())
+    interesado = db.session.query(Usuario).get(interesado_id)
+
+    if not duenio or not interesado:
+        return jsonify({'msg': 'Usuario no encontrado'}), 404
+
+    asunto = f"Interesado en tu artículo '{articulo.titulo}'"
+    destinatario = duenio.email
+
+    msg = Message(
+        subject=asunto,
+        sender="Trueketeo@gmail.com",
+        recipients=[destinatario],
+        html=render_template(
+            'notificacion_interesado.html',
+            interesado=interesado,
+            articulo=articulo,
+            duenio=duenio
+        )
+    )
+    mail.send(msg)
+    return jsonify({'msg': 'Notificación enviada correctamente'}), 200
 
 
 @app.route('/recuperar-contrasena/<uuid:codigo_uuid>', methods=['POST'])

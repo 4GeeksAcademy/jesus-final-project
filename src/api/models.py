@@ -26,14 +26,31 @@ class Usuario(db.Model):
     # Relaciones
     articulos: Mapped[list['Articulo']] = relationship(
         'Articulo', back_populates='usuario', cascade='all, delete-orphan')
+
     articulos_favoritos: Mapped[list['ArticuloFavorito']] = relationship(
         'ArticuloFavorito', back_populates='usuario', cascade='all, delete-orphan')
-    ratings: Mapped[list['Rating']] = relationship(
-        'Rating', back_populates='usuario', cascade='all, delete-orphan')
-    datos_personales: Mapped['DatosPersonales'] = relationship(
-        'DatosPersonales', back_populates='usuario', cascade='all, delete-orphan', uselist=False)
+
     comentarios: Mapped[list['Comentario']] = relationship(
         'Comentario', back_populates='usuario', cascade='all, delete-orphan')
+
+    datos_personales: Mapped['DatosPersonales'] = relationship(
+        'DatosPersonales', back_populates='usuario',
+        cascade='all, delete-orphan', uselist=False
+    )
+
+    ratings_realizados: Mapped[list['Rating']] = relationship(
+        'Rating',
+        back_populates='usuario',
+        foreign_keys='Rating.usuario_id',
+        cascade='all, delete-orphan'
+    )
+
+    ratings_recibidos: Mapped[list['Rating']] = relationship(
+        'Rating',
+        back_populates='usuario_destino',
+        foreign_keys='Rating.usuario_destino_id',
+        cascade='all, delete-orphan'
+    )
 
     def __str__(self):
         return f'{self.nombre_de_usuario} ({self.email})'
@@ -137,7 +154,6 @@ class TransaccionTrueke(db.Model):
         ForeignKey('articulo.id'), nullable=False)
     articulo_receptor_id: Mapped[int] = mapped_column(
         ForeignKey('articulo.id'), nullable=False)
-    
 
     # Relaciones
     articulo_propietario: Mapped['Articulo'] = relationship(
@@ -146,7 +162,9 @@ class TransaccionTrueke(db.Model):
         'Articulo', foreign_keys=[articulo_receptor_id])
     comentarios_transaccion: Mapped['Comentario'] = relationship(
         'Comentario', back_populates='transaccion', cascade='all, delete-orphan', uselist=False)
-    
+    ratings: Mapped[list['Rating']] = relationship(
+        'Rating', back_populates='trueke')
+
     def __str__(self):
         return f'''Trueke: {self.articulo_propietario.usuario.nombre_de_usuario} y {self.articulo_receptor.usuario.nombre_de_usuario} 
         intercambian {self.articulo_propietario.titulo} y {self.articulo_receptor.titulo} respectivamente'''
@@ -235,17 +253,23 @@ class Rating(db.Model):
     puntuacion: Mapped[int] = mapped_column(Integer, nullable=False)
     comentarios: Mapped[str] = mapped_column(String(100), nullable=True)
 
-    # Foreign Keys
-    usuario_id: Mapped[int] = mapped_column(
-        ForeignKey('usuario.id'), nullable=False)
+    usuario_id: Mapped[int] = mapped_column(ForeignKey(
+        'usuario.id'), nullable=False)
+    usuario_destino_id: Mapped[int] = mapped_column(ForeignKey(
+        'usuario.id'), nullable=False)
     articulo_id: Mapped[int] = mapped_column(
-        ForeignKey('articulo.id'), nullable=False)
+        ForeignKey('articulo.id'), nullable=True)
+    trueke_id: Mapped[int] = mapped_column(ForeignKey(
+        'transaccion_trueke.id'), nullable=False)
 
-    # Relaciones
     usuario: Mapped['Usuario'] = relationship(
-        'Usuario', back_populates='ratings')
+        'Usuario', foreign_keys=[usuario_id])
+    usuario_destino: Mapped['Usuario'] = relationship(
+        'Usuario', foreign_keys=[usuario_destino_id])
     articulo: Mapped['Articulo'] = relationship(
         'Articulo', back_populates='ratings')
+    trueke: Mapped['TransaccionTrueke'] = relationship(
+        'TransaccionTrueke', back_populates='ratings')
 
     __table_args__ = (
         CheckConstraint('puntuacion >= 1 AND puntuacion <= 5',
@@ -253,7 +277,7 @@ class Rating(db.Model):
     )
 
     def __str__(self):
-        return f'Rating {self.puntuacion}/5 para {self.articulo.titulo}'
+        return f'Rating {self.puntuacion}/5 para usuario {self.usuario_destino_id}'
 
     def serialize(self):
         return {
@@ -261,6 +285,7 @@ class Rating(db.Model):
             'puntuacion': self.puntuacion,
             'comentarios': self.comentarios,
             'usuario_id': self.usuario_id,
+            'usuario_destino_id': self.usuario_destino_id,
             'articulo_id': self.articulo_id
         }
 
