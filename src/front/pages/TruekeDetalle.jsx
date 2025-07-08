@@ -88,7 +88,7 @@ export const TruekeDetalle = () => {
       <div className="card">
         <div className="card-header">
           <h4>Detalle del Trueke</h4>
-          <small className="text-muted">Fecha: {trueke.fecha_creacion}</small>
+          {/* <small className="text-muted">Fecha: {trueke.fecha_creacion}</small> */}
         </div>
         
         <div className="card-body">
@@ -153,20 +153,9 @@ export const TruekeDetalle = () => {
             {trueke.comentarios_transaccion && trueke.comentarios_transaccion.comentario.length > 0 ? (
               <div className="list-group">
                 <div className="d-flex justify-content-between">
-                  <strong>{comentario.usuario}</strong>
-                  <small>{comentario.fecha}</small>
+                  <strong>{trueke.comentarios_transaccion.comentario.usuario}</strong>
                 </div>
                 <p>{trueke.comentarios_transaccion.comentario}</p>
-
-{/*                 {trueke.comentarios_transaccion.comentario.map((comentario, index) => (
-                  <div key={index} className="list-group-item">
-                    <div className="d-flex justify-content-between">
-                      <strong>{comentario.usuario}</strong>
-                      <small>{comentario.fecha}</small>
-                    </div>
-                    <p>{comentario.comentario}</p>
-                  </div>
-                ))} */}
               </div>
             ) : (
               <p>No hay comentarios en este trueke</p>

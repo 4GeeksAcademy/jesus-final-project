@@ -656,7 +656,7 @@ def obtener_detalle_trueke(trueke_id):
             return jsonify({'error': 'No tienes acceso a este trueke'}), 403
         
 
-        detalle = {
+        detalles = {
             'id': transaccion.id,
             'fecha_creacion': transaccion.fecha_creacion.isoformat() if hasattr(transaccion, 'fecha_creacion') else None,
             'rol_usuario': 'propietario' if es_propietario else 'receptor',
@@ -697,15 +697,14 @@ def obtener_detalle_trueke(trueke_id):
 
         # Comentarios asociados al trueke (si tienes la relación)
         if transaccion.comentarios_transaccion:
-            print("holaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-            """ detalle["comentarios_transaccion"] = {
+            # print("holaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+            detalles["comentarios_transaccion"] = {
                 'id': transaccion.comentarios_transaccion.id,
                 'comentario': transaccion.comentarios_transaccion.comentario,
-                'usuario': transaccion.comentarios_transaccion.comentario.usuario.nombre_de_usuario,
                 # 'fecha': comentario.fecha_creacion.isoformat() if hasattr(comentario, 'fecha_creacion') else None
-            } """
+            }
 
-        return jsonify(detalle), 200
+        return jsonify(detalles), 200
     
 
     except Exception as e:
