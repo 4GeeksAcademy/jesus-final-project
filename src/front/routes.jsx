@@ -47,7 +47,7 @@ export const router = createBrowserRouter(
       <Route path="/como-truekear" element={<ComoTruekear />} />
       <Route path="/ayuda-&-soporte" element={<AyudaYSoporte />} />
       <Route path="/trueke-detalle/:truekeId" element={<TruekeDetalle />} />
-      <Route path="/truekes/:usuarioId" element={<Truekes />} />
+      <Route path="/truekes/historial/:usuarioId" element={<Truekes />} />
       <Route path="/mis-publicaciones/:usuarioId" element={<MisPublicaciones />} />
       <Route path="/sobre-nosotros" element={<SobreNosotros />} />
       <Route path="/Contacto" element={<Contacto />} />

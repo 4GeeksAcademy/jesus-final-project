@@ -37,6 +37,7 @@ export const Truekes = () => {
                 const data = await response.json();
                 if (response.ok) {
                     setTruekes(data.historial || []);
+                    console.log(data.historial);
                 } else {
                     setError(data.msg || "Error al obtener truekes");
                     console.error("Error al obtener truekes:", data);

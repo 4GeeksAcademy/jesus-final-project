@@ -129,7 +129,8 @@ class TransaccionTrueke(db.Model):
     __tablename__ = 'transaccion_trueke'
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    comentarios: Mapped[str] = mapped_column(String(150), nullable=True)
+    estado_transaccion: Mapped[str] = mapped_column(Enum(
+        'aceptado', 'rechazado', 'pendiente', name='estado_transaccion_enum'), nullable=False, default='pendiente')
 
     # Foreign Keys
     articulo_propietario_id: Mapped[int] = mapped_column(
@@ -143,8 +144,8 @@ class TransaccionTrueke(db.Model):
         'Articulo', foreign_keys=[articulo_propietario_id])
     articulo_receptor: Mapped['Articulo'] = relationship(
         'Articulo', foreign_keys=[articulo_receptor_id])
-    comentarios_transaccion: Mapped[list['Comentario']] = relationship(
-        'Comentario', back_populates='transaccion', cascade='all, delete-orphan')
+    comentarios_transaccion: Mapped['Comentario'] = relationship(
+        'Comentario', back_populates='transaccion', cascade='all, delete-orphan', uselist=False)
     
     def __str__(self):
         return f'''Trueke: {self.articulo_propietario.usuario.nombre_de_usuario} y {self.articulo_receptor.usuario.nombre_de_usuario} 
@@ -157,7 +158,8 @@ class TransaccionTrueke(db.Model):
             'articulo_receptor_id': self.articulo_receptor_id,
             'propietario': self.articulo_propietario.usuario.nombre_de_usuario,
             'receptor': self.articulo_receptor.usuario.nombre_de_usuario,
-            'comentarios': self.comentarios
+            'comentarios': self.comentarios_transaccion.serialize() if self.comentarios_transaccion else None,
+            'estado_transaccion': self.estado_transaccion
         }
 
 
@@ -180,7 +182,7 @@ class Comentario(db.Model):
         'TransaccionTrueke', back_populates='comentarios_transaccion')
 
     def __str__(self):
-        return f'Comentario de {self.usuario.nombre_de_usuario}: {self.comentario[:50]}...'
+        return f'Comentario de {self.usuario.nombre_de_usuario}: {self.comentario}...'
 
     def serialize(self):
         return {

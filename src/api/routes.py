@@ -4,7 +4,7 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 import os
 from sqlalchemy import func
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, Usuario, DatosPersonales, Articulo, ArticuloFavorito, TransaccionTrueke, Rating
+from api.models import db, Usuario, DatosPersonales, Articulo, ArticuloFavorito, TransaccionTrueke, Comentario, Rating
 from api.utils import generate_sitemap, APIException
 from datetime import datetime, timezone
 import time
@@ -486,8 +486,15 @@ def crear_trueke():
         nueva_transaccion = TransaccionTrueke(
             articulo_propietario_id=data['articulo_propietario_id'],
             articulo_receptor_id=data['articulo_receptor_id'],
-            comentarios=data.get('comentarios')
         )
+
+        if data.get('comentario'):
+            nuevo_comentario = Comentario(
+                comentario=data['comentario'],
+                usuario_id=data['usuario_id']
+            )
+
+        nueva_transaccion.comentarios_transaccion = nuevo_comentario
 
         db.session.add(nueva_transaccion)
         db.session.commit()
@@ -540,18 +547,16 @@ def historial_truekes_usuario(user_id):
     if user_id != usuario_token_id:
         return jsonify({'error': 'No autorizado'}), 403
 
-    # Truekes donde el usuario es receptor
-    truekes_como_receptor = db.session.query(
-        TransaccionTrueke
-    ).join(
-        Articulo, TransaccionTrueke.articulo_receptor_id == Articulo.id
-    ).filter(
-        Articulo.usuario_id == user_id
-    ).all()
-    print (truekes_como_receptor[0].articulo_receptor)
+    # Truekes donde el usuario es receptor (su artículo es el que se solicita)
+    truekes_como_receptor = TransaccionTrueke.query.join(
+            Articulo, TransaccionTrueke.articulo_receptor_id == Articulo.id
+        ).filter(
+            Articulo.usuario_id == usuario_token_id
+        ).all()
+    
     historial = [{
         'id': t.id,
-        'estado': t.estado,
+        'estado': getattr(t, 'estado_transaccion', 'pendiente'),
         'rol_usuario': 'receptor',
         'mi_articulo': {
             'id': t.articulo_receptor.id,
@@ -562,7 +567,8 @@ def historial_truekes_usuario(user_id):
             'id': t.articulo_propietario.id,
             'titulo': t.articulo_propietario.titulo,
             'img': t.articulo_propietario.img
-        }
+        },
+        # 'comentarios': t.comentarios_transaccion.comentario if t.comentarios_transaccion else ""
     } for t in truekes_como_receptor]
 
     return jsonify({
@@ -626,7 +632,7 @@ def obtener_estadisticas_truekes():
         return jsonify({'error': f'Error al obtener estadísticas: {str(e)}'}), 500
 
 
-@api.route('/historial-truekes/<int:trueke_id>', methods=['GET'])
+@api.route('/trueke-detalle/<int:trueke_id>', methods=['GET'])
 @jwt_required()
 def obtener_detalle_trueke(trueke_id):
     """
@@ -648,12 +654,13 @@ def obtener_detalle_trueke(trueke_id):
 
         if not (es_propietario or es_receptor):
             return jsonify({'error': 'No tienes acceso a este trueke'}), 403
+        
 
         detalle = {
             'id': transaccion.id,
             'fecha_creacion': transaccion.fecha_creacion.isoformat() if hasattr(transaccion, 'fecha_creacion') else None,
-            'comentarios': transaccion.comentarios,
             'rol_usuario': 'propietario' if es_propietario else 'receptor',
+            'estado_transaccion': transaccion.estado_transaccion,
 
             'articulo_propietario': {
                 'id': transaccion.articulo_propietario.id,
@@ -686,20 +693,20 @@ def obtener_detalle_trueke(trueke_id):
                     'email': transaccion.articulo_receptor.usuario.email
                 }
             },
-
-            # Comentarios asociados al trueke (si tienes la relación)
-            'comentarios_transaccion': [
-                {
-                    'id': comentario.id,
-                    'comentario': comentario.comentario,
-                    'usuario': comentario.usuario.nombre_de_usuario,
-                    'fecha': comentario.fecha_creacion.isoformat() if hasattr(comentario, 'fecha_creacion') else None
-                }
-                for comentario in transaccion.comentarios_transaccion
-            ] if hasattr(transaccion, 'comentarios_transaccion') else []
         }
 
+        # Comentarios asociados al trueke (si tienes la relación)
+        if transaccion.comentarios_transaccion:
+            print("holaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+            """ detalle["comentarios_transaccion"] = {
+                'id': transaccion.comentarios_transaccion.id,
+                'comentario': transaccion.comentarios_transaccion.comentario,
+                'usuario': transaccion.comentarios_transaccion.comentario.usuario.nombre_de_usuario,
+                # 'fecha': comentario.fecha_creacion.isoformat() if hasattr(comentario, 'fecha_creacion') else None
+            } """
+
         return jsonify(detalle), 200
+    
 
     except Exception as e:
         return jsonify({'error': f'Error al obtener detalle del trueke: {str(e)}'}), 500

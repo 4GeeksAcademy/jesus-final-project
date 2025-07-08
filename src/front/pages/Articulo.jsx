@@ -301,56 +301,149 @@ export const Articulo = () => {
       return;
     }
 
-    const { value: comentarios } = await Swal.fire({
-      title: "Crear Trueke",
-      input: "textarea",
-      inputLabel: "Comentarios adicionales (opcional)",
-      inputPlaceholder: "Escribe un comentario sobre este trueke...",
-      showCancelButton: true,
-      confirmButtonText: "Crear Trueke",
-      cancelButtonText: "Cancelar",
-    });
-
-    if (comentarios !== undefined) {
+    const fetchPublicaciones = async () => {
       try {
-        const response = await fetch(`${backendUrl}/api/truekes`, {
-          method: "POST",
+        const token = localStorage.getItem("token");
+        if (!token) {
+          navigate("/login");
+          return;
+        }
+
+        const response = await fetch(`${backendUrl}/api/mis-publicaciones`, {
+          method: "GET",
           headers: {
-            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            articulo_propietario_id: parseInt(id),
-            articulo_receptor_id: parseInt(id),
-            comentarios: comentarios || "",
-          }),
         });
 
-        if (response.ok) {
-          const data = await response.json();
-          Swal.fire({
-            title: "Éxito",
-            text: "Trueke creado correctamente",
-            icon: "success",
-          }).then(() => {
-            navigate(`/truekes/${userId}`);
-          });
-        } else {
+        if (!response.ok) {
           const errorData = await response.json();
-          Swal.fire({
-            title: "Error",
-            text: errorData.error || "Error al crear el trueke",
-            icon: "error",
-          });
+          throw new Error(errorData.msg || `Error ${response.status}`);
         }
+
+        const data = await response.json();
+        return data;
       } catch (error) {
+        console.error("Error:", error);
         Swal.fire({
           title: "Error",
-          text: "Error de conexión",
+          text: error.message || "Error al cargar tus publicaciones",
           icon: "error",
         });
       }
     }
+
+    const publicaciones = await fetchPublicaciones();
+
+    const { value: formValues } = await Swal.fire({
+      title: "Crear Trueke",
+      width: "40%",
+      html: `
+    <div style="text-align: center;">
+      <label for="swal-select" style="display: block; margin-bottom: 5px; font-weight: bold;">
+        Selecciona tu artículo para intercambiar:
+      </label>
+      <select id="swal-select" class="swal2-select" style="width: 70%; margin-bottom: 15px; padding: 8px; border: 1px solid #d1d3e2; border-radius: 4px;">
+        <option value="">Selecciona un artículo...</option>
+        ${publicaciones.map(publicacion =>
+        `<option value="${publicacion.id}">${publicacion.titulo} - ${publicacion.categoria}</option>`
+      ).join('')}
+      </select>
+      
+      <label for="swal-textarea" style="display: block; margin-bottom: 5px; font-weight: bold;">
+        Comentarios adicionales (opcional):
+      </label>
+      <textarea 
+        id="swal-textarea" 
+        class="swal2-textarea" 
+        placeholder="Escribe un comentario sobre este trueke..."
+        style="width: 70%; height: 80px; padding: 8px; border: 1px solid #d1d3e2; border-radius: 4px; resize: vertical;"
+      ></textarea>
+    </div>
+  `,
+      showCancelButton: true,
+      confirmButtonText: "Crear Trueke",
+      cancelButtonText: "Cancelar",
+      customClass: {
+        confirmButton: 'btn btn-primary',
+      },
+      focusConfirm: false,
+      preConfirm: () => {
+        const select = document.getElementById('swal-select');
+        const textarea = document.getElementById('swal-textarea');
+
+        if (!select.value) {
+          Swal.showValidationMessage('Debes seleccionar un artículo');
+          return false;
+        }
+
+        return {
+          articuloSeleccionado: parseInt(select.value),
+          comentarios: textarea.value.trim()
+        };
+      }
+    });
+
+    if (formValues) {
+      console.log('Artículo seleccionado ID:', formValues.articuloSeleccionado);
+      console.log('Comentarios:', formValues.comentarios);
+
+      // Aquí puedes usar formValues.articuloSeleccionado y formValues.comentarios
+      // para hacer tu petición al backend
+    }
+
+    /*     const { value: comentarios } = await Swal.fire({
+          title: "Crear Trueke",
+          input: "textarea",
+          inputLabel: "Comentarios adicionales (opcional)",
+          inputPlaceholder: "Escribe un comentario sobre este trueke...",
+          showCancelButton: true,
+          confirmButtonText: "Crear Trueke",
+          cancelButtonText: "Cancelar",
+        }); */
+
+    /* if (comentarios) { */
+    try {
+      /* localStorage.setItem("userId", action.payload.userId); */
+      const response = await fetch(`${backendUrl}/api/truekes`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          articulo_propietario_id: parseInt(id),
+          articulo_receptor_id: formValues.articuloSeleccionado,
+          comentario: formValues.comentarios || "",
+          usuario_id: userId,
+        }),
+      });
+
+      if (response.ok) {
+        Swal.fire({
+          title: "Éxito",
+          text: "Trueke creado correctamente",
+          icon: "success",
+        }).then(() => {
+          navigate(`/truekes/historial/${userId}`);
+        });
+      } else {
+        const errorData = await response.json();
+        Swal.fire({
+          title: "Error",
+          text: errorData.error || "Error al crear el trueke",
+          icon: "error",
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        title: "Error",
+        text: `Error de conexión: ${error}`,
+        icon: "error",
+      });
+    }
+    /* } */
   };
 
   useEffect(() => {
@@ -456,7 +549,7 @@ export const Articulo = () => {
                   ) : esFavorito ? (
                     <i className="bi bi-heart-fill text-danger"></i>
                   ) : (
-                    <i className="bi bi-heart text-white"></i>
+                    <i className="bi bi-heart text-secondary"></i>
                   )}
                 </button>
               )}

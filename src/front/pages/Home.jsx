@@ -141,9 +141,6 @@ export const Home = () => {
 										<strong>Estado:</strong> {articulo.estado}
 									</p>
 								</div>
-								<span style={styles.box}>
-									<i className="bi bi-box2-heart"></i>
-								</span>
 							</div>
 						</Link>
 					</motion.div>

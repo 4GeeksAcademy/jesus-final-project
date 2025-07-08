@@ -20,7 +20,7 @@ export const TruekeDetalle = () => {
           return;
         }
 
-        const response = await fetch(`${backendUrl}api/historial-truekes/${truekeId}`, {
+        const response = await fetch(`${backendUrl}api/trueke-detalle/${truekeId}`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -35,6 +35,7 @@ export const TruekeDetalle = () => {
 
         const data = await response.json();
         setTrueke(data);
+        
       } catch (error) {
         console.error("Error:", error);
         Swal.fire({
@@ -42,7 +43,7 @@ export const TruekeDetalle = () => {
           text: error.message || "Error al cargar el trueke",
           icon: "error",
         });
-        navigate(-1); // Volver atrás si hay error
+        /* navigate(-1); // Volver atrás si hay error */
       } finally {
         setLoading(false);
       }
@@ -110,6 +111,7 @@ export const TruekeDetalle = () => {
                       <p>{trueke.articulo_propietario.caracteristicas}</p>
                       <p><strong>Categoría:</strong> {trueke.articulo_propietario.categoria}</p>
                       <p><strong>Estado:</strong> {trueke.articulo_propietario.estado}</p>
+                      <p><strong>De:</strong> {trueke.articulo_propietario.usuario.nombre_de_usuario}</p>
                     </div>
                   </div>
                 </div>
@@ -138,7 +140,7 @@ export const TruekeDetalle = () => {
                       <p>{trueke.articulo_receptor.caracteristicas}</p>
                       <p><strong>Categoría:</strong> {trueke.articulo_receptor.categoria}</p>
                       <p><strong>Estado:</strong> {trueke.articulo_receptor.estado}</p>
-                      <p><strong>De:</strong> {trueke.articulo_receptor.usuario.nombre_de_usuario}</p>
+                      <p><strong>Hacia:</strong> {trueke.articulo_receptor.usuario.nombre_de_usuario}</p>
                     </div>
                   </div>
                 </div>
@@ -148,9 +150,15 @@ export const TruekeDetalle = () => {
           
           <div className="mt-4">
             <h5>Comentarios</h5>
-            {trueke.comentarios_transaccion.length > 0 ? (
+            {trueke.comentarios_transaccion && trueke.comentarios_transaccion.comentario.length > 0 ? (
               <div className="list-group">
-                {trueke.comentarios_transaccion.map((comentario, index) => (
+                <div className="d-flex justify-content-between">
+                  <strong>{comentario.usuario}</strong>
+                  <small>{comentario.fecha}</small>
+                </div>
+                <p>{trueke.comentarios_transaccion.comentario}</p>
+
+{/*                 {trueke.comentarios_transaccion.comentario.map((comentario, index) => (
                   <div key={index} className="list-group-item">
                     <div className="d-flex justify-content-between">
                       <strong>{comentario.usuario}</strong>
@@ -158,7 +166,7 @@ export const TruekeDetalle = () => {
                     </div>
                     <p>{comentario.comentario}</p>
                   </div>
-                ))}
+                ))} */}
               </div>
             ) : (
               <p>No hay comentarios en este trueke</p>

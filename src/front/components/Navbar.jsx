@@ -192,7 +192,7 @@ export const Navbar = () => {
                                     <span className="fw-semibold">&#x2665;&#xfe0f;</span>
                                 </button>
                                 <button
-                                    onClick={() => navigate(`/truekes/${userId}`)}
+                                    onClick={() => navigate(`/truekes/historial/${userId}`)}
                                     className="btn btn-light d-flex align-items-center mx-1 border rounded shadow-sm"
                                 >
                                     <span className="fw-semibold text-dark">Mis truekes</span>
