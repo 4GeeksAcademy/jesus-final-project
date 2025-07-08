@@ -362,13 +362,13 @@ def eliminar_articulo(articulo_id):
         return jsonify({'msg': 'No tienes permiso para editar este artículo', 'error_type':'permiso_denegado'}), 403
 
     trueke_propietario = db.session.query(TransaccionTrueke).filter(
-      (TransaccionTrueke.articulo_id == articulo_id) &
-      (TransaccionTrueke.estado.in_(['pendiente','aceptado','en_proceso']))
+      (TransaccionTrueke.articulo_propietario_id == articulo_id) &
+      (TransaccionTrueke.estado_transaccion.in_(['pendiente','aceptado','rechazado']))
     ).first()
 
     trueke_receptor = db.session.query(TransaccionTrueke).filter(
-        (TransaccionTrueke.articulo_id == articulo_id) &
-        (TransaccionTrueke.estado.in_(['pendiente','aceptado','en_proceso']))
+        (TransaccionTrueke.articulo_receptor_id == articulo_id) &
+        (TransaccionTrueke.estado_transaccion.in_(['pendiente','aceptado','rechazado']))
     ).first()
 
     trueke_activo = trueke_propietario or trueke_receptor
@@ -378,7 +378,7 @@ def eliminar_articulo(articulo_id):
             'msg': 'No puedes eliminar este artículo porque tiene un trueke en proceso',
             'error_type': 'trueke_en_proceso',
             'trueke_id': trueke_activo.id,
-            'trueke_estado': trueke_activo.estado,
+            'trueke_estado': trueke_activo.estado_transaccion,
             'es_ofertante': trueke_activo == trueke_propietario
         }), 409
     
