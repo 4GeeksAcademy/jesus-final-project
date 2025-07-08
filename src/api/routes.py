@@ -216,6 +216,7 @@ def obtener_todos_los_ratings():
 
     return jsonify(rating_data), 200
 
+
 @api.route('/rating-review/<int:trueke_id>', methods=['POST'])
 @jwt_required()
 def crear_rating_review(trueke_id):
@@ -353,41 +354,40 @@ def editar_datos_articulo(articulo_id):
 def eliminar_articulo(articulo_id):
     usuario_token_id = int(get_jwt_identity())
 
+    articulo = db.session.query(Articulo).get(articulo_id)
+    if not articulo:
+        return jsonify({'msg': 'Artículo no encontrado', 'error_type': 'articulo_no_encontrado'}), 404
+
+    if articulo.usuario_id != usuario_token_id:
+        return jsonify({'msg': 'No tienes permiso para editar este artículo', 'error_type':'permiso_denegado'}), 403
+
+    trueke_propietario = db.session.query(TransaccionTrueke).filter(
+      (TransaccionTrueke.articulo_id == articulo_id) &
+      (TransaccionTrueke.estado.in_(['pendiente','aceptado','en_proceso']))
+    ).first()
+
+    trueke_receptor = db.session.query(TransaccionTrueke).filter(
+        (TransaccionTrueke.articulo_id == articulo_id) &
+        (TransaccionTrueke.estado.in_(['pendiente','aceptado','en_proceso']))
+    ).first()
+
+    trueke_activo = trueke_propietario or trueke_receptor
+
+    if trueke_activo:
+        return jsonify({
+            'msg': 'No puedes eliminar este artículo porque tiene un trueke en proceso',
+            'error_type': 'trueke_en_proceso',
+            'trueke_id': trueke_activo.id,
+            'trueke_estado': trueke_activo.estado,
+            'es_ofertante': trueke_activo == trueke_propietario
+        }), 409
+    
     try:
-        articulo = db.session.query(Articulo).get(articulo_id)
-        if not articulo:
-            return jsonify({'msg': 'Artículo no encontrado', 'error_type': 'articulo_no_encontrado'}), 404
-
-        if articulo.usuario_id != usuario_token_id:
-            return jsonify({'msg': 'No tienes permiso para editar este artículo', 'error_type': 'permiso_denegado'}), 403
-
-        # Este es el bloque crítico: si aquí hay un typo, fallará con 500
-        trueke_activo = db.session.query(TransaccionTrueke).filter(
-            (
-                (TransaccionTrueke.articulo_propietario_id == articulo_id) |
-                (TransaccionTrueke.articulo_receptor_id == articulo_id)
-            ) &
-            TransaccionTrueke.estado_transaccion.in_(
-                ['pendiente', 'aceptado', 'rechazado']
-            )).first()
-
-        if trueke_activo:
-            return jsonify({
-                'msg': 'No puedes eliminar este artículo porque tiene un trueke en proceso',
-                'error_type': 'trueke_en_proceso',
-                'trueke_id': trueke_activo.id,
-                'trueke_estado': trueke_activo.estado_transaccion,
-                'es_ofertante': (trueke_activo.articulo_propietario_id == articulo_id)
-            }), 409
-
         db.session.delete(articulo)
         db.session.commit()
         return jsonify({'msg': 'Artículo eliminado correctamente'}), 200
-
+    
     except Exception as e:
-        # Esto imprimirá la traza completa en la consola de Flask
-        import traceback
-        traceback.print_exc()
         db.session.rollback()
         return jsonify({'msg': 'Error al eliminar el artículo', 'error': str(e)}), 500
 
@@ -627,17 +627,17 @@ def historial_truekes_usuario(user_id):
 
     # Truekes donde el usuario es receptor (su artículo es el que se solicita)
     truekes_como_receptor = TransaccionTrueke.query.join(
-        Articulo, TransaccionTrueke.articulo_receptor_id == Articulo.id
-    ).filter(
-        Articulo.usuario_id == usuario_token_id
-    ).all()
+            Articulo, TransaccionTrueke.articulo_receptor_id == Articulo.id
+        ).filter(
+            Articulo.usuario_id == usuario_token_id
+        ).all()
 
     truekes_como_propietario = TransaccionTrueke.query.join(
-        Articulo, TransaccionTrueke.articulo_propietario_id == Articulo.id
-    ).filter(
-        Articulo.usuario_id == usuario_token_id
-    ).all()
-
+            Articulo, TransaccionTrueke.articulo_propietario_id == Articulo.id
+        ).filter(
+            Articulo.usuario_id == usuario_token_id
+        ).all()
+    
     historial_recibidos = [{
         'id': t.id,
         'estado': getattr(t, 'estado_transaccion', 'pendiente'),
@@ -652,7 +652,7 @@ def historial_truekes_usuario(user_id):
             'titulo': t.articulo_propietario.titulo,
             'img': t.articulo_propietario.img
         },
-        'solicitado': False
+        'solicitado': True
     } for t in truekes_como_receptor]
 
     historial_solicitados = [{
@@ -669,7 +669,7 @@ def historial_truekes_usuario(user_id):
             'titulo': t.articulo_receptor.titulo,
             'img': t.articulo_receptor.img
         },
-        'solicitado': True
+        'solicitado': False
     } for t in truekes_como_propietario]
 
     return jsonify({
@@ -755,6 +755,7 @@ def obtener_detalle_trueke(trueke_id):
 
         if not (es_propietario or es_receptor):
             return jsonify({'error': 'No tienes acceso a este trueke'}), 403
+        
 
         detalles = {
             'id': transaccion.id,
@@ -804,33 +805,13 @@ def obtener_detalle_trueke(trueke_id):
             }
 
         return jsonify(detalles), 200
+    
 
     except Exception as e:
         return jsonify({'error': f'Error al obtener detalle del trueke: {str(e)}'}), 500
 
 
-@api.route('/aceptar-trueke/<int:trueke_id>', methods=['POST'])
-@jwt_required()
-def aceptar_trueke(trueke_id):
-    usuario_token_id = int(get_jwt_identity())
-
-    trueke = db.session.query(TransaccionTrueke).get(trueke_id)
-    if not trueke:
-        return jsonify({'msg': 'Trueke no encontrado'}), 404
-
-    if not trueke.articulo_receptor:
-        return jsonify({'msg': 'Este trueke no tiene un artículo receptor asignado'}), 400
-
-    if trueke.articulo_receptor.usuario_id != usuario_token_id:
-        return jsonify({'msg': 'No tienes permiso para aceptar este trueke'}), 403
-
-    try:
-
-        return jsonify({'msg': 'Trueke aceptado correctamente'}), 200
-    except Exception as e:
-        return jsonify({'msg': 'Error en la operación', 'error': str(e)}), 500
-
-
+# Quitamos /api/ para mantener consistencia
 @api.route('/mis-publicaciones', methods=['GET'])
 @jwt_required()
 def obtener_mis_publicaciones():
