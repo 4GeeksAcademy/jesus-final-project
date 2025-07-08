@@ -101,17 +101,17 @@ export const TruekeDetalle = () => {
                 <div className="card-body">
                   <div className="d-flex">
                     <img
-                      src={trueke.articulo_propietario.img || "https://via.placeholder.com/100"}
-                      alt={trueke.articulo_propietario.titulo}
+                      src={trueke.articulo_receptor.img || "https://via.placeholder.com/100"}
+                      alt={trueke.articulo_receptor.titulo}
                       className="me-3 rounded"
                       style={{ width: "100px", height: "100px", objectFit: "cover" }}
                     />
                     <div>
-                      <h5>{trueke.articulo_propietario.titulo}</h5>
-                      <p>{trueke.articulo_propietario.caracteristicas}</p>
-                      <p><strong>Categoría:</strong> {trueke.articulo_propietario.categoria}</p>
-                      <p><strong>Estado:</strong> {trueke.articulo_propietario.estado}</p>
-                      <p><strong>De:</strong> {trueke.articulo_propietario.usuario.nombre_de_usuario}</p>
+                      <h5>{trueke.articulo_receptor.titulo}</h5>
+                      <p>{trueke.articulo_receptor.caracteristicas}</p>
+                      <p><strong>Categoría:</strong> {trueke.articulo_receptor.categoria}</p>
+                      <p><strong>Estado:</strong> {trueke.articulo_receptor.estado}</p>
+                      <p><strong>De:</strong> {trueke.articulo_receptor.usuario.nombre_de_usuario}</p>
                     </div>
                   </div>
                 </div>
@@ -125,22 +125,22 @@ export const TruekeDetalle = () => {
             <div className="col-md-5">
               <div className="card">
                 <div className="card-header bg-success text-white">
-                  <h5>Artículo recibido</h5>
+                  <h5>Artículo a recibir</h5>
                 </div>
                 <div className="card-body">
                   <div className="d-flex">
                     <img
-                      src={trueke.articulo_receptor.img || "https://via.placeholder.com/100"}
-                      alt={trueke.articulo_receptor.titulo}
+                      src={trueke.articulo_propietario.img || "https://via.placeholder.com/100"}
+                      alt={trueke.articulo_propietario.titulo}
                       className="me-3 rounded"
                       style={{ width: "100px", height: "100px", objectFit: "cover" }}
                     />
                     <div>
-                      <h5>{trueke.articulo_receptor.titulo}</h5>
-                      <p>{trueke.articulo_receptor.caracteristicas}</p>
-                      <p><strong>Categoría:</strong> {trueke.articulo_receptor.categoria}</p>
-                      <p><strong>Estado:</strong> {trueke.articulo_receptor.estado}</p>
-                      <p><strong>Hacia:</strong> {trueke.articulo_receptor.usuario.nombre_de_usuario}</p>
+                      <h5>{trueke.articulo_propietario.titulo}</h5>
+                      <p>{trueke.articulo_propietario.caracteristicas}</p>
+                      <p><strong>Categoría:</strong> {trueke.articulo_propietario.categoria}</p>
+                      <p><strong>Estado:</strong> {trueke.articulo_propietario.estado}</p>
+                      <p><strong>Hacia:</strong> {trueke.articulo_propietario.usuario.nombre_de_usuario}</p>
                     </div>
                   </div>
                 </div>

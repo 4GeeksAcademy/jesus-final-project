@@ -553,8 +553,14 @@ def historial_truekes_usuario(user_id):
         ).filter(
             Articulo.usuario_id == usuario_token_id
         ).all()
+
+    truekes_como_propietario = TransaccionTrueke.query.join(
+            Articulo, TransaccionTrueke.articulo_propietario_id == Articulo.id
+        ).filter(
+            Articulo.usuario_id == usuario_token_id
+        ).all()
     
-    historial = [{
+    historial_recibidos = [{
         'id': t.id,
         'estado': getattr(t, 'estado_transaccion', 'pendiente'),
         'rol_usuario': 'receptor',
@@ -563,17 +569,34 @@ def historial_truekes_usuario(user_id):
             'titulo': t.articulo_receptor.titulo,
             'img': t.articulo_receptor.img
         },
-        'articulo_intercambiado': {
+        'articulo_a_intercambiar': {
             'id': t.articulo_propietario.id,
             'titulo': t.articulo_propietario.titulo,
             'img': t.articulo_propietario.img
         },
-        # 'comentarios': t.comentarios_transaccion.comentario if t.comentarios_transaccion else ""
+        'solicitado': False
     } for t in truekes_como_receptor]
+
+    historial_solicitados = [{
+        'id': t.id,
+        'estado': getattr(t, 'estado_transaccion', 'pendiente'),
+        'rol_usuario': 'solicitante',
+        'mi_articulo': {
+            'id': t.articulo_propietario.id,
+            'titulo': t.articulo_propietario.titulo,
+            'img': t.articulo_propietario.img
+        },
+        'articulo_a_intercambiar': {
+            'id': t.articulo_receptor.id,
+            'titulo': t.articulo_receptor.titulo,
+            'img': t.articulo_receptor.img
+        },
+        'solicitado': True
+    } for t in truekes_como_propietario]
 
     return jsonify({
         'success': True,
-        'historial': historial
+        'historial': historial_recibidos + historial_solicitados
     }), 200
 
 
@@ -697,7 +720,6 @@ def obtener_detalle_trueke(trueke_id):
 
         # Comentarios asociados al trueke (si tienes la relación)
         if transaccion.comentarios_transaccion:
-            # print("holaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
             detalles["comentarios_transaccion"] = {
                 'id': transaccion.comentarios_transaccion.id,
                 'comentario': transaccion.comentarios_transaccion.comentario,

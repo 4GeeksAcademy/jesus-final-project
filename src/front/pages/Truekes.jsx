@@ -56,6 +56,10 @@ export const Truekes = () => {
         navigate(`/trueke-detalle/${id}`);
     };
 
+    const handleAceptarTrueke = (id) => {
+
+    };
+
     const handleCancelarTrueke = async (id, e) => {
         e.stopPropagation();
 
@@ -176,18 +180,27 @@ export const Truekes = () => {
                                     <div>
                                         <h6>{trueke.mi_articulo?.titulo || "Artículo sin título"}</h6>
                                         <small className="text-muted">
-                                            {trueke.mi_articulo?.categoria || "Sin categoría"} • Estado: {trueke.estado || "desconocido"}
+                                            {trueke.mi_articulo?.categoria || "Sin categoría"} • Estado: {trueke.estado || "desconocido"} • {trueke.solicitado ? "Solicitado" : "Recibido"}
                                         </small>
                                     </div>
                                 </div>
 
                                 <div className="d-flex gap-2">
-                                    <button
-                                        className="btn btn-sm btn-outline-primary"
-                                        onClick={() => handleVerTrueke(trueke.id)}
-                                    >
-                                        Detalles
-                                    </button>
+                                    {trueke.solicitado ? (
+                                        <button
+                                            className="btn btn-sm btn-outline-primary"
+                                            onClick={() => handleVerTrueke(trueke.id)}
+                                        >
+                                            Detalles
+                                        </button>
+                                    ) : (
+                                        <button
+                                            className="btn btn-sm btn-outline-success"
+                                            onClick={() => handleAceptarTrueke(trueke.id)}
+                                        >
+                                            Aceptar
+                                        </button>
+                                    )}
                                     {trueke.estado !== "cancelado" && (
                                         <button
                                             className="btn btn-sm btn-outline-danger"
