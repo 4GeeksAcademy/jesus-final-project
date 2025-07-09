@@ -522,7 +522,7 @@ export const Articulo = () => {
                 src={datosArticulo.img || "https://via.placeholder.com/800x400?text=Imagen+no+disponible"}
                 className="card-img-top"
                 alt={datosArticulo.titulo}
-                style={{ height: "400px", objectFit: "cover" }}
+                style={{ height: "400px", width: "100%", objectFit: "scale-down", backgroundColor: "#f8f9fa" }}
                 onError={(e) => {
                   e.target.src = "https://via.placeholder.com/800x400?text=Imagen+no+disponible";
                 }}

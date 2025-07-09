@@ -28,6 +28,7 @@ export const MisPublicaciones = () => {
     { value: "deportes", label: "Deportes" },
     { value: "libros", label: "Libros" },
     { value: "juguetes", label: "Juguetes" },
+    { value: "otros", label: "Otros" },
   ];
 
   const estados = [
@@ -246,8 +247,19 @@ export const MisPublicaciones = () => {
           </button>
         </div>
       ) : (
+        <div>
+        <div className="d-flex justify-content-between align-items-center mb-4">
+          <h2>Mis Publicaciones</h2>
+          <button
+            className="btn btn-primary"
+            onClick={() => navigate('/publicar-articulo')}
+          >
+            <i className="bi bi-plus-circle me-2"></i>
+            Nueva Publicación
+          </button>
+           </div>
+        
         <div className="list-group">
-          <h2 className="pb-4">Mis Publicaciones</h2>
           {publicaciones.map((publicacion) => (
             <motion.div
               key={publicacion.id}
@@ -255,6 +267,7 @@ export const MisPublicaciones = () => {
               style={{ cursor: "pointer" }}
               whileHover={{ scale: 1.01 }}
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              onClick={() => navigate(`/articulo/${publicacion.id}`)}
             >
               <div className="d-flex align-items-center flex-grow-1">
                 <img
@@ -319,6 +332,7 @@ export const MisPublicaciones = () => {
               </div>
             </motion.div>
           ))}
+        </div>
         </div>
       )}
 
