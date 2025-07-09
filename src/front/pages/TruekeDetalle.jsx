@@ -16,7 +16,7 @@ export const TruekeDetalle = () => {
   const [comentario, setComentario] = useState('');
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
-
+  const userId = localStorage.getItem("userId");
 
   useEffect(() => {
     const fetchTrueke = async () => {
@@ -27,7 +27,7 @@ export const TruekeDetalle = () => {
           return;
         }
 
-        const response = await fetch(`${backendUrl}api/trueke-detalle/${truekeId}`, {
+        const response = await fetch(`${backendUrl}/api/trueke-detalle/${truekeId}`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -58,9 +58,61 @@ export const TruekeDetalle = () => {
     fetchTrueke();
   }, [navigate, truekeId]);
 
+  // Eliminar trueke
+  const handleEliminarTrueke = async () => {
+  const { isConfirmed } = await Swal.fire({
+    title: "¿Cancelar trueke?",
+    text: "Esta acción no se puede deshacer",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#3085d6",
+    confirmButtonText: "Sí, cancelar",
+    cancelButtonText: "No",
+  });
+
+  if (!isConfirmed) return;
+
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+
+    const response = await fetch(`${backendUrl}/api/truekes/${truekeId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.msg || `Error ${response.status}`);
+    }
+
+    Swal.fire({
+      title: "¡Eliminado!",
+      text: "El trueke ha sido cancelado correctamente",
+      icon: "success"
+    }).then(() => {
+      navigate(`/truekes/historial/${userId}`); // Redirige después de eliminar
+    });
+  } catch (error) {
+    console.error("Error al cancelar trueke:", error);
+    Swal.fire({
+      title: "Error",
+      text: error.message || "Error al cancelar el trueke",
+      icon: "error",
+    });
+  }
+};
 
   const handleShow = () => setShowModal(true);
   const handleClose = () => setShowModal(false);
+  
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -72,7 +124,7 @@ export const TruekeDetalle = () => {
     const token = localStorage.getItem("token");
 
     try {
-      const response = await fetch(`${backendUrl}api/rating-review/${truekeId}`, {
+      const response = await fetch(`${backendUrl}/api/rating-review/${truekeId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -81,12 +133,10 @@ export const TruekeDetalle = () => {
         body: JSON.stringify({
           puntaje: parseInt(puntaje),
           comentario: comentario,
-
         }),
       });
 
       const data = await response.json();
-
 
       if (!response.ok) throw new Error("Error al enviar la review");
 
@@ -139,59 +189,17 @@ export const TruekeDetalle = () => {
           <div className="d-flex gap-3 py-4">
             <h4>Detalle del Trueke</h4>
 
-            <button onClick={handleShow} className="btn btn-outline-success ms-auto">
-              Si tu Trueke fue concretado, haz clic aquí
-            </button>
-
-            <Modal show={showModal} onHide={handleClose}>
-              <Modal.Header closeButton>
-                <Modal.Title>¡Trueke completado! 🎉 <br></br>
-                  <p style={{ fontSize: "1rem" }}>Ahora el último paso... Porfavor deja un comentario sobre la persona con la que Truekeaste para ayudar a próximos Truekeadores</p></Modal.Title>
-
-              </Modal.Header>
-              <Modal.Body>
-                {success && <Alert variant="success">¡Gracias! Tu review ha sido enviada con éxito.</Alert>}
-                {error && <Alert variant="danger">Error en la petición, No se pudo concretar tu review</Alert>}
-
-                <Form onSubmit={handleSubmit}>
-                  <Form.Group controlId="formPuntaje">
-                    <Form.Label>Puntaje (1-5):</Form.Label>
-                    <Form.Control
-                      as="select"
-                      value={puntaje}
-                      onChange={(e) => setPuntaje(e.target.value)}
-                      required
-                    >
-                      <option value="" disabled>Selecciona una opción</option>
-                      <option value="1">1 - Muy malo</option>
-                      <option value="2">2 - Malo</option>
-                      <option value="3">3 - Regular</option>
-                      <option value="4">4 - Bueno</option>
-                      <option value="5">5 - Excelente</option>
-                    </Form.Control>
-                  </Form.Group>
-
-                  <Form.Group controlId="formComentario">
-                    <Form.Label>Comentario:</Form.Label>
-                    <Form.Control
-                      as="textarea"
-                      rows={3}
-                      value={comentario}
-                      onChange={(e) => setComentario(e.target.value)}
-                      placeholder="Escribe tu review aquí..."
-                      required
-                    />
-                  </Form.Group>
-
-                  <Button className="mt-2 me-1" variant="primary" type="submit">
-                    Enviar
-                  </Button>
-                  <Button className="ms-1 mt-2" variant="danger" onClick={handleClose}>
-                    Aún no termine mi Trueke
-                  </Button>
-                </Form>
-              </Modal.Body>
-            </Modal>
+            <div className="ms-auto d-flex gap-2">
+              <button
+                className="btn btn-outline-danger"
+                onClick={handleEliminarTrueke}
+              >
+                <i className="bi bi-trash"></i> Eliminar Trueke
+              </button>
+              <button onClick={handleShow} className="btn btn-outline-success">
+                Si tu Trueke fue concretado, haz clic aquí
+              </button>
+            </div>
           </div>
         </div>
 
@@ -267,6 +275,57 @@ export const TruekeDetalle = () => {
           </div>
         </div>
       </div>
-    </motion.div >
+
+      <Modal show={showModal} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>
+            ¡Trueke completado! 🎉 <br />
+            <p style={{ fontSize: "1rem" }}>Ahora el último paso... Por favor deja un comentario sobre la persona con la que Truekeaste para ayudar a próximos Truekeadores</p>
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {success && <Alert variant="success">¡Gracias! Tu review ha sido enviada con éxito.</Alert>}
+          {error && <Alert variant="danger">Error en la petición, No se pudo concretar tu review</Alert>}
+
+          <Form onSubmit={handleSubmit}>
+            <Form.Group controlId="formPuntaje">
+              <Form.Label>Puntaje (1-5):</Form.Label>
+              <Form.Control
+                as="select"
+                value={puntaje}
+                onChange={(e) => setPuntaje(e.target.value)}
+                required
+              >
+                <option value="" disabled>Selecciona una opción</option>
+                <option value="1">1 - Muy malo</option>
+                <option value="2">2 - Malo</option>
+                <option value="3">3 - Regular</option>
+                <option value="4">4 - Bueno</option>
+                <option value="5">5 - Excelente</option>
+              </Form.Control>
+            </Form.Group>
+
+            <Form.Group controlId="formComentario">
+              <Form.Label>Comentario:</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                value={comentario}
+                onChange={(e) => setComentario(e.target.value)}
+                placeholder="Escribe tu review aquí..."
+                required
+              />
+            </Form.Group>
+
+            <Button className="mt-2 me-1" variant="primary" type="submit">
+              Enviar
+            </Button>
+            <Button className="ms-1 mt-2" variant="danger" onClick={handleClose}>
+              Aún no termine mi Trueke
+            </Button>
+          </Form>
+        </Modal.Body>
+      </Modal>
+    </motion.div>
   );
 };

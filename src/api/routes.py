@@ -190,7 +190,7 @@ def obtener_todos_los_articulos():
     return jsonify(resultados), 200
 
 
-@api.route('/api/mis-publicaciones', methods=['GET'])  # Cambiamos la ruta
+@api.route('/api/mis-publicaciones', methods=['GET'])  
 @jwt_required()
 def obtener_articulos_usuario():
 
