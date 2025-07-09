@@ -42,6 +42,7 @@ export const TruekeDetalle = () => {
 
         const data = await response.json();
         setTrueke(data);
+        
 
       } catch (error) {
         console.error("Error:", error);
@@ -58,7 +59,8 @@ export const TruekeDetalle = () => {
     fetchTrueke();
   }, [navigate, truekeId]);
 
-  const cambiarEstadoTrueke = async (truekeId) => {
+  const cambiarEstadoTrueke = async () => {
+    const token = localStorage.getItem("token");
     try {
       const response = await fetch(`${backendUrl}/api/trueke-terminado/${truekeId}`, {
         method: "PUT",
@@ -206,23 +208,33 @@ export const TruekeDetalle = () => {
       <button className="btn btn-outline-secondary mb-4" onClick={() => navigate(-1)}>
         <i className="bi bi-arrow-left"></i> Volver
       </button>
+      {trueke.estado_transaccion === "terminado" ? (
+        <div className="ms-auto d-flex justify-content-center">
+          <div className="alert alert-success" role="alert">
+            Trueke completado 🎉 Nos alegramos mucho que haya salido todo bien!!
+          </div>
+        </div>
+      ) : ""}
+
 
       <div className="card">
         <div className="card-header">
           <div className="d-flex gap-3 py-4">
             <h4>Detalle del Trueke</h4>
+            {trueke.estado_transaccion !== "terminado" ? (
+              <div className="ms-auto d-flex gap-2">
+                <button
+                  className="btn btn-outline-danger"
+                  onClick={handleEliminarTrueke}
+                >
+                  <i className="bi bi-trash"></i> Eliminar Trueke
+                </button>
+                <button onClick={handleShow} className="btn btn-outline-success">
+                  Si tu Trueke fue concretado, haz clic aquí
+                </button>
+              </div>) : (
 
-            <div className="ms-auto d-flex gap-2">
-              <button
-                className="btn btn-outline-danger"
-                onClick={handleEliminarTrueke}
-              >
-                <i className="bi bi-trash"></i> Eliminar Trueke
-              </button>
-              <button onClick={handleShow} className="btn btn-outline-success">
-                Si tu Trueke fue concretado, haz clic aquí
-              </button>
-            </div>
+              "")}
           </div>
         </div>
 
@@ -284,7 +296,7 @@ export const TruekeDetalle = () => {
           </div>
 
           <div className="mt-4">
-            <h5>Comentarios</h5>
+            <h5>Comentario</h5>
             {trueke.comentarios_transaccion && trueke.comentarios_transaccion.comentario.length > 0 ? (
               <div className="list-group">
                 <div className="d-flex justify-content-between">

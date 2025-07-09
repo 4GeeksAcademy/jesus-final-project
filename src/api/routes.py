@@ -660,7 +660,7 @@ def editar_estado_trueke(id):
 
 @api.route('/trueke-terminado/<int:id>', methods=['PUT'])
 @jwt_required()
-def editar_estado_trueke(id):
+def truekeTermiando(id):
     transaccion = TransaccionTrueke.query.get(id)
     if not transaccion:
         return jsonify({'error': 'Transacción no encontrada'}), 404
@@ -748,7 +748,9 @@ def historial_truekes_usuario(user_id):
 
     return jsonify({
         'success': True,
-        'historial': historial_recibidos + historial_solicitados
+        'historial': historial_recibidos + historial_solicitados,
+
+
     }), 200
 
 

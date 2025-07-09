@@ -36,6 +36,7 @@ export const Truekes = () => {
 
                 const data = await response.json();
                 if (response.ok) {
+
                     setTruekes(data.historial || []);
 
                 } else {
@@ -48,6 +49,7 @@ export const Truekes = () => {
             } finally {
                 setLoading(false);
             }
+
         };
 
         fetchTruekes();
@@ -227,8 +229,8 @@ export const Truekes = () => {
                             <div className="d-flex justify-content-between align-items-center">
                                 <div className="d-flex align-items-center">
                                     <img
-                                        src={trueke.mi_articulo?.img || "/placeholder-item.png"}
-                                        alt={trueke.mi_articulo?.titulo || "Artículo sin título"}
+                                        src={trueke.articulo_a_intercambiar?.img || "/placeholder-item.png"}
+                                        alt={trueke.articulo_a_intercambiar?.titulo || "Artículo sin título"}
                                         className="me-3 rounded"
                                         style={{
                                             width: "80px",
@@ -241,7 +243,7 @@ export const Truekes = () => {
                                         }}
                                     />
                                     <div>
-                                        <h6>{trueke.mi_articulo?.titulo || "Artículo sin título"}</h6>
+                                        <h6>{trueke.articulo_a_intercambiar?.titulo || "Artículo sin título"}</h6>
                                         <small className="text-muted">
                                             {trueke.mi_articulo?.categoria || "Sin categoría"} • Estado: {trueke.estado || "desconocido"} • {trueke.solicitado ? "Solicitado" : "Recibido"}
                                         </small>
