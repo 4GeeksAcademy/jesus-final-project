@@ -161,12 +161,12 @@ class TransaccionTrueke(db.Model):
     comentarios_transaccion: Mapped['Comentario'] = relationship(
         'Comentario', back_populates='transaccion', cascade='all, delete-orphan', uselist=False)
     ratings: Mapped[list['Rating']] = relationship(
-        'Rating', back_populates='trueke')
+        'Rating', back_populates='trueke',  cascade='all, delete-orphan')
 
     @property
     def id_usuario_propietario(self):
         return self.articulo_propietario.usuario_id
-        
+
     @property
     def id_usuario_receptor(self):
         return self.articulo_receptor.usuario_id
@@ -185,6 +185,7 @@ class TransaccionTrueke(db.Model):
             'comentarios': self.comentarios_transaccion.serialize() if self.comentarios_transaccion else None,
             'estado_transaccion': self.estado_transaccion
         }
+
 
 class Comentario(db.Model):
     __tablename__ = 'comentario'

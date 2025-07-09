@@ -36,13 +36,15 @@ def borrar_cuenta():
         return jsonify({'msg': 'Usuario no encontrado'}), 404
 
     trueke_propietario = db.session.query(TransaccionTrueke).filter(
-      (TransaccionTrueke.articulo_propietario_id == usuario.id) &
-      (TransaccionTrueke.estado_transaccion.in_(['pendiente','aceptado','rechazado']))
+        (TransaccionTrueke.articulo_propietario_id == usuario.id) &
+        (TransaccionTrueke.estado_transaccion.in_(
+            ['pendiente', 'aceptado', 'rechazado']))
     ).first()
 
     trueke_receptor = db.session.query(TransaccionTrueke).filter(
         (TransaccionTrueke.articulo_receptor_id == usuario.id) &
-        (TransaccionTrueke.estado_transaccion.in_(['pendiente','aceptado','rechazado']))
+        (TransaccionTrueke.estado_transaccion.in_(
+            ['pendiente', 'aceptado', 'rechazado']))
     ).first()
 
     trueke_activo = trueke_propietario or trueke_receptor
@@ -190,7 +192,7 @@ def obtener_todos_los_articulos():
     return jsonify(resultados), 200
 
 
-@api.route('/api/mis-publicaciones', methods=['GET'])  
+@api.route('/api/mis-publicaciones', methods=['GET'])
 @jwt_required()
 def obtener_articulos_usuario():
 
@@ -240,7 +242,7 @@ def obtener_todos_los_ratings():
 @api.route('/rating-review/<int:trueke_id>', methods=['POST'])
 @jwt_required()
 def crear_rating_review(trueke_id):
-    usuario_id_remitente = get_jwt_identity()
+    usuario_id_remitente = int(get_jwt_identity())
 
     trueke = TransaccionTrueke.query.filter_by(id=trueke_id).first()
     if not trueke:
@@ -248,7 +250,7 @@ def crear_rating_review(trueke_id):
 
     id_propietario = trueke.id_usuario_propietario
     id_receptor = trueke.id_usuario_receptor
-    
+
     participantes_ids = [id_propietario, id_receptor]
 
     if usuario_id_remitente not in participantes_ids:
@@ -265,15 +267,15 @@ def crear_rating_review(trueke_id):
     body = request.get_json(silent=True)
     if not body:
         return jsonify({'msg': 'Debes enviar datos en formato JSON'}), 400
-        
+
     if 'puntaje' not in body or 'comentario' not in body:
         return jsonify({'msg': 'Debes enviar puntaje y comentario'}), 400
 
     existing_review = Rating.query.filter_by(
-        trueke_id=trueke_id, 
+        trueke_id=trueke_id,
         usuario_id=usuario_id_remitente
     ).first()
-    
+
     if existing_review:
         return jsonify({'msg': 'Ya has dejado una reseña para esta transacción'}), 400
 
@@ -289,6 +291,7 @@ def crear_rating_review(trueke_id):
     db.session.commit()
 
     return jsonify({'msg': 'Review enviada con éxito'}), 201
+
 
 @api.route('/rating/<int:id>', methods=['GET'])
 def obtener_rating_usuario(id):
@@ -379,16 +382,18 @@ def eliminar_articulo(articulo_id):
         return jsonify({'msg': 'Artículo no encontrado', 'error_type': 'articulo_no_encontrado'}), 404
 
     if articulo.usuario_id != usuario_token_id:
-        return jsonify({'msg': 'No tienes permiso para editar este artículo', 'error_type':'permiso_denegado'}), 403
+        return jsonify({'msg': 'No tienes permiso para editar este artículo', 'error_type': 'permiso_denegado'}), 403
 
     trueke_propietario = db.session.query(TransaccionTrueke).filter(
-      (TransaccionTrueke.articulo_propietario_id == articulo_id) &
-      (TransaccionTrueke.estado_transaccion.in_(['pendiente','aceptado','rechazado']))
+        (TransaccionTrueke.articulo_propietario_id == articulo_id) &
+        (TransaccionTrueke.estado_transaccion.in_(
+            ['pendiente', 'aceptado', 'rechazado']))
     ).first()
 
     trueke_receptor = db.session.query(TransaccionTrueke).filter(
         (TransaccionTrueke.articulo_receptor_id == articulo_id) &
-        (TransaccionTrueke.estado_transaccion.in_(['pendiente','aceptado','rechazado']))
+        (TransaccionTrueke.estado_transaccion.in_(
+            ['pendiente', 'aceptado', 'rechazado']))
     ).first()
 
     trueke_activo = trueke_propietario or trueke_receptor
@@ -401,12 +406,12 @@ def eliminar_articulo(articulo_id):
             'trueke_estado': trueke_activo.estado_transaccion,
             'es_ofertante': trueke_activo == trueke_propietario
         }), 409
-    
+
     try:
         db.session.delete(articulo)
         db.session.commit()
         return jsonify({'msg': 'Artículo eliminado correctamente'}), 200
-    
+
     except Exception as e:
         db.session.rollback()
         return jsonify({'msg': 'Error al eliminar el artículo', 'error': str(e)}), 500
@@ -647,17 +652,17 @@ def historial_truekes_usuario(user_id):
 
     # Truekes donde el usuario es receptor (su artículo es el que se solicita)
     truekes_como_receptor = TransaccionTrueke.query.join(
-            Articulo, TransaccionTrueke.articulo_receptor_id == Articulo.id
-        ).filter(
-            Articulo.usuario_id == usuario_token_id
-        ).all()
+        Articulo, TransaccionTrueke.articulo_receptor_id == Articulo.id
+    ).filter(
+        Articulo.usuario_id == usuario_token_id
+    ).all()
 
     truekes_como_propietario = TransaccionTrueke.query.join(
-            Articulo, TransaccionTrueke.articulo_propietario_id == Articulo.id
-        ).filter(
-            Articulo.usuario_id == usuario_token_id
-        ).all()
-    
+        Articulo, TransaccionTrueke.articulo_propietario_id == Articulo.id
+    ).filter(
+        Articulo.usuario_id == usuario_token_id
+    ).all()
+
     historial_recibidos = [{
         'id': t.id,
         'estado': getattr(t, 'estado_transaccion', 'pendiente'),
@@ -775,7 +780,6 @@ def obtener_detalle_trueke(trueke_id):
 
         if not (es_propietario or es_receptor):
             return jsonify({'error': 'No tienes acceso a este trueke'}), 403
-        
 
         detalles = {
             'id': transaccion.id,
@@ -825,7 +829,6 @@ def obtener_detalle_trueke(trueke_id):
             }
 
         return jsonify(detalles), 200
-    
 
     except Exception as e:
         return jsonify({'error': f'Error al obtener detalle del trueke: {str(e)}'}), 500

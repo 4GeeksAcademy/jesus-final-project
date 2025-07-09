@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import { motion } from "framer-motion";
 import { Button, Modal, Alert, Form } from "react-bootstrap";
 
-const backendUrl = import.meta.env.VITE_BACKEND_URL;
+const backendUrl = import.meta.env.VITE_BACKEND_URL.replace(/\/+$/, '');
 
 export const TruekeDetalle = () => {
   const navigate = useNavigate();
@@ -60,59 +60,59 @@ export const TruekeDetalle = () => {
 
   // Eliminar trueke
   const handleEliminarTrueke = async () => {
-  const { isConfirmed } = await Swal.fire({
-    title: "¿Cancelar trueke?",
-    text: "Esta acción no se puede deshacer",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#d33",
-    cancelButtonColor: "#3085d6",
-    confirmButtonText: "Sí, cancelar",
-    cancelButtonText: "No",
-  });
+    const { isConfirmed } = await Swal.fire({
+      title: "¿Cancelar trueke?",
+      text: "Esta acción no se puede deshacer",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Sí, cancelar",
+      cancelButtonText: "No",
+    });
 
-  if (!isConfirmed) return;
+    if (!isConfirmed) return;
 
-  try {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate('/login');
-      return;
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        navigate('/login');
+        return;
+      }
+
+      const response = await fetch(`${backendUrl}/api/truekes/${truekeId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.msg || `Error ${response.status}`);
+      }
+
+      Swal.fire({
+        title: "¡Eliminado!",
+        text: "El trueke ha sido cancelado correctamente",
+        icon: "success"
+      }).then(() => {
+        navigate(`/truekes/historial/${userId}`); // Redirige después de eliminar
+      });
+    } catch (error) {
+      console.error("Error al cancelar trueke:", error);
+      Swal.fire({
+        title: "Error",
+        text: error.message || "Error al cancelar el trueke",
+        icon: "error",
+      });
     }
-
-    const response = await fetch(`${backendUrl}/api/truekes/${truekeId}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.msg || `Error ${response.status}`);
-    }
-
-    Swal.fire({
-      title: "¡Eliminado!",
-      text: "El trueke ha sido cancelado correctamente",
-      icon: "success"
-    }).then(() => {
-      navigate(`/truekes/historial/${userId}`); // Redirige después de eliminar
-    });
-  } catch (error) {
-    console.error("Error al cancelar trueke:", error);
-    Swal.fire({
-      title: "Error",
-      text: error.message || "Error al cancelar el trueke",
-      icon: "error",
-    });
-  }
-};
+  };
 
   const handleShow = () => setShowModal(true);
   const handleClose = () => setShowModal(false);
-  
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
