@@ -609,7 +609,6 @@ def crear_trueke():
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
 
-
 @api.route('/truekes/<int:id>', methods=['DELETE'])
 def eliminar_trueke(id):
     try:

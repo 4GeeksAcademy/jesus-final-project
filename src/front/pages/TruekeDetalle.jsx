@@ -18,6 +18,7 @@ export const TruekeDetalle = () => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
   const userId = localStorage.getItem("userId");
+  const [MostrarAlerta, setMostrarAlerta] = useState(false);
 
   useEffect(() => {
     const fetchTrueke = async () => {
@@ -178,9 +179,6 @@ export const TruekeDetalle = () => {
     }
   };
 
-
-
-
   // Componente de carga mientras se obtiene el trueke
   if (loading) {
     return (
@@ -203,6 +201,15 @@ export const TruekeDetalle = () => {
     );
   }
 
+  const handleAlert = () => {
+    setMostrarAlerta(true);
+
+    setTimeout(() => {
+      setMostrarAlerta(false);
+    }, 2000);
+  };
+
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -211,6 +218,7 @@ export const TruekeDetalle = () => {
       transition={{ duration: 0.5 }}
       className="container mt-5 pt-4"
     >
+
       <button className="btn btn-outline-secondary mb-4" onClick={() => navigate(-1)}>
         <i className="bi bi-arrow-left"></i> Volver
       </button>
@@ -222,7 +230,11 @@ export const TruekeDetalle = () => {
         </div>
       ) : ""}
 
-
+      {MostrarAlerta && (
+        <div className="alert alert-success mt-2" role="alert">
+          Comentario enviado, gracias por tu feedback!!!
+        </div>
+      )}
       <div className="card">
         <div className="card-header">
           <div className="d-flex gap-3 py-4">
@@ -358,15 +370,19 @@ export const TruekeDetalle = () => {
               />
             </Form.Group>
 
-            <Button className="mt-2 me-1" variant="primary" type="submit">
+            <Button className="mt-2 me-1" variant="primary" type="submit" onClick={handleAlert} >
               Enviar
             </Button>
+
             <Button className="ms-1 mt-2" variant="danger" onClick={handleClose}>
               Aún no termine mi Trueke
             </Button>
           </Form>
+
+
         </Modal.Body>
       </Modal>
+
     </motion.div>
   );
 };
