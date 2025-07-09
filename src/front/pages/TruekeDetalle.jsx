@@ -10,6 +10,7 @@ export const TruekeDetalle = () => {
   const navigate = useNavigate();
   const { truekeId } = useParams();
   const [trueke, setTrueke] = useState(null);
+  const [estado, setEstado] = useState("");
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [puntaje, setPuntaje] = useState('');
@@ -42,7 +43,7 @@ export const TruekeDetalle = () => {
 
         const data = await response.json();
         setTrueke(data);
-        
+
 
       } catch (error) {
         console.error("Error:", error);
@@ -57,7 +58,8 @@ export const TruekeDetalle = () => {
     };
 
     fetchTrueke();
-  }, [navigate, truekeId]);
+
+  }, [navigate, truekeId, estado]);
 
   const cambiarEstadoTrueke = async () => {
     const token = localStorage.getItem("token");
@@ -170,10 +172,14 @@ export const TruekeDetalle = () => {
       setComentario('');
       setShowModal(false);
       cambiarEstadoTrueke();
+
     } catch (error) {
       setError(error.message || "No se pudo enviar la review.");
     }
   };
+
+
+
 
   // Componente de carga mientras se obtiene el trueke
   if (loading) {

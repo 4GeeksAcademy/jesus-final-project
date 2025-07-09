@@ -610,19 +610,6 @@ def crear_trueke():
         return jsonify({'error': str(e)}), 500
 
 
-@api.route('/truekes/<int:id>', methods=['GET'])
-def obtener_trueke(id):
-    try:
-        transaccion = TransaccionTrueke.query.get(id)
-        if not transaccion:
-            return jsonify({'error': 'Transacción no encontrada'}), 404
-
-        return jsonify(transaccion.serialize()), 200
-
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-
 @api.route('/truekes/<int:id>', methods=['DELETE'])
 def eliminar_trueke(id):
     try:
