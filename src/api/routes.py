@@ -300,7 +300,8 @@ def obtener_rating_usuario(id):
     if not usuario:
         return jsonify({"error": "Usuario no encontrado"}), 404
 
-    ratings = db.session.query(Rating).filter(Rating.usuario_id == id).all()
+    ratings = db.session.query(Rating).filter(
+        Rating.usuario_destino_id == id).all()
 
     if ratings:
         promedio = sum(r.puntuacion for r in ratings) / len(ratings)

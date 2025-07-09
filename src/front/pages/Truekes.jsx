@@ -190,10 +190,10 @@ export const Truekes = () => {
             transition={{ duration: 0.5 }}
             className="container mt-5 pt-4"
         >
-            <h2 className="mb-4">Mis Truekes</h2>
 
             {truekes.length === 0 ? (
                 <div className="text-center py-5">
+                    <h2 className="mb-4">Mis Truekes</h2>
                     <h4>No tienes truekes aún</h4>
                     <p>Comienza intercambiando tus artículos</p>
                     <button
