@@ -70,6 +70,9 @@ export const Truekes = () => {
                 await aceptarTrueke(id);
                 Swal.fire('¡Aceptado!', 'Se ha notificado al usuario.', 'success');
             }
+            else {
+                navigate(-1)
+            }
         });
     };
     const aceptarTrueke = async (id) => {
