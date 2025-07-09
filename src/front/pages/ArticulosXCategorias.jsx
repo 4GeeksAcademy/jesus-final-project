@@ -105,7 +105,6 @@ export const ArticulosXCategoria = () => {
     hidden: { opacity: 0, y: 30 },
     visible: { opacity: 1, y: 0 },
   };
-
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -113,7 +112,15 @@ export const ArticulosXCategoria = () => {
       exit={{ opacity: 0 }}
       transition={{ duration: 1 }}
     >
-      <div style={styles.container}>
+      <div
+        style={{
+          ...styles.container,
+          display: articulos && articulos.length > 0 ? "grid" : "flex",
+          justifyContent: articulos && articulos.length > 0 ? "initial" : "center",
+          alignItems: articulos && articulos.length > 0 ? "initial" : "center",
+          minHeight: articulos && articulos.length > 0 ? "auto" : "300px",
+        }}
+      >
         {Array.isArray(articulos) && articulos.length > 0 ? (
           articulos.map((articulo) => (
             <motion.div
@@ -178,9 +185,19 @@ export const ArticulosXCategoria = () => {
             </motion.div>
           ))
         ) : (
-          <div style={{ textAlign: "center", marginTop: "40px", width: "100%" }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "10px",
+              textAlign: "center",
+              paddingTop: "200px"
+            }}
+          >
             <p>No hay artículos en esta categoría.</p>
-            <img src="https://source.unsplash.com/300x200/?empty,box" alt="No articles" />
+            <img src="https://img.freepik.com/vector-gratis/etiqueta-engomada-caja-vacia-abierta-sobre-fondo-blanco_1308-68243.jpg?semt=ais_hybrid&w=740" style={{ width: "500px", height: "auto" }} alt="No articles" />
           </div>
         )}
       </div>

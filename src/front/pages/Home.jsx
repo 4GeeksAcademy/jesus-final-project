@@ -213,7 +213,7 @@ export const Home = () => {
 									<Link
 										to={`/articulos/${item.category}`}
 										className="mb-5 categoriasHomeCarusel"
-										style={{ display: 'block', cursor: 'pointer' }}
+										style={{ display: 'block', cursor: 'pointer', color: 'inherit', textDecoration: 'none' }}
 									>
 										Explora la sección de {item.title.toLowerCase()}
 									</Link>
