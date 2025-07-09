@@ -58,6 +58,28 @@ export const TruekeDetalle = () => {
     fetchTrueke();
   }, [navigate, truekeId]);
 
+  const cambiarEstadoTrueke = async (truekeId) => {
+    try {
+      const response = await fetch(`${backendUrl}/api/trueke-terminado/${truekeId}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Estado cambiado:", data);
+
+      } else {
+        const errorData = await response.json();
+        console.error("Error al cambiar estado:", errorData);
+      }
+    } catch (error) {
+      console.error("Error de red:", error);
+    }
+  };
   // Eliminar trueke
   const handleEliminarTrueke = async () => {
     const { isConfirmed } = await Swal.fire({
@@ -145,6 +167,7 @@ export const TruekeDetalle = () => {
       setPuntaje('');
       setComentario('');
       setShowModal(false);
+      cambiarEstadoTrueke();
     } catch (error) {
       setError(error.message || "No se pudo enviar la review.");
     }

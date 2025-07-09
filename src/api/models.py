@@ -147,7 +147,7 @@ class TransaccionTrueke(db.Model):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     estado_transaccion: Mapped[str] = mapped_column(Enum(
-        'aceptado', 'rechazado', 'pendiente', name='estado_transaccion_enum'), nullable=False, default='pendiente')
+        'aceptado', 'terminado', 'pendiente', name='estado_transaccion_enum'), nullable=False, default='pendiente')
 
     articulo_propietario_id: Mapped[int] = mapped_column(
         ForeignKey('articulo.id'), nullable=False)

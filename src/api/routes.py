@@ -644,6 +644,54 @@ def eliminar_trueke(id):
         return jsonify({'error': str(e)}), 500
 
 
+@api.route('/truekes/<int:id>', methods=['PUT'])
+@jwt_required()
+def editar_estado_trueke(id):
+    transaccion = TransaccionTrueke.query.get(id)
+    if not transaccion:
+        return jsonify({'error': 'Transacción no encontrada'}), 404
+
+    transaccion.estado_transaccion = "aceptado"
+
+    db.session.commit()
+
+    return jsonify({'msg': 'Trueke aceptado correctamente'}), 200
+
+
+@api.route('/trueke-terminado/<int:id>', methods=['PUT'])
+@jwt_required()
+def editar_estado_trueke(id):
+    transaccion = TransaccionTrueke.query.get(id)
+    if not transaccion:
+        return jsonify({'error': 'Transacción no encontrada'}), 404
+
+    transaccion.estado_transaccion = "terminado"
+
+    db.session.commit()
+
+    return jsonify({'msg': 'Trueke aceptado correctamente'}), 200
+
+
+def eliminar_trueke(id):
+    try:
+        transaccion = TransaccionTrueke.query.get(id)
+
+        if not transaccion:
+            return jsonify({'error': 'Transacción no encontrada'}), 404
+
+        db.session.delete(transaccion)
+        db.session.commit()
+
+        return jsonify({
+            'mensaje': 'Transacción eliminada correctamente',
+            'id': id
+        }), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
+
 @api.route('/truekes/historial/<int:user_id>', methods=['GET'])
 @jwt_required()
 def historial_truekes_usuario(user_id):

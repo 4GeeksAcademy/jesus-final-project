@@ -68,6 +68,7 @@ export const Truekes = () => {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 await aceptarTrueke(id);
+                await cambiarEstadoTrueke(id)
                 Swal.fire('¡Aceptado!', 'Se ha notificado al usuario.', 'success');
             }
             else {
@@ -77,23 +78,6 @@ export const Truekes = () => {
     };
     const aceptarTrueke = async (id) => {
         try {
-            const response = await fetch(`${backendUrl}/api/aceptar-trueke/${id}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                setError(data.msg || "Error al aceptar el trueke");
-                console.error("Error al aceptar el trueke:", data);
-                return;
-            }
-
-            setEstadoTrueke("aceptado");
 
             const notifyResponse = await fetch(`${backendUrl}/notificar-interesado`, {
                 method: 'POST',
@@ -112,6 +96,30 @@ export const Truekes = () => {
         } catch (error) {
             console.error("Error de red al aceptar trueke o enviar notificación:", error);
             setError("Error de red al aceptar el trueke o enviar notificación");
+        }
+    };
+
+
+    const cambiarEstadoTrueke = async (id) => {
+        try {
+            const response = await fetch(`${backendUrl}/api/truekes/${id}`, {
+                method: "PUT",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log("Estado cambiado:", data);
+
+            } else {
+                const errorData = await response.json();
+                console.error("Error al cambiar estado:", errorData);
+            }
+        } catch (error) {
+            console.error("Error de red:", error);
         }
     };
 
@@ -247,6 +255,13 @@ export const Truekes = () => {
                                             onClick={() => handleVerTrueke(trueke.id)}
                                         >
                                             Detalles
+                                        </button>
+                                    ) : trueke.estado !== "pendiente" ? (
+                                        <button
+                                            className="btn btn-sm btn-outline-success"
+                                            onClick={() => handleVerTrueke(trueke.id)}
+                                        >
+                                            Ver Trueke
                                         </button>
                                     ) : (
                                         <button
