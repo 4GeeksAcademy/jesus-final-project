@@ -22,7 +22,7 @@ export const Home = () => {
 				setLoading(true);
 
 				// Fetch artículos
-				const articulosResponse = await fetch(`${backendUrl}/api/articulos`);
+				const articulosResponse = await fetch(`${backendUrl}api/articulos`);
 				if (articulosResponse.ok) {
 					const articulosData = await articulosResponse.json();
 					setArticulos(
@@ -33,7 +33,7 @@ export const Home = () => {
 				}
 
 				// Fetch ratings
-				const ratingResponse = await fetch(`${backendUrl}/api/rating`);
+				const ratingResponse = await fetch(`${backendUrl}api/rating`);
 				if (ratingResponse.ok) {
 					const ratingData = await ratingResponse.json();
 					setRating(ratingData.slice(0, 3));
@@ -107,74 +107,101 @@ export const Home = () => {
 				</div>
 			</div>
 
-			{/* Últimos Artículos */}
-			<div className="containerHome mt-5 pb-0">
-				<h4>Últimos Artículos</h4>
-			</div>
-			<div className="containerHome">
-				{articulos.map((articulo) => (
-					<motion.div
-						key={articulo.id}
-						className="card"
-						variants={cardVariants}
-						initial="hidden"
-						animate="visible"
-						whileHover={{ scale: 1.03 }}
-						style={styles.card}
-					>
-						{/* Usamos Link en lugar de onClick */}
-						<Link to={`/articulo/${articulo.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-							<img
-								src={articulo.img}
-								alt={articulo.titulo}
-								style={styles.image}
-								onError={(e) => {
-									e.target.src = 'https://via.placeholder.com/300x200?text=Imagen+no+disponible';
-								}}
-							/>
-							<div style={styles.content}>
-								<div style={styles.titleContainer} className="d-flex justify-content-center">
-									<h3 style={styles.title}>{articulo.titulo}</h3>
-								</div>
-								<div className="d-flex justify-content-center">
-									<p style={styles.subtitle}>
-										<strong>Estado:</strong> {articulo.estado}
-									</p>
-								</div>
-							</div>
-						</Link>
-					</motion.div>
-				))}
-			</div>
 
-			{/* Usuarios mejor puntuados */}
-			<div className="pb-0 mt-5">
-				<h4 className="textoRating">Usuarios mejores puntuados</h4>
-			</div>
-			<div className="containerHome2 mb-5">
-				{rating.map((usuario) => (
-					<motion.div
-						key={usuario.usuario_id}
-						className="card2"
-						variants={cardVariants}
-						initial="hidden"
-						animate="visible"
-						whileHover={{ scale: 1.03 }}
-						style={styles.card2}
-					>
-						<div style={styles.content}>
-							<div style={styles.titleContainer} className="d-flex justify-content-center">
-								<h3 style={styles.title}>{usuario.nombre_de_usuario}</h3>
-							</div>
-							<div className="d-flex justify-content-center">
-								<p style={styles.subtitle2}>
-									<strong>Rating promedio:</strong> {usuario.promedio_puntuacion} {renderStars(usuario.promedio_puntuacion)}
-								</p>
-							</div>
-						</div>
-					</motion.div>
-				))}
-			</div>
+			{articulos.length > 0 ? (
+				<>
+					<div className="containerHome mt-5 pb-0">
+						<h4>Últimos Artículos</h4>
+					</div>
+					<div className="containerHome">
+						{articulos.map((articulo) => (
+							<motion.div
+								key={articulo.id}
+								className="card"
+								variants={cardVariants}
+								initial="hidden"
+								animate="visible"
+								whileHover={{ scale: 1.03 }}
+								style={styles.card}
+							>
+								<Link
+									to={`/articulo/${articulo.id}`}
+									style={{ textDecoration: 'none', color: 'inherit' }}
+								>
+									<img
+										src={articulo.img}
+										alt={articulo.titulo}
+										style={styles.image}
+										onError={(e) => {
+											e.target.src =
+												'https://via.placeholder.com/300x200?text=Imagen+no+disponible';
+										}}
+									/>
+									<div style={styles.content}>
+										<div
+											style={styles.titleContainer}
+											className="d-flex justify-content-center"
+										>
+											<h3 style={styles.title}>{articulo.titulo}</h3>
+										</div>
+										<div className="d-flex justify-content-center">
+											<p style={styles.subtitle}>
+												<strong>Estado:</strong> {articulo.estado}
+											</p>
+										</div>
+									</div>
+								</Link>
+							</motion.div>
+						))}
+					</div>
+				</>
+			) : (
+				<div className="containerHome mt-5 pb-0">
+					<h4>Aún no hay artículos publicados</h4>
+				</div>
+			)}
+
+
+			{rating.length > 0 ? (
+				<>
+					<div className="pb-0 mt-5">
+						<h4 className="textoRating">Usuarios mejores puntuados</h4>
+					</div>
+					<div className="containerHome2 mb-5">
+						{rating.map((usuario) => (
+							<motion.div
+								key={usuario.usuario_id}
+								className="card2"
+								variants={cardVariants}
+								initial="hidden"
+								animate="visible"
+								whileHover={{ scale: 1.03 }}
+								style={styles.card2}
+							>
+								<div style={styles.content}>
+									<div
+										style={styles.titleContainer}
+										className="d-flex justify-content-center"
+									>
+										<h3 style={styles.title}>{usuario.nombre_de_usuario}</h3>
+									</div>
+									<div className="d-flex justify-content-center">
+										<p style={styles.subtitle2}>
+											<strong>Rating promedio:</strong> {usuario.promedio_puntuacion}{' '}
+											{renderStars(usuario.promedio_puntuacion)}
+										</p>
+									</div>
+								</div>
+							</motion.div>
+						))}
+					</div>
+				</>
+			) : (
+				<div className="pb-0 mt-5">
+					<h4 className="textoRating">Aún no hay usuarios puntuados</h4>
+				</div>
+			)}
+
 
 			{/* Carrusel de categorías */}
 			<div className="bg-carousel">

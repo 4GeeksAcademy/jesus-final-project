@@ -48,7 +48,7 @@ export const MisPublicaciones = () => {
           return;
         }
 
-        const response = await fetch(`${backendUrl}/api/mis-publicaciones`, {
+        const response = await fetch(`${backendUrl}api/mis-publicaciones`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -102,7 +102,7 @@ export const MisPublicaciones = () => {
         img: datosEditados.img || articuloAEditar.img
       };
       const response = await fetch(
-        `${backendUrl}/api/editar-datos-articulo/${articuloAEditar.id}`,
+        `${backendUrl}api/editar-datos-articulo/${articuloAEditar.id}`,
         {
           method: "PUT",
           headers: {
@@ -153,7 +153,7 @@ export const MisPublicaciones = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `${backendUrl}/api/eliminar-articulo/${id}`,
+        `${backendUrl}api/eliminar-articulo/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -248,91 +248,91 @@ export const MisPublicaciones = () => {
         </div>
       ) : (
         <div>
-        <div className="d-flex justify-content-between align-items-center mb-4">
-          <h2>Mis Publicaciones</h2>
-          <button
-            className="btn btn-primary"
-            onClick={() => navigate('/publicar-articulo')}
-          >
-            <i className="bi bi-plus-circle me-2"></i>
-            Nueva Publicación
-          </button>
-           </div>
-        
-        <div className="list-group">
-          {publicaciones.map((publicacion) => (
-            <motion.div
-              key={publicacion.id}
-              className="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-              style={{ cursor: "pointer" }}
-              whileHover={{ scale: 1.01 }}
-              transition={{ type: "spring", stiffness: 400, damping: 10 }}
-              onClick={() => navigate(`/articulo/${publicacion.id}`)}
+          <div className="d-flex justify-content-between align-items-center mb-4">
+            <h2>Mis Publicaciones</h2>
+            <button
+              className="btn btn-primary"
+              onClick={() => navigate('/publicar-articulo')}
             >
-              <div className="d-flex align-items-center flex-grow-1">
-                <img
-                  src={publicacion.img || "/placeholder-item.png"}
-                  alt={publicacion.titulo}
-                  className="me-3 rounded"
-                  style={{ width: "100px", height: "100px", objectFit: "cover" }}
-                  onError={(e) => {
-                    e.target.src = "/placeholder-item.png";
-                  }}
-                />
-                <div className="flex-grow-1">
-                  <div className="d-flex justify-content-between align-items-start">
-                    <h5 className="mb-1">{publicacion.titulo}</h5>
-                    <span
-                      className={`badge rounded-pill ${publicacion.estado === "nuevo"
-                        ? "bg-success"
-                        : publicacion.estado === "como_nuevo"
-                          ? "bg-primary"
-                          : publicacion.estado === "bueno"
-                            ? "bg-info"
-                            : "bg-warning"
-                        }`}
+              <i className="bi bi-plus-circle me-2"></i>
+              Nueva Publicación
+            </button>
+          </div>
+
+          <div className="list-group">
+            {publicaciones.map((publicacion) => (
+              <motion.div
+                key={publicacion.id}
+                className="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                style={{ cursor: "pointer" }}
+                whileHover={{ scale: 1.01 }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                onClick={() => navigate(`/articulo/${publicacion.id}`)}
+              >
+                <div className="d-flex align-items-center flex-grow-1">
+                  <img
+                    src={publicacion.img || "/placeholder-item.png"}
+                    alt={publicacion.titulo}
+                    className="me-3 rounded"
+                    style={{ width: "100px", height: "100px", objectFit: "cover" }}
+                    onError={(e) => {
+                      e.target.src = "/placeholder-item.png";
+                    }}
+                  />
+                  <div className="flex-grow-1">
+                    <div className="d-flex justify-content-between align-items-start">
+                      <h5 className="mb-1">{publicacion.titulo}</h5>
+                      <span
+                        className={`badge rounded-pill ${publicacion.estado === "nuevo"
+                          ? "bg-success"
+                          : publicacion.estado === "como_nuevo"
+                            ? "bg-primary"
+                            : publicacion.estado === "bueno"
+                              ? "bg-info"
+                              : "bg-warning"
+                          }`}
+                      >
+                        {publicacion.estado?.replace("_", " ")}
+                      </span>
+                    </div>
+                    <p className="mb-1 text-muted">
+                      {publicacion.caracteristicas?.substring(0, 100)}...
+                    </p>
+                    <div className="d-flex gap-2 flex-wrap">
+                      <small className="text-muted">
+                        <strong>Categoría:</strong> {publicacion.categoria}
+                      </small>
+                      <small className="text-muted">
+                        <strong>Modelo:</strong>{" "}
+                        {publicacion.modelo || "No especificado"}
+                      </small>
+                    </div>
+                  </div>
+                </div>
+                <div className="d-flex flex-column align-items-end ms-3">
+                  <div className="d-flex gap-2 mb-2">
+                    <button
+                      className="btn btn-sm btn-outline-primary"
+                      onClick={(e) => handleEditarPublicacion(publicacion, e)}
                     >
-                      {publicacion.estado?.replace("_", " ")}
-                    </span>
+                      Editar
+                    </button>
+                    <button
+                      className="btn btn-sm btn-outline-danger"
+                      onClick={(e) => handleEliminarPublicacion(publicacion.id, e)}
+                    >
+                      Eliminar
+                    </button>
                   </div>
-                  <p className="mb-1 text-muted">
-                    {publicacion.caracteristicas?.substring(0, 100)}...
-                  </p>
-                  <div className="d-flex gap-2 flex-wrap">
-                    <small className="text-muted">
-                      <strong>Categoría:</strong> {publicacion.categoria}
-                    </small>
-                    <small className="text-muted">
-                      <strong>Modelo:</strong>{" "}
-                      {publicacion.modelo || "No especificado"}
-                    </small>
-                  </div>
+                  <small className="text-muted">
+                    {publicacion.fecha_publicacion
+                      ? new Date(publicacion.fecha_publicacion).toLocaleDateString()
+                      : "Sin fecha"}
+                  </small>
                 </div>
-              </div>
-              <div className="d-flex flex-column align-items-end ms-3">
-                <div className="d-flex gap-2 mb-2">
-                  <button
-                    className="btn btn-sm btn-outline-primary"
-                    onClick={(e) => handleEditarPublicacion(publicacion, e)}
-                  >
-                    Editar
-                  </button>
-                  <button
-                    className="btn btn-sm btn-outline-danger"
-                    onClick={(e) => handleEliminarPublicacion(publicacion.id, e)}
-                  >
-                    Eliminar
-                  </button>
-                </div>
-                <small className="text-muted">
-                  {publicacion.fecha_publicacion
-                    ? new Date(publicacion.fecha_publicacion).toLocaleDateString()
-                    : "Sin fecha"}
-                </small>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
       )}
 
