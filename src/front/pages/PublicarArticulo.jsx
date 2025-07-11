@@ -2,12 +2,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import Swal from "sweetalert2";
 import { motion } from "framer-motion";
+import { useAuth } from "../components/AuthWrapper";
 
-const backendUrl = import.meta.env.VITE_BACKEND_URL;
 const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
 const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
 export const PublicarArticulo = () => {
+    const { authenticatedRequest } = useAuth();
     const [informacionArticulo, setInformacionArticulo] = useState({
         titulo: '',
         caracteristicas: '',
@@ -142,12 +143,8 @@ export const PublicarArticulo = () => {
         setError(null);
 
         try {
-            const response = await fetch(`${backendUrl}/api/publicar-articulo`, {
+            const response = await authenticatedRequest(`//api/publicar-articulo`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
                 body: JSON.stringify(informacionArticulo)
             });
 

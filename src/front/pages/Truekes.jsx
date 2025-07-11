@@ -2,13 +2,12 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { motion } from "framer-motion";
-
-const backendUrl = import.meta.env.VITE_BACKEND_URL;
+import { useAuth } from "../components/AuthWrapper";
 
 export const Truekes = () => {
     const navigate = useNavigate();
+    const { authenticatedRequest } = useAuth();
     const userId = localStorage.getItem("userId");
-    const token = localStorage.getItem("token");
 
     const [truekes, setTruekes] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -16,29 +15,18 @@ export const Truekes = () => {
 
     useEffect(() => {
         const fetchTruekes = async () => {
-            if (!token || !userId) {
-                console.warn("No hay token o userId en localStorage");
+            if (!userId) {
+                console.warn("No hay userId en localStorage");
                 setLoading(false);
                 return;
             }
 
             try {
-                const response = await fetch(
-                    `${backendUrl}/api/truekes/historial/${userId}`,
-                    {
-                        method: "GET",
-                        headers: {
-                            "Authorization": `Bearer ${token}`,
-                            "Content-Type": "application/json",
-                        },
-                    }
-                );
+                const response = await authenticatedRequest(`/api/truekes/historial/${userId}`);
 
                 const data = await response.json();
                 if (response.ok) {
-
                     setTruekes(data.historial || []);
-
                 } else {
                     setError(data.msg || "Error al obtener truekes");
                     console.error("Error al obtener truekes:", data);
@@ -49,11 +37,10 @@ export const Truekes = () => {
             } finally {
                 setLoading(false);
             }
-
         };
 
         fetchTruekes();
-    }, [token, userId]);
+    }, [userId]);
 
     const handleVerTrueke = (id) => {
         navigate(`/trueke-detalle/${id}`);
@@ -80,13 +67,8 @@ export const Truekes = () => {
     };
     const aceptarTrueke = async (id) => {
         try {
-
-            const notifyResponse = await fetch(`${backendUrl}/notificar-interesado`, {
+            const notifyResponse = await authenticatedRequest('/api/notificar-interesado', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
                 body: JSON.stringify({ trueke_id: id })
             });
 
@@ -101,21 +83,15 @@ export const Truekes = () => {
         }
     };
 
-
     const cambiarEstadoTrueke = async (id) => {
         try {
-            const response = await fetch(`${backendUrl}/api/truekes/${id}`, {
-                method: "PUT",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                }
+            const response = await authenticatedRequest(`/api/truekes/${id}`, {
+                method: "PUT"
             });
 
             if (response.ok) {
                 const data = await response.json();
                 console.log("Estado cambiado:", data);
-
             } else {
                 const errorData = await response.json();
                 console.error("Error al cambiar estado:", errorData);
@@ -142,12 +118,8 @@ export const Truekes = () => {
         if (!isConfirmed) return;
 
         try {
-            const response = await fetch(`${backendUrl}/api/truekes/${id}`, {
-                method: "DELETE",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                },
+            const response = await authenticatedRequest(`/api/truekes/${id}`, {
+                method: "DELETE"
             });
 
             if (!response.ok) {

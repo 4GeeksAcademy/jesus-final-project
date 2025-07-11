@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { motion } from "framer-motion";
+import { useAuth } from "../components/AuthWrapper";
 
-const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 export const MisPublicaciones = () => {
   const navigate = useNavigate();
+  const { authenticatedRequest } = useAuth();
   const [publicaciones, setPublicaciones] = useState([]);
   const [loading, setLoading] = useState(true);
   const [articuloAEditar, setArticuloAEditar] = useState(null);
@@ -48,13 +49,7 @@ export const MisPublicaciones = () => {
           return;
         }
 
-        const response = await fetch(`${backendUrl}api/mis-publicaciones`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
+        const response = await authenticatedRequest(`/api/mis-publicaciones`);
 
         if (!response.ok) {
           const errorData = await response.json();

@@ -5,14 +5,15 @@ import Swal from "sweetalert2";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import { useParams } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useAuth } from "../components/AuthWrapper";
 
-const backendUrl = import.meta.env.VITE_BACKEND_URL;
 const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
 const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
 export const DatosPersonales = () => {
-  const { dispatch } = useGlobalReducer();
   const navigate = useNavigate();
+  const { authenticatedRequest } = useAuth();
+  const { dispatch } = useGlobalReducer();
   const { usuarioId } = useParams();
   const [userRating, setUserRating] = useState(null);
   const [favoritos, setFavoritos] = useState(null)
@@ -36,7 +37,7 @@ export const DatosPersonales = () => {
 
   const fetchUserRating = async () => {
     try {
-      const response = await fetch(`${backendUrl}api/rating/${usuarioId}`);
+      const response = await authenticatedRequest(`/api/rating/${usuarioId}`);
 
       if (response.ok) {
         const data = await response.json();
@@ -66,11 +67,7 @@ export const DatosPersonales = () => {
     }
 
     try {
-      const response = await fetch(`${backendUrl}api/favoritos`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
+      const response = await authenticatedRequest(`/api/favoritos`);
 
       const data = await response.json();
 
@@ -99,12 +96,7 @@ export const DatosPersonales = () => {
       if (!token) return;
 
       try {
-        const response = await fetch(`${backendUrl}api/datos-personales`, {
-          method: "GET",
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
+        const response = await authenticatedRequest(`/api/datos-personales`);
 
         if (response.ok) {
           const data = await response.json();
@@ -198,12 +190,8 @@ export const DatosPersonales = () => {
     if (!token) return;
 
     try {
-      const response = await fetch(`${backendUrl}api/datos-personales`, {
+      const response = await authenticatedRequest(`/api/datos-personales`, {
         method: "PUT",
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
         body: JSON.stringify({
           nombre_completo: userData.nombre_completo,
           telefono: userData.telefono,
@@ -225,12 +213,7 @@ export const DatosPersonales = () => {
         setEditing(false);
 
 
-        const fetchResponse = await fetch(`${backendUrl}api/datos-personales`, {
-          method: "GET",
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
+        const fetchResponse = await authenticatedRequest(`/api/datos-personales`);
 
         if (fetchResponse.ok) {
           const updatedData = await fetchResponse.json();
@@ -274,11 +257,8 @@ export const DatosPersonales = () => {
   const borrarCuentaAPI = async () => {
     const token = localStorage.getItem("token");
     try {
-      const response = await fetch(`${backendUrl}api/borrar-cuenta`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
+      const response = await authenticatedRequest(`/api/borrar-cuenta`, {
+        method: 'DELETE'
       });
 
       const data = await response.json();
