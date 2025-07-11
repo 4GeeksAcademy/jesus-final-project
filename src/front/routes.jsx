@@ -23,6 +23,7 @@ import PoliticaPrivacidad from "./pages/PoliticaPrivacidad";
 import { ComoTruekear } from "./pages/ComoTruekear";
 import { MisPublicaciones } from "./pages/MisPublicaciones";
 import { Favoritos } from "./pages/Favoritos";
+import { DatosUsuario } from "./pages/DatosUsuario";
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -39,6 +40,7 @@ export const router = createBrowserRouter(
       <Route path="/" element={<Home />} />
       <Route path="/single/:theId" element={<Single />} />  {/* Dynamic route for single items */}
       <Route path="/datospersonales/:usuarioId" element={<DatosPersonales />} />
+      <Route path="/usuario/:usuarioId" element={<DatosUsuario />} />
       <Route path="/identificate" element={<LoginRegistro />} />
       <Route path="/recuperar-contrasena/:codigoUUID" element={<CambiarContraseña />} />
       <Route path="/publicar-articulo" element={<PublicarArticulo />} />

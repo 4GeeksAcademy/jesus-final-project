@@ -226,10 +226,9 @@ def mypage(codigo_uuid):
     if not registro:
         return jsonify({'msg': 'Código inválido'}), 404
 
-    # CONVERSIÓN SEGURA
+
     fecha_exp = registro.fecha_expedicion
     if fecha_exp.tzinfo is None:
-        # Si es naive, asumir que es UTC y convertir a aware
         fecha_exp = fecha_exp.replace(tzinfo=timezone.utc)
 
     if fecha_exp < datetime.now(timezone.utc):

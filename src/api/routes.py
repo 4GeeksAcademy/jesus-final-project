@@ -65,6 +65,43 @@ def borrar_cuenta():
 #  EDITS
 
 
+@api.route('/datos-usuario/<int:id>', methods=['GET'])
+def ver_datos_usuario(id):
+    usuario = Usuario.query.get(id)
+
+    if not usuario:
+        return jsonify({"msg": "Usuario no encontrado"}), 404
+
+    publicaciones = [
+        {
+            "id": articulo.id,
+            "titulo": articulo.titulo,
+            "img": articulo.img
+        }
+        for articulo in usuario.articulos
+    ]
+
+    ratings = usuario.ratings_recibidos
+    cantidad_ratings = len(ratings)
+    if cantidad_ratings > 0:
+        promedio_rating = round(
+            sum(r.puntuacion for r in ratings) / cantidad_ratings, 2)
+    else:
+        promedio_rating = 0
+
+    return jsonify({
+        "id": usuario.id,
+        "email": usuario.email,
+        "nombre_de_usuario": usuario.nombre_de_usuario,
+        "fecha_registro": usuario.fecha_registro.isoformat(),
+        "publicaciones": publicaciones,
+        "userRating": {
+            "cantidad_ratings": cantidad_ratings,
+            "promedio_rating": promedio_rating
+        }
+    }), 200
+
+
 @api.route('/datos-personales', methods=['GET', 'POST', 'PUT'])
 @jwt_required()
 def editar_datos_personales():
@@ -217,19 +254,19 @@ def obtener_articulos_usuario():
 def obtener_todos_los_ratings():
     ratings = (
         db.session.query(
-            Rating.usuario_id,
+            Rating.usuario_destino_id,
             Usuario.nombre_de_usuario.label('nombre_de_usuario'),
             func.avg(Rating.puntuacion).label('promedio_puntuacion')
         )
-        .join(Usuario, Usuario.id == Rating.usuario_id)
-        .group_by(Rating.usuario_id, Usuario.nombre_de_usuario)
+        .join(Usuario, Usuario.id == Rating.usuario_destino_id)
+        .group_by(Rating.usuario_destino_id, Usuario.nombre_de_usuario)
         .order_by(func.avg(Rating.puntuacion).desc())
         .all()
     )
 
     rating_data = [
         {
-            'usuario_id': r.usuario_id,
+            'usuario_destino_id': r.usuario_destino_id,
             'nombre_de_usuario': r.nombre_de_usuario,
             'promedio_puntuacion': round(r.promedio_puntuacion, 2)
         }
@@ -608,6 +645,7 @@ def crear_trueke():
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
+
 
 @api.route('/truekes/<int:id>', methods=['DELETE'])
 def eliminar_trueke(id):

@@ -385,9 +385,9 @@ export const Articulo = () => {
           comentarios: textarea.value.trim()
         };
       }
-    }); 
+    });
     if (!formValues) {
-    return false;
+      return false;
     }
     if (formValues) {
       console.log('Artículo seleccionado ID:', formValues.articuloSeleccionado);
@@ -395,7 +395,7 @@ export const Articulo = () => {
     }
 
     try {
-      
+
       const response = await fetch(`${backendUrl}/api/truekes`, {
         method: "POST",
         headers: {
@@ -433,7 +433,7 @@ export const Articulo = () => {
         icon: "error",
       });
     }
-    
+
   };
 
   useEffect(() => {
@@ -608,10 +608,18 @@ export const Articulo = () => {
                       </button>
                     </>
                   ) : (
-                    <button className="btn btn-primary" onClick={crearTrueke} disabled={loading}>
+                    <>                    <button className="btn btn-primary" onClick={crearTrueke} disabled={loading}>
                       <i className="bi bi-arrow-left-right me-2"></i>
                       {loading ? "Cargando..." : "Crear Trueke"}
                     </button>
+                      <button className="btn btn-success" onClick={() => {
+                        navigate(`/usuario/${datosArticulo.usuario_id}`)
+                      }} disabled={loading}>
+
+                        {loading ? "Cargando..." : "Datos del dueño"}
+                      </button>
+                    </>
+
                   )}
                 </div>
               ) : (

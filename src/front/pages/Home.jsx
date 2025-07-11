@@ -170,13 +170,14 @@ export const Home = () => {
 					<div className="containerHome2 mb-5">
 						{rating.map((usuario) => (
 							<motion.div
-								key={usuario.usuario_id}
+								key={usuario.usuario_destino_id}
 								className="card2"
 								variants={cardVariants}
 								initial="hidden"
 								animate="visible"
 								whileHover={{ scale: 1.03 }}
 								style={styles.card2}
+								onClick={() => navigate(`/usuario/${usuario.usuario_destino_id}`)}
 							>
 								<div style={styles.content}>
 									<div
@@ -195,6 +196,7 @@ export const Home = () => {
 							</motion.div>
 						))}
 					</div>
+
 				</>
 			) : (
 				<div className="pb-0 my-5">
