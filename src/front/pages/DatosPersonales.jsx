@@ -284,34 +284,34 @@ export const DatosPersonales = () => {
       const data = await response.json();
 
       if (response.status === 409 && data.error_type === "trueke_en_proceso") {
-              const esPropietario = data.es_ofertante;
-              const truekeEstado = data.trueke_estado
-                .replace(/_/g, " ");
-      
-              return Swal.fire({
-                title: "Trueke en proceso",
-                html: `
+        const esPropietario = data.es_ofertante;
+        const truekeEstado = data.trueke_estado
+          .replace(/_/g, " ");
+
+        return Swal.fire({
+          title: "Trueke en proceso",
+          html: `
                 <p>${data.msg}</p>
                 <p><strong>Estado:</strong> ${truekeEstado}</p>
                 <p><strong>Rol:</strong> ${esPropietario ? "Propietario" : "Receptor"
-                  }</p>
+            }</p>
               `,
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: "Ir al trueke",
-                denyButtonText: "Cancelar trueke",
-                cancelButtonText: "Cerrar",
-              }).then((result) => {
-                if (result.isConfirmed) {
-      
-                  navigate(`/trueke-detalle/${data.trueke_id}`);
-                } else if (result.isDenied) {
-      
-      
-                  Swal.fire("Trueke cancelado", "Has cancelado el trueke.", "success");
-                }
-              });
-            }
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Ir al trueke",
+          denyButtonText: "Cancelar trueke",
+          cancelButtonText: "Cerrar",
+        }).then((result) => {
+          if (result.isConfirmed) {
+
+            navigate(`/trueke-detalle/${data.trueke_id}`);
+          } else if (result.isDenied) {
+
+
+            Swal.fire("Trueke cancelado", "Has cancelado el trueke.", "success");
+          }
+        });
+      }
 
       if (response.ok) {
         localStorage.removeItem('token');
@@ -544,7 +544,7 @@ export const DatosPersonales = () => {
               <div id="favoritosCarousel" className="carousel slide" data-bs-ride="carousel">
                 <div className="carousel-inner">
                   {!favoritos || favoritos.length === 0 ? (
-                    <div className="text-center mt-3">
+                    <div className="text-center mt-5">
                       <p>Aún no tienes ningún favorito asignado</p>
                     </div>
                   ) : (
@@ -616,7 +616,7 @@ export const DatosPersonales = () => {
 
 
               <motion.div
-                className="card2 mt-5"
+                className="card2 mt-4"
                 variants={cardVariants}
                 initial="hidden"
                 animate="visible"
