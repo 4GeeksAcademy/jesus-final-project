@@ -3,11 +3,12 @@ import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import { motion } from "framer-motion";
 import { Button, Modal, Alert, Form } from "react-bootstrap";
+import { useAuth } from "../components/AuthWrapper";
 
-const backendUrl = import.meta.env.VITE_BACKEND_URL.replace(/\/+$/, '');
 
 export const TruekeDetalle = () => {
   const navigate = useNavigate();
+  const { authenticatedRequest } = useAuth();
   const { truekeId } = useParams();
   const [trueke, setTrueke] = useState(null);
   const [estado, setEstado] = useState("");
@@ -29,13 +30,7 @@ export const TruekeDetalle = () => {
           return;
         }
 
-        const response = await fetch(`${backendUrl}/api/trueke-detalle/${truekeId}`, {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        });
+        const response = await authenticatedRequest(`//api/trueke-detalle/${truekeId}`);
 
         if (!response.ok) {
           const errorData = await response.json();
@@ -65,12 +60,8 @@ export const TruekeDetalle = () => {
   const cambiarEstadoTrueke = async () => {
     const token = localStorage.getItem("token");
     try {
-      const response = await fetch(`${backendUrl}/api/trueke-terminado/${truekeId}`, {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        }
+      const response = await authenticatedRequest(`//api/trueke-terminado/${truekeId}`, {
+        method: "PUT"
       });
 
       if (response.ok) {
@@ -107,12 +98,8 @@ export const TruekeDetalle = () => {
         return;
       }
 
-      const response = await fetch(`${backendUrl}/api/truekes/${truekeId}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
+      const response = await authenticatedRequest(`//api/truekes/${truekeId}`, {
+        method: "DELETE"
       });
 
       if (!response.ok) {
@@ -151,12 +138,8 @@ export const TruekeDetalle = () => {
     const token = localStorage.getItem("token");
 
     try {
-      const response = await fetch(`${backendUrl}/api/rating-review/${truekeId}`, {
+      const response = await authenticatedRequest(`//api/rating-review/${truekeId}`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
         body: JSON.stringify({
           puntaje: parseInt(puntaje),
           comentario: comentario,

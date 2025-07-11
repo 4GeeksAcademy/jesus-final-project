@@ -1,5 +1,3 @@
-// Import necessary components and functions from react-router-dom.
-
 import {
   createBrowserRouter,
   createRoutesFromElements,
@@ -23,36 +21,33 @@ import PoliticaPrivacidad from "./pages/PoliticaPrivacidad";
 import { ComoTruekear } from "./pages/ComoTruekear";
 import { MisPublicaciones } from "./pages/MisPublicaciones";
 import { Favoritos } from "./pages/Favoritos";
+import { ProtectedRoute } from "./components/ProtectedRoute"; // Añadir esta línea
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
-    // CreateRoutesFromElements function allows you to build route elements declaratively.
-    // Create your routes here, if you want to keep the Navbar and Footer in all views, add your new routes inside the containing Route.
-    // Root, on the contrary, create a sister Route, if you have doubts, try it!
-    // Note: keep in mind that errorElement will be the default page when you don't get a route, customize that page to make your project more attractive.
-    // Note: The child paths of the Layout element replace the Outlet component with the elements contained in the "element" attribute of these child paths.
-
-    // Root Route: All navigation will start from here.
     <Route path="/" element={<Layout />} errorElement={<h1>Not found!</h1>} >
-
-      {/* Nested Routes: Defines sub-routes within the BaseHome component. */}
+      
+      {/* RUTAS PÚBLICAS (sin autenticación) */}
       <Route path="/" element={<Home />} />
-      <Route path="/single/:theId" element={<Single />} />  {/* Dynamic route for single items */}
-      <Route path="/datospersonales/:usuarioId" element={<DatosPersonales />} />
+      <Route path="/single/:theId" element={<Single />} />
       <Route path="/identificate" element={<LoginRegistro />} />
       <Route path="/recuperar-contrasena/:codigoUUID" element={<CambiarContraseña />} />
-      <Route path="/publicar-articulo" element={<PublicarArticulo />} />
       <Route path="/articulos/:categorias" element={<ArticulosXCategoria />} />
       <Route path="/articulo/:id" element={<Articulo />} />
       <Route path="/como-truekear" element={<ComoTruekear />} />
       <Route path="/ayuda-&-soporte" element={<AyudaYSoporte />} />
-      <Route path="/trueke-detalle/:truekeId" element={<TruekeDetalle />} />
-      <Route path="/truekes/historial/:usuarioId" element={<Truekes />} />
-      <Route path="/mis-publicaciones/:usuarioId" element={<MisPublicaciones />} />
       <Route path="/sobre-nosotros" element={<SobreNosotros />} />
       <Route path="/Contacto" element={<Contacto />} />
       <Route path="/politica-privacidad" element={<PoliticaPrivacidad />} />
-      <Route path="/favoritos/:usuarioId" element={<Favoritos />} />
+
+      {/* RUTAS PROTEGIDAS (requieren autenticación) */}
+      <Route path="/truekes/historial/:usuarioId" element={<ProtectedRoute><Truekes /></ProtectedRoute>} />
+      <Route path="/datospersonales/:usuarioId" element={<ProtectedRoute><DatosPersonales /></ProtectedRoute>} />
+      <Route path="/publicar-articulo" element={<ProtectedRoute><PublicarArticulo /></ProtectedRoute>} />
+      <Route path="/trueke-detalle/:truekeId" element={<ProtectedRoute><TruekeDetalle /></ProtectedRoute>} />
+      <Route path="/mis-publicaciones/:usuarioId" element={<ProtectedRoute><MisPublicaciones /></ProtectedRoute>} />
+      <Route path="/favoritos/:usuarioId" element={<ProtectedRoute><Favoritos /></ProtectedRoute>} />
+      
     </Route>
   )
 );

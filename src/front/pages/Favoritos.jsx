@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { motion } from "framer-motion";
+import { useAuth } from "../components/AuthWrapper";
 
-const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 export const Favoritos = () => {
     const navigate = useNavigate();
+    const { authenticatedRequest } = useAuth();
     const [favoritos, setFavoritos] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -20,13 +21,7 @@ export const Favoritos = () => {
                     return;
                 }
 
-                const response = await fetch(`${backendUrl}api/favoritos`, {
-                    method: "GET",
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-Type": "application/json",
-                    },
-                });
+                const response = await authenticatedRequest(`/api/favoritos`);
 
                 if (!response.ok) {
                     const errorData = await response.json();
@@ -69,12 +64,8 @@ export const Favoritos = () => {
 
         try {
             const token = localStorage.getItem("token");
-            const response = await fetch(`${backendUrl}api/eliminar-articulos-favoritos/${articuloId}`, {
-                method: "DELETE",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                },
+            const response = await authenticatedRequest(`/api/eliminar-articulos-favoritos/${articuloId}`, {
+                method: "DELETE"
             });
 
             if (!response.ok) {
