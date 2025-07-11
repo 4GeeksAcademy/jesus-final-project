@@ -32,8 +32,7 @@ static_file_dir = os.path.join(os.path.dirname(
 app = Flask(__name__)
 app.url_map.strict_slashes = False
 app.config["JWT_SECRET_KEY"] = "super-secret"
-app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(seconds=5)
-# app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
 app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(hours=12)
 jwt = JWTManager(app)
 

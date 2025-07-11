@@ -142,8 +142,12 @@ body {
 }
 
 .bg-carousel {
+  display: flex;
+  align-items: center;
+  
   background-color: #ffdcc2;
   margin-bottom: 100px;
+  height: 380px;
 }
 
 .carousel-item h3 {

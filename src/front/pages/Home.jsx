@@ -207,7 +207,7 @@ export const Home = () => {
 
 			{/* Carrusel de categorías */}
 			<div className="bg-carousel">
-				<div id="carouselExampleCaptions" className="carousel slide" data-bs-ride="carousel" style={{ maxWidth: '200px', margin: 'auto' }}>
+				<div id="carouselExampleCaptions" className="carousel slide" data-bs-ride="carousel" style={{ width: '280px', margin: 'auto' }}>
 					<div className="carousel-indicators">
 						{[0, 1, 2, 3, 4, 5].map((index) => (
 							<button
@@ -237,8 +237,8 @@ export const Home = () => {
 									alt={`Icono ${item.title}`}
 									style={{ maxHeight: '200px', objectFit: 'cover' }}
 								/>
-								<div className="text-center mt-2">
-									<h5>{item.title}</h5>
+								<div className="text-center mt-4">
+									<h4>{item.title}</h4>
 									<Link
 										to={`/articulos/${item.category}`}
 										className="mb-5 categoriasHomeCarusel"
