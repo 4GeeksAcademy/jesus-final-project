@@ -21,8 +21,7 @@ from flask_bcrypt import Bcrypt
 from flask_uuid import FlaskUUID
 import uuid
 from flask_cors import CORS
-frontendUrl = os.getenv('VITE_FRONTEND_URL',
-                        'http://localhost:3001/')  # Valor por defecto
+frontendUrl = os.getenv('VITE_FRONTEND_URL')  # Valor por defecto
 
 
 # from models import Person
@@ -153,7 +152,7 @@ def enviar_mensaje():
 
     db.session.commit()
 
-    link = f'{frontendUrl}cambiar-contraseña/{nuevo_codigo}'
+    link = f'{frontendUrl}recuperar-contrasena/{nuevo_codigo}'
     logo = f'{frontendUrl}front/assets/img/logo.png'
     msg = Message(
         subject="Hello",
@@ -191,15 +190,14 @@ def notificar_interesado():
         return jsonify({'msg': 'Artículo no encontrado'}), 404
 
     duenio = db.session.query(Usuario).get(articulo.usuario_id)
-    interesado_id = int(get_jwt_identity())
-    interesado = db.session.query(Usuario).get(interesado_id)
+    interesado = db.session.query(Usuario).get(trueke.articulo_receptor_id)
 
-    if not duenio or not interesado:
+    if not interesado or not duenio:
         return jsonify({'msg': 'Usuario no encontrado'}), 404
 
     asunto = f"Interesado en tu artículo '{articulo.titulo}'"
-    destinatario = duenio.email
-
+    destinatario = interesado.email
+    print(destinatario)
     msg = Message(
         subject=asunto,
         sender="Trueketeo@gmail.com",

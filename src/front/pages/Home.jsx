@@ -197,7 +197,7 @@ export const Home = () => {
 					</div>
 				</>
 			) : (
-				<div className="pb-0 mt-5">
+				<div className="pb-0 my-5">
 					<h4 className="textoRating">Aún no hay usuarios puntuados</h4>
 				</div>
 			)}

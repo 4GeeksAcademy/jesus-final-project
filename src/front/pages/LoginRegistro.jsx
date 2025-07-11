@@ -52,7 +52,7 @@ export const LoginRegistro = () => {
           type: "login_success",
           payload: {
             token: data.token,
-            refreshToken: data.refresh_token,
+            refresh_token: data.refresh_token,
             userId: data.userId,
           },
         });
