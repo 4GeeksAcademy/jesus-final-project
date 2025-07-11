@@ -34,7 +34,7 @@ const Contacto = () => {
             <button
               type="button"
               onClick={redirectHome}
-              className="btn btn-primary mt-4"
+              className="btn btn-primary mt-4 px-4 py-3 fs-3"
             >
               Trueketeo
             </button>
