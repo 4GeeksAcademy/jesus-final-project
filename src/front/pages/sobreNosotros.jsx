@@ -40,7 +40,7 @@ const SobreNosotros = () => {
             </div>
             <button
               onClick={goHome}
-              className="btn btn-primary btn-lg mt-4 px-4 py-3 fs-2">
+              className="btn btn-primary btn-lg mt-4 px-4 py-3 fs-4">
               TRUEKETEO
             </button>
           </div>

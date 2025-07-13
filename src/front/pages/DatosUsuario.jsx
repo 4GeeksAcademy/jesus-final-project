@@ -62,11 +62,7 @@ export const DatosUsuario = () => {
     >
       <h2>Datos Personales</h2>
 
-      <div className="mb-3">
-        <label className="form-label fw-bold">E-mail</label>
-        <p className="form-control bg-light">{userData.email}</p>
-      </div>
-
+    
       <div className="mb-3">
         <label className="form-label fw-bold">Nombre de usuario</label>
         <p className="form-control bg-light">{userData.nombre_de_usuario}</p>
@@ -86,9 +82,9 @@ export const DatosUsuario = () => {
               <p>Aún no tienes publicaciones</p>
             </div>
           ) : (
-            publicaciones.map((publi, index) => (
+            publicaciones.map((publicacion, index) => (
               <div
-                key={publi.id}
+                key={publicacion.id}
                 className={`carousel-item ${index === 0 ? "active" : ""}`}
               >
                 <div className="card d-flex flex-column align-items-center shadow-sm mt-4 bg-white rounded">
@@ -96,8 +92,8 @@ export const DatosUsuario = () => {
                     <h5>Publicaciones</h5>
                   </div>
                   <img
-                    src={publi.img ?? ""}
-                    alt={publi.titulo ?? "Imagen publicación"}
+                    src={publicacion.img ?? ""}
+                    alt={publicacion.titulo ?? "Imagen publicación"}
                     className="card-img-top rounded mt-3"
                     style={{
                       width: "auto",
@@ -107,18 +103,18 @@ export const DatosUsuario = () => {
                       cursor: "pointer",
                     }}
                     onClick={() => {
-                      if (publi.id) {
-                        navigate(`/articulo/${publi.id}`);
+                      if (publicacion.id) {
+                        navigate(`/articulo/${publicacion.id}`);
                       }
                     }}
                   />
                   <div className="card-body text-center">
                     <h6
                       className="card-title fw-semibold text-truncate"
-                      title={publi.titulo ?? ""}
+                      title={publicacion.titulo ?? ""}
                       style={{ maxWidth: "160px" }}
                     >
-                      {publi.titulo ?? "Sin título"}
+                      {publicacion.titulo ?? "Sin título"}
                     </h6>
                   </div>
                 </div>

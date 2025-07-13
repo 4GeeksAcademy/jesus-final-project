@@ -6,6 +6,7 @@ import { useAuth } from "../components/AuthWrapper";
 
 
 export const MisPublicaciones = () => {
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
   const navigate = useNavigate();
   const { authenticatedRequest } = useAuth();
   const [publicaciones, setPublicaciones] = useState([]);

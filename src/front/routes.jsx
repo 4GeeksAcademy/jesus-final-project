@@ -31,7 +31,7 @@ export const router = createBrowserRouter(
       {/* RUTAS PÚBLICAS (sin autenticación) */}
       <Route path="/" element={<Home />} />
       <Route path="/single/:theId" element={<Single />} />  {/* Dynamic route for single items */}
-      <Route path="/datospersonales/:usuarioId" element={<DatosPersonales />} />
+      <Route path="/usuario/:usuarioId" element={<DatosUsuario />} />
       <Route path="/identificate" element={<LoginRegistro />} />
       <Route path="/recuperar-contrasena/:codigoUUID" element={<CambiarContraseña />} />
       <Route path="/articulos/:categorias" element={<ArticulosXCategoria />} />

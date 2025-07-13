@@ -169,6 +169,7 @@ export const Navbar = () => {
                                 <option value="deportes">Deportes</option>
                                 <option value="libros">Libros</option>
                                 <option value="juguetes">Juguetes</option>
+                                <option value="otros">Otros</option>
                             </select>
                             <button
                                 onClick={callBusqueda}
