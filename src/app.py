@@ -184,7 +184,7 @@ def enviar_mensaje():
         recipients=[mail_to],
         html=render_template('mensajeMail.html', link=link, logo=logo)
     )
-    #mail.send(msg) no es comtemplado enviar el mensaje en esta version. 
+    mail.send(msg) 
 
     # Testing en Postman
     if os.getenv("FLASK_DEBUG") == "1":
