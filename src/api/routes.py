@@ -38,13 +38,13 @@ def borrar_cuenta():
     trueke_propietario = db.session.query(TransaccionTrueke).filter(
         (TransaccionTrueke.articulo_propietario_id == usuario.id) &
         (TransaccionTrueke.estado_transaccion.in_(
-            ['pendiente', 'aceptado', 'rechazado']))
+            ['pendiente', 'aceptado', 'terminado']))
     ).first()
 
     trueke_receptor = db.session.query(TransaccionTrueke).filter(
         (TransaccionTrueke.articulo_receptor_id == usuario.id) &
         (TransaccionTrueke.estado_transaccion.in_(
-            ['pendiente', 'aceptado', 'rechazado']))
+            ['pendiente', 'aceptado', 'terminado']))
     ).first()
 
     trueke_activo = trueke_propietario or trueke_receptor
@@ -425,13 +425,13 @@ def eliminar_articulo(articulo_id):
     trueke_propietario = db.session.query(TransaccionTrueke).filter(
         (TransaccionTrueke.articulo_propietario_id == articulo_id) &
         (TransaccionTrueke.estado_transaccion.in_(
-            ['pendiente', 'aceptado', 'rechazado']))
+            ['pendiente', 'aceptado', 'terminado']))
     ).first()
 
     trueke_receptor = db.session.query(TransaccionTrueke).filter(
         (TransaccionTrueke.articulo_receptor_id == articulo_id) &
         (TransaccionTrueke.estado_transaccion.in_(
-            ['pendiente', 'aceptado', 'rechazado']))
+            ['pendiente', 'aceptado', 'terminado']))
     ).first()
 
     trueke_activo = trueke_propietario or trueke_receptor
