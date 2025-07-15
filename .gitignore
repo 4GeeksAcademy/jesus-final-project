@@ -79,8 +79,6 @@ dist/*
 database.database
 database.db
 diagram.png
-pipfile.lock
+Pipfile.lock
 __pycache__/
-migrations/*
-migrations/versions/*
-!migrations/versions
+

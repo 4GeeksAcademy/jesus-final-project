@@ -67,7 +67,7 @@ export const Truekes = () => {
     };
     const aceptarTrueke = async (id) => {
         try {
-            const notifyResponse = await authenticatedRequest('/api/notificar-interesado', {
+            const notifyResponse = await authenticatedRequest('/notificar-interesado', {
                 method: 'POST',
                 body: JSON.stringify({ trueke_id: id })
             });
